@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next-intl/navigation";
+import { usePathname } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./button";
 

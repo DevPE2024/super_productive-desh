@@ -55,6 +55,7 @@ export const MobileNav = () => {
             <div className="h-full flex flex-col gap-2">
               {navLinks.map((link, i) => (
                 <Button
+                  key={i}
                   variant={"link"}
                   size={"sm"}
                   onClick={() => {
