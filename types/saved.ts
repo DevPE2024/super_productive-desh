@@ -14,3 +14,4 @@ export interface StarredItem {
   itemId: string;
   workspaceId: string;
 }
+

@@ -2,7 +2,7 @@
 
 import { ChevronRight } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next-intl/client";
+import { usePathname } from "next-intl/navigation";
 import Link from "next/link";
 
 const availableRoutesWithTranslation = [
@@ -100,3 +100,4 @@ export const BreadcrumbNav = ({ addManualRoutes, workspaceHref }: Props) => {
     );
   }
 };
+

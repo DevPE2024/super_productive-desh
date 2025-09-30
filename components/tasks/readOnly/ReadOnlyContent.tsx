@@ -86,3 +86,4 @@ export const ReadOnlyContent = ({ task, isSavedByUser, userRole }: Props) => {
     </Card>
   );
 };
+

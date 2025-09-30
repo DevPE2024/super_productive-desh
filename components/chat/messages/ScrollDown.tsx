@@ -28,3 +28,4 @@ export const ScrollDown = ({ notifications, onScrollDown }: Props) => {
     </div>
   );
 };
+

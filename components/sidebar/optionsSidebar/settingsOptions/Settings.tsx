@@ -69,3 +69,4 @@ export const Settings = ({ userAdminWorkspaces }: Props) => {
     </div>
   );
 };
+

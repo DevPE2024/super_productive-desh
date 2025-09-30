@@ -31,3 +31,4 @@ export const NewTask = ({ workspaceId }: Props) => {
     </Button>
   );
 };
+

@@ -7,3 +7,4 @@ export const GithubLogo = ({ ...props }: SvgProps) => {
     </svg>
   );
 };
+

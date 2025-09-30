@@ -29,3 +29,17 @@ export enum EdgeColor {
   DEFAULT = "DEFAULT",
   FUCHSIA = "FUCHSIA",
 }
+
+export enum UseCase {
+  WORK = "WORK",
+  STUDY = "STUDY",
+  PERSONAL_USE = "PERSONAL_USE",
+}
+
+export enum UserPermission {
+  ADMIN = "ADMIN",
+  CAN_EDIT = "CAN_EDIT",
+  READ_ONLY = "READ_ONLY",
+  OWNER = "OWNER",
+}
+

@@ -20,3 +20,4 @@ if (!global.prisma) {
 prisma = global.prisma;
 
 export const db = prisma;
+

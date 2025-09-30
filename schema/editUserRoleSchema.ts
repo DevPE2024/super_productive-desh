@@ -7,3 +7,4 @@ export const editUserRoleSchema = z.object({
 });
 
 export type EditUserRoleSchema = z.infer<typeof editUserRoleSchema>;
+

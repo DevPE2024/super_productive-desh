@@ -32,3 +32,4 @@ export const UserStatus = ({ image, username, maxText, active }: Props) => {
     </div>
   );
 };
+

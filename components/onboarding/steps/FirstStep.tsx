@@ -19,7 +19,7 @@ import { ArrowRight, User } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AddUserImage } from "../common/AddUserImage";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
 
 interface Props {
@@ -27,7 +27,7 @@ interface Props {
 }
 
 export const FirstStep = ({ profileImage }: Props) => {
-  const session = useSession();
+  const { user } = useAuth();
   const { currentStep, name, surname, dispatch } = useOnboardingForm();
   const form = useForm<AdditionalUserInfoFirstPart>({
     resolver: zodResolver(additionalUserInfoFirstPart),
@@ -116,3 +116,4 @@ export const FirstStep = ({ profileImage }: Props) => {
     </>
   );
 };
+

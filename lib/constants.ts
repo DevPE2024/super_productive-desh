@@ -256,3 +256,4 @@ export const homePageRolesAndSettingsImgs: HomePageImage[] = [
     alt: "Task Content Add Image from device page - dark theme",
   },
 ];
+

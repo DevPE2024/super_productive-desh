@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { usePathname } from "next-intl/client";
+import { usePathname } from "next-intl/navigation";
 import { cn } from "@/lib/utils";
 import { useFormatter, useTranslations } from "next-intl";
 
@@ -82,3 +82,4 @@ const Welcoming = React.forwardRef<HTMLDivElement, Props>(
 Welcoming.displayName = "Welcoming";
 
 export default Welcoming;
+

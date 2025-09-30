@@ -13,3 +13,4 @@ export const useTruncateText = (text: string, maxLength: number) => {
     return text.slice(0, length) + "...";
   }
 };
+

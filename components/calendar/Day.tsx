@@ -57,3 +57,4 @@ export const Day = ({ day, monthIndex, calendarItems }: Props) => {
     </div>
   );
 };
+

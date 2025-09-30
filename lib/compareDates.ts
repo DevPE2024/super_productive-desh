@@ -9,3 +9,4 @@ export const compareDates = (
     (new Date(a.updated.at).getTime() - new Date(b.updated.at).getTime())
   );
 };
+

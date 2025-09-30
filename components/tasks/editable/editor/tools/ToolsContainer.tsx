@@ -178,3 +178,4 @@ export const ToolsContainer = ({ editor }: Props) => {
     </div>
   );
 };
+

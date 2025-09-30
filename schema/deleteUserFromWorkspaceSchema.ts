@@ -8,3 +8,4 @@ export const deleteUserFromWorkspaceSchema = z.object({
 export type DeleteUserFromWorkspaceSchema = z.infer<
   typeof deleteUserFromWorkspaceSchema
 >;
+

@@ -13,3 +13,4 @@ export const useChangeCodeToEmoji = (...codes: string[]) => {
 
   return emojis.length === 0 ? emojis[0] : emojis;
 };
+

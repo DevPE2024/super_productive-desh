@@ -204,3 +204,4 @@ export const getInitialHomeRecentActivity = async (userId: string) => {
 
   return res.json() as Promise<HomeRecentActivity[]>;
 };
+

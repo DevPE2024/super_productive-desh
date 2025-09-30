@@ -61,3 +61,4 @@ export const AddImage = ({ editor }: Props) => {
     </Dialog>
   );
 };
+

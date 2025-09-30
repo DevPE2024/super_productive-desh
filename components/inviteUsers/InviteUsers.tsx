@@ -55,3 +55,4 @@ export const InviteUsers = ({ workspace }: Props) => {
     </Dialog>
   );
 };
+

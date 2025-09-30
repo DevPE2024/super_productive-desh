@@ -13,7 +13,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { UploadFilesButton } from "./UploadFileButton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { FilePreview } from "./FilePreview";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useMessage } from "@/store/conversation/messages";
 import { v4 as uuidv4 } from "uuid";
 import { useOnKeyDown } from "@/hooks/useOnKeyDown";
@@ -49,7 +49,7 @@ export const NewMessageContainer = ({ chatId, workspaceId }: Props) => {
     });
   };
 
-  const session = useSession();
+  const { user } = useAuth();
   const [lastMessageId, setLastMessageId] = useState("");
   const { addMessage, deleteMessage } = useMessage((state) => state);
 
@@ -57,23 +57,22 @@ export const NewMessageContainer = ({ chatId, workspaceId }: Props) => {
 
   const { mutate: newMessage, isPending } = useMutation({
     mutationFn: async () => {
-      if (!session.data) return;
-      const user = session.data.user;
+      if (!user) return;
       const id = uuidv4();
       setLastMessageId(id);
 
       const newMessage: ExtendedMessage = {
         id,
-        edited: false,
         content: message,
         additionalResources: uploadedFiles ? uploadedFiles : [],
         conversationId: chatId,
         createdAt: new Date(),
+        edited: false,
         updatedAt: null,
         sender: {
           id: user.id,
-          image: user.image,
-          username: user.username!,
+          image: user.user_metadata?.avatar_url || null,
+          username: user.user_metadata?.full_name || user.email!,
         },
         senderId: user.id,
       };
@@ -183,3 +182,4 @@ export const NewMessageContainer = ({ chatId, workspaceId }: Props) => {
     </div>
   );
 };
+

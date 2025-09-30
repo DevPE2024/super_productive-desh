@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
@@ -28,3 +28,4 @@ export const useGetAssignedToMeParams = () => {
 
   return { currentType, workspaceFilterParam };
 };
+

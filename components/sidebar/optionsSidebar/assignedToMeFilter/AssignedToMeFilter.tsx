@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Workspace } from "@prisma/client";
 import { LayoutGrid } from "lucide-react";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { AssignedToMeWorkspace } from "./AssignedToMeWorkspace";
 import { useGetAssignedToMeParams } from "@/hooks/useGetAssignedToMeParams";
 
@@ -116,3 +116,4 @@ export const AssignedToMeFilter = ({ userWorkspaces }: Props) => {
     </div>
   );
 };
+

@@ -23,3 +23,4 @@ export const SettingsContainer = ({ pomodoroSettings }: Props) => {
     </Card>
   );
 };
+

@@ -9,16 +9,16 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { LogOutIcon, Settings2 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocale, useTranslations } from "next-intl";
 
 export const Bottom = () => {
   const t = useTranslations("SIDEBAR");
   const lang = useLocale();
+  const { signOut } = useAuth();
   const logOutHandler = () => {
-    signOut({
-      callbackUrl: `${window.location.origin}/${lang}`,
-    });
+    signOut();
+    window.location.href = `${window.location.origin}/${lang}`;
   };
 
   return (
@@ -55,3 +55,4 @@ export const Bottom = () => {
     </div>
   );
 };
+

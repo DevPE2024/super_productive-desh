@@ -34,3 +34,4 @@ export type ApiDeleteTagSchema = z.infer<typeof apiDeleteTagSchema>;
 export type ApiTagSchema = z.infer<typeof apiTagSchema>;
 
 export type TagSchema = z.infer<typeof tagSchema>;
+

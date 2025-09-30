@@ -71,3 +71,4 @@ export const StarredContainer = ({ userId }: Props) => {
     </Card>
   );
 };
+

@@ -61,3 +61,4 @@ export const ShowMore = ({ calendarItems, leftItemsAmount, small }: Props) => {
     </Dialog>
   );
 };
+

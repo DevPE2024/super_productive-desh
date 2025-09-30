@@ -37,3 +37,4 @@ export const AppTitle = ({ className, hasLink, size = 20 }: Props) => {
     </>
   );
 };
+

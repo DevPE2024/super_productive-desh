@@ -48,3 +48,4 @@ export const ThemeCard = ({ theme, activeTheme, onTheme }: Props) => {
     </Card>
   );
 };
+

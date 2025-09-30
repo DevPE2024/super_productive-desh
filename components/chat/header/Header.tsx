@@ -14,3 +14,4 @@ export const Header = ({ workspaceName }: Props) => {
     </div>
   );
 };
+

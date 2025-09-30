@@ -114,3 +114,4 @@ export const Message = ({ message, sessionUserId }: Props) => {
     </div>
   );
 };
+

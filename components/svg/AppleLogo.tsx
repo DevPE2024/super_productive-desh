@@ -15,3 +15,4 @@ export const AppleLogo = ({ ...props }: SvgProps) => {
     </svg>
   );
 };
+

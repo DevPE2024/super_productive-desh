@@ -56,3 +56,4 @@ export const TextSection = ({ title, desc }: Props) => {
     </section>
   );
 };
+

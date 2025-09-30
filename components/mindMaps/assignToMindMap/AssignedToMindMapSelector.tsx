@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { UsersAssignedToMindMapInfo } from "@/types/extended";
 import { useQuery } from "@tanstack/react-query";
 import { User2 } from "lucide-react";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { CommandContainer } from "./CommandContainer";
 import { useTranslations } from "next-intl";
 
@@ -91,3 +91,4 @@ export const AssignedToMindMapSelector = ({
     </DropdownMenu>
   );
 };
+

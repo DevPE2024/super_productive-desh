@@ -1,6 +1,7 @@
 "use client";
 
-import { Task, Workspace } from "@prisma/client";
+import { Task } from "@prisma/client";
+import { Workspace } from "@/types/workspace";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +18,7 @@ import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useChangeCodeToEmoji } from "@/hooks/useChangeCodeToEmoji";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { DateRange } from "react-day-picker";
 import axios, { AxiosError } from "axios";
 import Link from "next/link";

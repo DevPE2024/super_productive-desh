@@ -23,7 +23,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { LoadingState } from "../ui/loadingState";
 import { useCallback, useMemo, useState } from "react";
 import { pathsToSoundEffects } from "@/lib/utils";
@@ -419,3 +419,4 @@ export const SettingsForm = ({
     </Form>
   );
 };
+

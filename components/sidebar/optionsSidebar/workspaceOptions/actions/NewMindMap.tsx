@@ -35,3 +35,4 @@ export const NewMindMap = ({ workspaceId }: Props) => {
     </Button>
   );
 };
+

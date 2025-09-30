@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Session } from "next-auth";
+import { User } from "@supabase/supabase-js";
 import { useLocale, useTranslations } from "next-intl";
 import { AddUserImage } from "@/components/onboarding/common/AddUserImage";
 import {
@@ -38,13 +38,13 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { useToast } from "@/hooks/use-toast";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next-intl/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "@/lib/navigation";
 import { useChangeLocale } from "@/hooks/useChangeLocale";
 import { LoadingState } from "@/components/ui/loadingState";
 
 interface Props {
-  session: Session;
+  user: User;
 }
 
 const languages = [
@@ -59,15 +59,13 @@ const languages = [
 ] as const;
 
 export const AccountInfo = ({
-  session: {
-    user: { image, name, surname, username },
-  },
+  user: { user_metadata: { image, name, surname, username } },
 }: Props) => {
   const t = useTranslations("SETTINGS");
   const m = useTranslations("MESSAGES");
   const lang = useLocale();
   const { toast } = useToast();
-  const { update } = useSession();
+  const { user: currentUser } = useAuth();
   const router = useRouter();
   const form = useForm<AccountInfoSettingsSchema>({
     resolver: zodResolver(accountInfoSettingsSchema),
@@ -100,7 +98,7 @@ export const AccountInfo = ({
     },
     onSuccess: async (res: AccountInfoSettingsSchema) => {
       if (res.language !== lang) onSelectChange(res.language as "te" | "en");
-      await update();
+      // Refresh the page to update user data
       router.refresh();
     },
     mutationKey: ["profileEdit"],
@@ -271,3 +269,4 @@ export const AccountInfo = ({
     </Card>
   );
 };
+

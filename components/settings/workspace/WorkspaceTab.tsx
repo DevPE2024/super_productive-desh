@@ -37,3 +37,4 @@ export const WorkspaceTab = ({ workspace, workspaceId }: Props) => {
     </Tabs>
   );
 };
+

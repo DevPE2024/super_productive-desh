@@ -32,3 +32,4 @@ export const EditWorkspaceCard = ({ workspace }: Props) => {
     </Card>
   );
 };
+

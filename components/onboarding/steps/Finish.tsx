@@ -6,9 +6,9 @@ import { useOnboardingForm } from "@/context/OnboardingForm";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { useState } from "react";
 
 export const Finish = () => {
@@ -17,7 +17,7 @@ export const Finish = () => {
     useOnboardingForm();
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
-  const { update } = useSession();
+  const { user } = useAuth();
   const router = useRouter();
   const [isDone, setIsDone] = useState(false);
 
@@ -45,7 +45,7 @@ export const Finish = () => {
       toast({
         title: m("SUCCESS.ONBOARDING_COMPLETE"),
       });
-      await update();
+      // router.refresh() atualiza os dados do usuário
       router.push("/dashboard");
       router.refresh();
     },

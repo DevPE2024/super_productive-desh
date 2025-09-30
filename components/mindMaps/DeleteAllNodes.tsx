@@ -99,3 +99,4 @@ export const DeleteAllNodes = ({ workspaceId, mindMapId }: Props) => {
     </Dialog>
   );
 };
+

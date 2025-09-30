@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useToast } from "./use-toast";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { Task } from "@prisma/client";
@@ -42,3 +42,4 @@ export const useNewTask = (workspaceId: string) => {
 
   return { newTask, isPending };
 };
+

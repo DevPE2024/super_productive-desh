@@ -3,9 +3,9 @@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserActiveItemList } from "@/types/extended";
-import { UserPermission } from "@prisma/client";
+import { UserPermission } from "@/types/enums";
 import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import {
@@ -49,7 +49,7 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
   );
 
   const params = useParams();
-  const session = useSession();
+  const { user } = useAuth();
   const workspaceId = params.workspace_id ? params.workspace_id : null;
 
   const {
@@ -77,7 +77,7 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
   });
 
   useEffect(() => {
-    if (!session.data) return;
+    if (!user) return;
 
     const supabaseClient = supabase();
     const channel = supabaseClient.channel(`activity-status`);
@@ -111,11 +111,11 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
         if (status === "SUBSCRIBED") {
           await channel.track({
             online_at: new Date().toISOString(),
-            userId: session.data.user.id,
+            userId: user.id,
           });
         }
       });
-  }, [session.data, users]);
+  }, [user, users]);
 
   const getActiveUsersRoleType = useCallback(
     (role: UserPermission) => {
@@ -153,3 +153,4 @@ export const useUserActivityStatus = () => {
 
   return ctx;
 };
+

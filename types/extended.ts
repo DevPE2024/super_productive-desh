@@ -230,3 +230,4 @@ export interface ExtendedMessage extends Message {
     image?: string | null;
   };
 }
+

@@ -18,3 +18,4 @@ export const accountInfoSettingsSchema = z.object({
 export type AccountInfoSettingsSchema = z.infer<
   typeof accountInfoSettingsSchema
 >;
+

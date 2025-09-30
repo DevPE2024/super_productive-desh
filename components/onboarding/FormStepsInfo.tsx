@@ -20,3 +20,4 @@ export const FormStepsInfo = () => {
     </div>
   );
 };
+

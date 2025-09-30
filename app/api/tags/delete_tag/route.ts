@@ -90,3 +90,4 @@ export async function POST(request: Request) {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 }
+

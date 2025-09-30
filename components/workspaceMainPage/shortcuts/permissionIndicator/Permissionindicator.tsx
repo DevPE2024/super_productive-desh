@@ -107,3 +107,4 @@ export const PermissionIndicator = ({ userRole, workspaceName }: Props) => {
     </Dialog>
   );
 };
+

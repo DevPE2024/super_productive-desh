@@ -25,7 +25,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios, { AxiosError } from "axios";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { LoadingState } from "@/components/ui/loadingState";
 
 interface Props {
@@ -285,3 +285,4 @@ export const EditorWorkspaceImage = ({
     </Dialog>
   );
 };
+

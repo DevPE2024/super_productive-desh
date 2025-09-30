@@ -1,4 +1,4 @@
-import { UseCase } from "@prisma/client";
+import { UseCase } from "@/types/enums";
 
 export enum ActionType {
   CHANGE_SITE = "CHANGE_SITE",
@@ -28,3 +28,4 @@ export interface OnboardingFormReducer {
 export interface OnboardingFormContext extends OnboardingFormReducer {
   dispatch: React.Dispatch<Action>;
 }
+

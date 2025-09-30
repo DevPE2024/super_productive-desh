@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useToast } from "./use-toast";
@@ -6,13 +6,13 @@ import { useTranslations } from "next-intl";
 
 export const useProviderLoginError = (showLoggedInfo: boolean) => {
   const params = useSearchParams();
-  const session = useSession();
+  const { user } = useAuth();
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
   const router = useRouter();
   useEffect(() => {
     const error = params.get("error");
-    if (error && session.status === "unauthenticated") {
+    if (error && !user) {
       switch (error) {
         case "OAuthAccountNotLinked":
           toast({
@@ -47,10 +47,11 @@ export const useProviderLoginError = (showLoggedInfo: boolean) => {
         clearTimeout(timer);
       };
     }
-    if (session.status === "authenticated" && showLoggedInfo) {
+    if (user && showLoggedInfo) {
       toast({
         title: m("SUCCESS.SIGN_IN"),
       });
     }
-  }, [params, toast, session, router, m, showLoggedInfo]);
+  }, [params, toast, user, router, m, showLoggedInfo]);
 };
+

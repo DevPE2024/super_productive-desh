@@ -19,7 +19,7 @@ import { useTheme } from "next-themes";
 import { useChangeLocale } from "@/hooks/useChangeLocale";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
 
 interface Props {
@@ -33,11 +33,11 @@ export const User = ({ profileImage, username, email }: Props) => {
   const { onSelectChange } = useChangeLocale();
   const lang = useLocale();
   const t = useTranslations("COMMON");
+  const { signOut } = useAuth();
 
   const logOutHandler = () => {
-    signOut({
-      callbackUrl: `${window.location.origin}/${lang}`,
-    });
+    signOut();
+    window.location.href = `${window.location.origin}/${lang}`;
   };
   return (
     <DropdownMenu>
@@ -149,3 +149,4 @@ export const User = ({ profileImage, username, email }: Props) => {
     </DropdownMenu>
   );
 };
+

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next-intl/client";
+import { usePathname } from "next-intl/navigation";
 import { Settings } from "./settingsOptions/Settings";
 import { CreatedWorkspacesInfo } from "@/components/common/CreatedWorkspacesInfo";
 import { Workspace } from "@prisma/client";
@@ -69,3 +69,4 @@ export const OptionsSidebar = ({
     </div>
   );
 };
+

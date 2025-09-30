@@ -18,3 +18,4 @@ export const ReadOnlyEmoji = ({ selectedEmoji, className }: Props) => {
     </div>
   );
 };
+

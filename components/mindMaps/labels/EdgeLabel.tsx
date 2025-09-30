@@ -59,3 +59,4 @@ export const EdgeLabel = ({ labelX, labelY, label, color }: Props) => {
     </EdgeLabelRenderer>
   );
 };
+

@@ -66,3 +66,4 @@ export const AddWorkspace = ({ createdWorkspaces }: Props) => {
     </div>
   );
 };
+

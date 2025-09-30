@@ -19,7 +19,7 @@ import { signInSchema, SignInSchema } from "@/schema/signInSchema";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { LoadingState } from "../ui/loadingState";
 
 export const SignInCardContent = () => {
@@ -35,30 +35,25 @@ export const SignInCardContent = () => {
   const { toast } = useToast();
   const router = useRouter();
   const m = useTranslations("MESSAGES");
+  const { signIn } = useAuth();
 
   const onSubmit = async (data: SignInSchema) => {
     setIsLoading(true);
 
     try {
-      const account = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
+      const result = await signIn(data.email, data.password);
 
-      if (!account) throw new Error("Something went wrong");
-
-      if (account.error) {
-        toast({
-          title: m(account.error),
-          variant: "destructive",
-        });
-      } else {
+      if (result.success) {
         toast({
           title: m("SUCCESS.SIGN_IN"),
         });
         router.push("/onboarding");
         router.refresh();
+      } else {
+        toast({
+          title: result.error || m("ERRORS.DEFAULT"),
+          variant: "destructive",
+        });
       }
     } catch (err) {
       let errMsg = m("ERRORS.DEFAULT");
@@ -128,3 +123,4 @@ export const SignInCardContent = () => {
     </CardContent>
   );
 };
+

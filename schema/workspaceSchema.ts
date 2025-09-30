@@ -89,3 +89,4 @@ export type WorkspacePicture = z.infer<typeof workspacePicture>;
 export type ApiWorkspaceSchema = z.infer<typeof apiWorkspaceSchema>;
 
 export type WorkspaceSchema = z.infer<typeof workspaceSchema>;
+

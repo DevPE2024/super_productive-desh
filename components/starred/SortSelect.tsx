@@ -6,7 +6,7 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from "@tanstack/react-query";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import {
   Select,
   SelectContent,
@@ -54,3 +54,4 @@ export const SortSelect = ({ sortType, refetch }: Props) => {
     </div>
   );
 };
+

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { LoadingState } from "@/components/ui/loadingState";
 import { useUserActivityStatus } from "@/context/UserActivityStatus";
+import { UserPermission } from "@/types/enums";
 import { useTranslations } from "next-intl";
 import { UserStatusTypeList } from "./UserStatusTypeList";
 
@@ -17,10 +18,10 @@ export const UsersContainer = () => {
     refetch,
   } = useUserActivityStatus();
 
-  const owners = getActiveUsersRoleType("OWNER");
-  const admins = getActiveUsersRoleType("ADMIN");
-  const editors = getActiveUsersRoleType("CAN_EDIT");
-  const viewers = getActiveUsersRoleType("READ_ONLY");
+  const owners = getActiveUsersRoleType(UserPermission.OWNER);
+  const admins = getActiveUsersRoleType(UserPermission.ADMIN);
+  const editors = getActiveUsersRoleType(UserPermission.CAN_EDIT);
+  const viewers = getActiveUsersRoleType(UserPermission.READ_ONLY);
 
   if (isError) {
     return (
@@ -70,3 +71,4 @@ export const UsersContainer = () => {
     );
   }
 };
+

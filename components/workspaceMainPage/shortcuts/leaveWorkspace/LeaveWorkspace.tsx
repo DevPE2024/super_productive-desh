@@ -5,7 +5,7 @@ import { Workspace } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { useState } from "react";
 import {
   Dialog,
@@ -101,3 +101,4 @@ export const LeaveWorkspace = ({ workspace: { id, name } }: Props) => {
     </Dialog>
   );
 };
+

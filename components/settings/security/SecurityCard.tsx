@@ -33,3 +33,4 @@ export const SecurityCard = () => {
     </Card>
   );
 };
+

@@ -11,3 +11,4 @@ export const pomodoroSettingsSchema = z.object({
 });
 
 export type PomodoroSettingsSchema = z.infer<typeof pomodoroSettingsSchema>;
+

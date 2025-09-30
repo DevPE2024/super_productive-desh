@@ -28,3 +28,4 @@ export const UserStatusTypeList = ({ users, title, active }: Props) => {
     </div>
   );
 };
+

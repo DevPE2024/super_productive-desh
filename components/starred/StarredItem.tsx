@@ -125,3 +125,4 @@ export const StarredItem = ({
     </Link>
   );
 };
+

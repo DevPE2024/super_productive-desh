@@ -6,8 +6,8 @@ import {
   OnboardingFormContext,
   OnboardingFormReducer,
 } from "@/types/onBoardingContext";
-import { UseCase } from "@prisma/client";
-import { Session } from "next-auth";
+import { UseCase } from "@/types/enums";
+import { User } from "@supabase/supabase-js";
 import { createContext, useContext, useReducer } from "react";
 
 export const OnboardingFormCtx = createContext<OnboardingFormContext | null>(
@@ -66,7 +66,7 @@ function onBoardingFormReducer(state: OnboardingFormReducer, action: Action) {
 
 interface Props {
   children: React.ReactNode;
-  session: Session;
+  user: User;
 }
 
 const initialFormState: OnboardingFormReducer = {
@@ -79,14 +79,14 @@ const initialFormState: OnboardingFormReducer = {
   workspaceImage: null,
 };
 
-export const OnboardingFormProvider = ({ children, session }: Props) => {
+export const OnboardingFormProvider = ({ children, user }: Props) => {
   const [state, dispatch] = useReducer<
     React.Reducer<OnboardingFormReducer, Action>
   >(onBoardingFormReducer, {
     ...initialFormState,
-    name: session.user.name,
-    surname: session.user.surname,
-    profileImage: session.user.image,
+    name: user.user_metadata?.full_name?.split(' ')[0] || null,
+    surname: user.user_metadata?.full_name?.split(' ')[1] || null,
+    profileImage: user.user_metadata?.avatar_url || null,
   });
 
   return (
@@ -102,3 +102,4 @@ export const useOnboardingForm = () => {
 
   return ctx;
 };
+

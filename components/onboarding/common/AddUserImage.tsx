@@ -18,9 +18,9 @@ import { Input } from "../../ui/input";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { User as UserType } from "@prisma/client";
-import { useRouter } from "next-intl/client";
-import { useSession } from "next-auth/react";
+import { User as UserType } from "@supabase/supabase-js";
+import { useRouter } from "@/lib/navigation";
+import { useAuth } from "@/hooks/useAuth";
 import { LoadingState } from "../../ui/loadingState";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
@@ -36,7 +36,7 @@ export const AddUserImage = ({ profileImage, className }: Props) => {
   const inputRef = useRef<null | HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { update } = useSession();
+  const { user } = useAuth();
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
   const t = useTranslations("CHANGE_PROFILE_IMAGE");
@@ -120,7 +120,7 @@ export const AddUserImage = ({ profileImage, className }: Props) => {
         title: m("SUCCESS.IMAGE_PROFILE_UPDATE"),
       });
       setOpen(false);
-      await update();
+      // Refresh the page to update user data
       router.refresh();
     },
     mutationKey: ["updateProfileImage"],
@@ -141,7 +141,7 @@ export const AddUserImage = ({ profileImage, className }: Props) => {
       toast({
         title: m("SUCCESS.IMAGE_PROFILE_UPDATE"),
       });
-      await update();
+      // Refresh the page to update user data
       router.refresh();
     },
     mutationKey: ["deleteProfileImage"],

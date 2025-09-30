@@ -35,7 +35,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { signOut } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 
@@ -48,6 +48,7 @@ export const DeleteAccount = ({ userEmail }: Props) => {
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
   const lang = useLocale();
+  const { signOut } = useAuth();
 
   const form = useForm<DeleteAccountSchema>({
     resolver: zodResolver(deleteAccountSchema),
@@ -78,9 +79,8 @@ export const DeleteAccount = ({ userEmail }: Props) => {
         title: m("SUCCESS.DELETED_INFO"),
       });
 
-      signOut({
-        callbackUrl: `${window.location.origin}/${lang}`,
-      });
+      await signOut();
+      window.location.href = `/${lang}`;
     },
     mutationKey: ["deleteProfile"],
   });
@@ -159,3 +159,4 @@ export const DeleteAccount = ({ userEmail }: Props) => {
     </Card>
   );
 };
+

@@ -53,3 +53,4 @@ export const UserHoverInfo = ({ user, className }: Props) => {
     </HoverCard>
   );
 };
+

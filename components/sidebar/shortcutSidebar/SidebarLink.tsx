@@ -37,3 +37,4 @@ export const SidebarLink = ({ hoverTextKey, href, Icon, include }: Props) => {
     </HoverCard>
   );
 };
+

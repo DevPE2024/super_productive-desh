@@ -117,3 +117,4 @@ export const EditorTasks = ({ content, taskId, workspaceId }: Props) => {
     </div>
   );
 };
+

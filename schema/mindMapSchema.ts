@@ -38,3 +38,4 @@ export type UpdateMindMapActiveTagsSchema = z.infer<
 >;
 export type DeleteMindMapSchema = z.infer<typeof deleteMindMapSchema>;
 export type MindMapSchema = z.infer<typeof mindMapSchema>;
+

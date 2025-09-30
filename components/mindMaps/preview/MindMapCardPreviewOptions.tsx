@@ -26,7 +26,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { MoreHorizontal, Pencil, Star, StarOff, Trash } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -189,3 +189,4 @@ export const MindMapCardPreviewOptions = ({
     </Dialog>
   );
 };
+

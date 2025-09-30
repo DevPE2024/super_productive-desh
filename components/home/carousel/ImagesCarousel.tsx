@@ -47,3 +47,4 @@ export const ImagesCarousel = ({ className, images }: Props) => {
     </Carousel>
   );
 };
+

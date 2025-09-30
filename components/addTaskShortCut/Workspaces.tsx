@@ -1,4 +1,4 @@
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@/types/workspace";
 import { ScrollArea } from "../ui/scroll-area";
 import { SelectWorkspace } from "./SelectWorkspace";
 
@@ -23,3 +23,4 @@ export const Workspaces = ({ workspaces, onSelectActiveWorkspace }: Props) => {
     </ScrollArea>
   );
 };
+

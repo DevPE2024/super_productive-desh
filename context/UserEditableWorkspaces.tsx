@@ -1,8 +1,8 @@
 "use client";
 
-import { Workspace } from "@prisma/client";
+import { Workspace } from "@/types/workspace";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { createContext, useContext } from "react";
 
 interface Props {
@@ -15,11 +15,11 @@ export const UserEditableWorkspacesCtx = createContext<UseQueryResult<
 > | null>(null);
 
 export const UserEditableWorkspacesProvider = ({ children }: Props) => {
-  const { data } = useSession();
+  const { user } = useAuth();
 
   const queryData = useQuery<Workspace[], Error>({
     queryFn: async () => {
-      const userId = data?.user.id;
+      const userId = user?.id;
       const res = await fetch(
         `/api/workspace/get/user_editable_workspaces?userId=${userId}`
       );
@@ -33,8 +33,8 @@ export const UserEditableWorkspacesProvider = ({ children }: Props) => {
 
       return response;
     },
-    enabled: !!data?.user.id,
-    queryKey: ["getEditableWorkspaces", data?.user.id],
+    enabled: !!user?.id,
+    queryKey: ["getEditableWorkspaces", user?.id],
   });
 
   return (
@@ -49,3 +49,4 @@ export const useUserEditableWorkspaces = () => {
   if (!ctx) throw new Error(`invalid use`);
   return ctx;
 };
+

@@ -18,7 +18,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { LoadingState } from "../ui/loadingState";
 
 export const SignUpCardContent = () => {
@@ -35,33 +35,26 @@ export const SignUpCardContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const { signUp } = useAuth();
 
   const onSubmit = async (data: SignUpSchema) => {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const result = await signUp(data.email, data.password, data.username);
 
-      if (!res.ok) throw new Error("Something went wrong");
-      const signUpInfo = await res.json();
-
-      if (res.status === 200) {
+      if (result.success) {
         toast({
           title: m("SUCCESS.SIGN_UP"),
         });
-        await signIn("credentials", {
-          email: data.email,
-          password: data.password,
-          redirect: false,
-        });
+        // Redirecionar para página de confirmação de email ou login
         router.push("/");
-      } else throw new Error(signUpInfo);
+      } else {
+        toast({
+          title: result.error || m("ERRORS.DEFAULT"),
+          variant: "destructive",
+        });
+      }
     } catch (err) {
       let errMsg = m("ERRORS.DEFAULT");
       if (typeof err === "string") {
@@ -146,3 +139,4 @@ export const SignUpCardContent = () => {
     </CardContent>
   );
 };
+

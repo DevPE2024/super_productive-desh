@@ -47,3 +47,4 @@ export const ReadOnlyCalendar = ({ from, to }: Props) => {
     </Badge>
   );
 };
+

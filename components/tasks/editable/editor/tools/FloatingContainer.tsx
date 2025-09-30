@@ -128,3 +128,4 @@ export const FloatingContainer = ({ editor }: Props) => {
     </FloatingMenu>
   );
 };
+

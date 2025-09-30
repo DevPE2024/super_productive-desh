@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { StarredItemsList } from "../svg/StarredItemsList";
 import { Card, CardContent, CardDescription, CardHeader } from "../ui/card";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 
@@ -54,3 +54,4 @@ export const ClientError = ({
     </Card>
   );
 };
+

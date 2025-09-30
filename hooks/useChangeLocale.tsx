@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next-intl/client";
+import { usePathname, useRouter } from "@/lib/navigation";
 import { useState, useTransition } from "react";
 
 export const useChangeLocale = () => {
@@ -19,3 +19,4 @@ export const useChangeLocale = () => {
 
   return { isLoading, isPending, onSelectChange };
 };
+

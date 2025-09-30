@@ -23,3 +23,4 @@ export const GoogleLogo = ({ ...props }: SvgProps) => {
     </svg>
   );
 };
+

@@ -45,3 +45,4 @@ export const GET = async (request: Request) => {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 404 });
   }
 };
+

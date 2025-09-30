@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { LoadingState } from "../ui/loadingState";
 import { useLocale, useTranslations } from "next-intl";
 //@ts-ignore
-import { usePathname, useRouter } from "next-intl/client";
+import { usePathname, useRouter } from "@/lib/navigation";
 import { HoverCard, HoverCardContent } from "../ui/hover-card";
 import { useChangeLocale } from "@/hooks/useChangeLocale";
 
@@ -86,3 +86,4 @@ export const LocaleSwitcher = ({
     </HoverCard>
   );
 };
+

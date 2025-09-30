@@ -36,3 +36,4 @@ export const CommandContainer = ({ users, mindMapId, workspaceId }: Props) => {
     </Command>
   );
 };
+

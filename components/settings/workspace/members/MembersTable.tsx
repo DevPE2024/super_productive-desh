@@ -97,3 +97,4 @@ export const MembersTable = ({ workspace, workspaceId }: Props) => {
     </div>
   );
 };
+

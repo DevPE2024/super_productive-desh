@@ -19,3 +19,4 @@ export const additionalUserInfoFirstPart = z.object({
 export type AdditionalUserInfoFirstPart = z.infer<
   typeof additionalUserInfoFirstPart
 >;
+

@@ -33,9 +33,9 @@ import { SettingsWorkspace } from "@/types/extended";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { signOut } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next-intl/client";
+import { useRouter } from "@/lib/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -43,7 +43,8 @@ interface Props {
   workspace: SettingsWorkspace;
 }
 
-export const DeleteWorkspace = ({ workspace: { id, name } }: Props) => {
+export const DeleteWorkspace = ({ workspace }: Props) => {
+  const { id, name } = workspace;
   const t = useTranslations("EDIT_WORKSPACE.DELETE");
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
@@ -170,3 +171,4 @@ export const DeleteWorkspace = ({ workspace: { id, name } }: Props) => {
     </Card>
   );
 };
+

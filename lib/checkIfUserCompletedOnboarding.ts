@@ -13,3 +13,4 @@ export const checkIfUserCompletedOnboarding = async (currentPath: string) => {
 
   return session;
 };
+

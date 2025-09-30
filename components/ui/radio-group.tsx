@@ -22,7 +22,9 @@ RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
 const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
+  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> & {
+    useCheckIcon?: boolean;
+  }
 >(({ className, children, useCheckIcon, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
@@ -46,3 +48,4 @@ const RadioGroupItem = React.forwardRef<
 RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 
 export { RadioGroup, RadioGroupItem };
+

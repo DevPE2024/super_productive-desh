@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { useLocale } from "next-intl";
 import { useProviderLoginError } from "@/hooks/useProviderLoginError";
-import { signIn } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -19,14 +19,17 @@ export const ProviderSignInBtn = ({
 }: Props) => {
   const [showLoggedInfo, setShowLoggedInfo] = useState(false);
   const locale = useLocale();
+  const { signInWithProvider } = useAuth();
   useProviderLoginError(showLoggedInfo);
 
   const signInHandler = async () => {
     onLoading(true);
     setShowLoggedInfo(true);
     try {
-      await signIn(providerName, { callbackUrl: `/${locale}/onboarding` });
-    } catch (err) {}
+      await signInWithProvider(providerName);
+    } catch (err) {
+      console.error('Erro no login com provedor:', err);
+    }
     onLoading(false);
   };
 
@@ -41,3 +44,4 @@ export const ProviderSignInBtn = ({
     </Button>
   );
 };
+
