@@ -47,8 +47,8 @@ export const SignUpCardContent = () => {
         toast({
           title: m("SUCCESS.SIGN_UP"),
         });
-        // Redirecionar para página de confirmação de email ou login
-        router.push("/");
+        // Redirecionar diretamente para o dashboard após cadastro bem-sucedido
+        router.push("/en/dashboard");
       } else {
         toast({
           title: result.error || m("ERRORS.DEFAULT"),

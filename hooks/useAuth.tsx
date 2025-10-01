@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           title: "Login realizado com sucesso!",
           description: "Bem-vindo de volta!",
         });
-        router.push('/dashboard');
+        router.push('/en/dashboard');
         return { success: true };
       }
 
@@ -132,8 +132,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.user) {
         toast({
           title: "Conta criada com sucesso!",
-          description: "Verifique seu email para confirmar a conta.",
+          description: "Redirecionando para o dashboard...",
         });
+        // Redirecionar diretamente para o dashboard após cadastro
+        router.push('/en/dashboard');
         return { success: true };
       }
 

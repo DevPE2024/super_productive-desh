@@ -28,11 +28,15 @@ export type AuthUser = {
   id: string;
   email?: string;
   name?: string;
+  username?: string;
+  surname?: string;
   image?: string;
   user_metadata?: {
     name?: string;
     avatar_url?: string;
     full_name?: string;
+    username?: string;
+    surname?: string;
   };
 };
 

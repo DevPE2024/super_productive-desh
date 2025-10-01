@@ -41,7 +41,8 @@ export async function POST(request: Request) {
       });
     }
 
-    await db.user.update({
+    console.log('Atualizando usuário com completedOnboarding: true');
+    const updatedUser = await db.user.update({
       where: {
         id: session.user.id,
       },
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
         useCase: useCase as UseCaseType,
       },
     });
+    console.log('Usuário atualizado:', updatedUser);
 
     const workspace = await db.workspace.create({
       data: {

@@ -34,30 +34,46 @@ export default async function middleware(req: NextRequest) {
     {
       cookies: {
         get(name: string) {
-          return req.cookies.get(name)?.value;
+          try {
+            return req.cookies.get(name)?.value;
+          } catch (error) {
+            console.warn(`Erro ao ler cookie ${name}:`, error);
+            return undefined;
+          }
         },
         set(name: string, value: string, options: any) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          try {
+            response.cookies.set({
+              name,
+              value,
+              ...options,
+            });
+          } catch (error) {
+            console.warn(`Erro ao definir cookie ${name}:`, error);
+          }
         },
         remove(name: string, options: any) {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          try {
+            response.cookies.set({
+              name,
+              value: '',
+              ...options,
+            });
+          } catch (error) {
+            console.warn(`Erro ao remover cookie ${name}:`, error);
+          }
         },
       },
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  // Verificação simplificada - apenas verificar se há tokens de sessão
+  const hasAuthTokens = req.cookies.get('sb-access-token') || 
+                       req.cookies.get('supabase-auth-token') ||
+                       req.cookies.get('sb-jmahdwisqkcbtgaavaji-auth-token');
 
-  if (!user) {
-    // Redirecionar para página de login se não autenticado
+  if (!hasAuthTokens) {
+    // Redirecionar para página de login se não há tokens
     const redirectUrl = new URL('/sign-in', req.url);
     return NextResponse.redirect(redirectUrl);
   }

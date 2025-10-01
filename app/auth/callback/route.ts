@@ -33,13 +33,24 @@ export async function GET(request: NextRequest) {
         console.error('Erro ao trocar código por sessão:', error);
         return NextResponse.redirect(`${requestUrl.origin}/auth/error`);
       }
+
+      // Verificar o status do usuário após login bem-sucedido
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        console.log('Usuário autenticado no callback:', user.id);
+        
+        // Redirecionar diretamente para o dashboard após autenticação bem-sucedida
+        console.log('Usuário autenticado com sucesso, redirecionando para dashboard');
+        return NextResponse.redirect(`${requestUrl.origin}/en/dashboard`);
+      }
     } catch (error) {
-      console.error('Erro ao trocar código por sessão:', error);
+      console.error('Erro no callback de autenticação:', error);
       return NextResponse.redirect(`${requestUrl.origin}/auth/error`);
     }
   }
 
-  // Redirecionar para onboarding após login bem-sucedido
-  return NextResponse.redirect(`${requestUrl.origin}/onboarding`);
+  // Fallback para dashboard se não houver código
+  return NextResponse.redirect(`${requestUrl.origin}/en/dashboard`);
 }
 
