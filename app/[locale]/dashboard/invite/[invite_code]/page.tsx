@@ -1,7 +1,7 @@
 import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboarding";
 import { db } from "@/lib/db";
 import { NotifyType } from "@prisma/client";
-import { redirect } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 interface Params {
   params: {
@@ -23,6 +23,10 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
   const session = await checkIfUserCompletedOnboarding(
     `/dashboard/invite/${invite_code}`
   );
+
+  if (!session) {
+    return null;
+  }
 
   const role = searchParams.role as
     | "editor"
@@ -78,9 +82,12 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
   if (!inviteCodeValid)
     redirect("/dashboard/errors?error=outdated-invite-code");
 
+  // TypeScript assertion - we know inviteCodeValid is not null after the check above
+  const validWorkspace = inviteCodeValid!;
+
   const workspaceUsers = await db.subscription.findMany({
     where: {
-      workspaceId: inviteCodeValid.id,
+      workspaceId: validWorkspace.id,
     },
     select: {
       userId: true,
@@ -90,7 +97,7 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
   const notificationsData = workspaceUsers.map((user) => ({
     notifyCreatorId: session.user.id,
     userId: user.userId,
-    workspaceId: inviteCodeValid.id,
+    workspaceId: validWorkspace.id,
     notifyType: NotifyType.NEW_USER_IN_WORKSPACE,
   }));
 
@@ -128,12 +135,12 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
   await db.subscription.create({
     data: {
       userId: session.user.id,
-      workspaceId: inviteCodeValid.id,
+      workspaceId: validWorkspace.id,
       userRole: userRole(),
     },
   });
 
-  redirect(`/dashboard/workspace/${inviteCodeValid.id}`);
+  redirect(`/dashboard/workspace/${validWorkspace.id}`);
 };
 
 export default Workspace;

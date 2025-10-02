@@ -21,6 +21,10 @@ const Task = async ({ params: { workspace_id, task_id } }: Params) => {
     `/dashboard/workspace/${workspace_id}/tasks/task/${task_id}`
   );
 
+  if (!session) {
+    return null;
+  }
+
   const [workspace, userRole, task] = await Promise.all([
     getWorkspace(workspace_id, session.user.id),
     getUserWorkspaceRole(workspace_id, session.user.id),

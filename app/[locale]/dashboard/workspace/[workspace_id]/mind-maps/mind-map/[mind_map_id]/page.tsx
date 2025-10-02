@@ -25,6 +25,10 @@ const MindMapPage = async ({
     `/dashboard/workspace/${workspace_id}/tasks/task/${mind_map_id}`
   );
 
+  if (!session) {
+    return null;
+  }
+
   const [workspace, userRole, mindMap] = await Promise.all([
     getWorkspace(workspace_id, session.user.id),
     getUserWorkspaceRole(workspace_id, session.user.id),

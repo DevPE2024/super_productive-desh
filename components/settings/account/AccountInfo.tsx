@@ -43,8 +43,10 @@ import { useRouter } from "@/lib/navigation";
 import { useChangeLocale } from "@/hooks/useChangeLocale";
 import { LoadingState } from "@/components/ui/loadingState";
 
+import { AuthUser } from "@/lib/supabase";
+
 interface Props {
-  user: User;
+  user: AuthUser;
 }
 
 const languages = [
@@ -58,9 +60,11 @@ const languages = [
   },
 ] as const;
 
-export const AccountInfo = ({
-  user: { user_metadata: { image, name, surname, username } },
-}: Props) => {
+export const AccountInfo = ({ user }: Props) => {
+  const image = user.image || user.user_metadata?.avatar_url;
+  const name = user.name || user.user_metadata?.name;
+  const surname = user.surname || user.user_metadata?.surname;
+  const username = user.username || user.user_metadata?.username;
   const t = useTranslations("SETTINGS");
   const m = useTranslations("MESSAGES");
   const lang = useLocale();

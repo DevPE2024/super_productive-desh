@@ -8,6 +8,10 @@ import { notFound } from "next/navigation";
 const Pomodoro = async () => {
   const session = await checkIfUserCompletedOnboarding(`/dashboard/pomodoro`);
 
+  if (!session) {
+    return null;
+  }
+
   const pomodoroSettings = await getUserPomodoroSettings(session.user.id);
   if (!pomodoroSettings) notFound();
 

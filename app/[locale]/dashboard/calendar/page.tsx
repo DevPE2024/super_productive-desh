@@ -8,6 +8,10 @@ const AssignedToMe = async () => {
     "/dashboard/assigned-to-me"
   );
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <DashboardHeader>

@@ -7,6 +7,10 @@ import { AddTaskShortcut } from "@/components/addTaskShortCut/AddTaskShortcut";
 const PomodoroSettings = async () => {
   const session = await checkIfUserCompletedOnboarding(`/dashboard/pomodoro`);
 
+  if (!session) {
+    return null;
+  }
+
   const pomodoroSettings = await getUserPomodoroSettings(session.user.id);
 
   return (

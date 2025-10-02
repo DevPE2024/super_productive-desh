@@ -6,6 +6,10 @@ import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboar
 const ThemeSettings = async () => {
   const session = await checkIfUserCompletedOnboarding("/dashboard/settings");
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <DashboardHeader>

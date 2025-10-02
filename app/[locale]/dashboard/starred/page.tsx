@@ -6,6 +6,10 @@ import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboar
 const Starred = async () => {
   const session = await checkIfUserCompletedOnboarding("/dashboard/starred");
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <DashboardHeader>

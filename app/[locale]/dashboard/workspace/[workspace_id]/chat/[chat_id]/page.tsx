@@ -30,6 +30,10 @@ const Chat = async ({ params: { workspace_id, chat_id } }: Params) => {
     `/dashboard/workspace/${workspace_id}/chat/${chat_id}`
   );
 
+  if (!session) {
+    return null;
+  }
+
   const [workspace, userRole, initialMessages] = await Promise.all([
     getWorkspaceWithChatId(workspace_id, session.user.id),
     getUserWorkspaceRole(workspace_id, session.user.id),

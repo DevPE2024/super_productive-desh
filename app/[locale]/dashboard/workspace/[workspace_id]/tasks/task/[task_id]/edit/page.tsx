@@ -4,7 +4,7 @@ import { TaskContainer } from "@/components/tasks/editable/container/TaskContain
 import { AutosaveIndicatorProvider } from "@/context/AutosaveIndicator";
 import { getTask, getUserWorkspaceRole, getWorkspace } from "@/lib/api";
 import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboarding";
-import { redirect } from "next-intl/server";
+import { redirect } from "next/navigation";
 import { AddTaskShortcut } from "@/components/addTaskShortCut/AddTaskShortcut";
 import { notFound } from "next/navigation";
 
@@ -19,6 +19,10 @@ const EditTask = async ({ params: { workspace_id, task_id } }: Params) => {
   const session = await checkIfUserCompletedOnboarding(
     `/dashboard/workspace/${workspace_id}/tasks/task/${task_id}`
   );
+
+  if (!session) {
+    return null;
+  }
 
   const [workspace, userRole, task] = await Promise.all([
     getWorkspace(workspace_id, session.user.id),

@@ -7,7 +7,7 @@ import { AutosaveIndicatorProvider } from "@/context/AutosaveIndicator";
 import { AutoSaveMindMapProvider } from "@/context/AutoSaveMindMap";
 import { getMindMap, getUserWorkspaceRole, getWorkspace } from "@/lib/api";
 import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboarding";
-import { redirect } from "next-intl/server";
+import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
 
 interface Params {
@@ -23,6 +23,10 @@ const EditMindMapPage = async ({
   const session = await checkIfUserCompletedOnboarding(
     `/dashboard/workspace/${workspace_id}/tasks/task/${mind_map_id}`
   );
+
+  if (!session) {
+    return null;
+  }
 
   const [workspace, userRole, mindMap] = await Promise.all([
     getWorkspace(workspace_id, session.user.id),

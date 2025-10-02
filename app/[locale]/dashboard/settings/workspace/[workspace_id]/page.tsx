@@ -17,6 +17,11 @@ const Workspace = async ({ params: { workspace_id } }: Params) => {
   const session = await checkIfUserCompletedOnboarding(
     `/dashboard/settings/workplace/${workspace_id}`
   );
+  
+  if (!session) {
+    return null;
+  }
+  
   const workspace = await getWorkspaceSettings(workspace_id, session.user.id);
   if (!workspace) notFound();
   const user = workspace.subscribers.find(

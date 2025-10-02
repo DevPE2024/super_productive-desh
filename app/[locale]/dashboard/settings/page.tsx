@@ -9,6 +9,10 @@ import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboar
 const Settings = async () => {
   const session = await checkIfUserCompletedOnboarding("/dashboard/settings");
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
       <DashboardHeader>
@@ -16,7 +20,7 @@ const Settings = async () => {
       </DashboardHeader>
       <main>
         <Heading />
-        <AccountInfo session={session} />
+        <AccountInfo user={session.user} />
         <div className="p-4 sm:p-6">
           <Separator />
         </div>

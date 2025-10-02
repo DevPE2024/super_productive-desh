@@ -7,6 +7,10 @@ import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboar
 const Dashboard = async () => {
   const session = await checkIfUserCompletedOnboarding("/dashboard");
 
+  if (!session) {
+    return null;
+  }
+
   const initialRecentActivity = await getInitialHomeRecentActivity(
     session.user.id
   );
