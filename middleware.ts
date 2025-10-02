@@ -73,8 +73,9 @@ export default async function middleware(req: NextRequest) {
                        req.cookies.get('sb-jmahdwisqkcbtgaavaji-auth-token');
 
   if (!hasAuthTokens) {
-    // Redirecionar para página de login se não há tokens
-    const redirectUrl = new URL('/sign-in', req.url);
+    // Redirecionar para página de login com locale correto
+    const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
+    const redirectUrl = new URL(`/${locale}/sign-in`, req.url);
     return NextResponse.redirect(redirectUrl);
   }
 

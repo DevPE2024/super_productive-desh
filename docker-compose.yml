@@ -1,18 +1,57 @@
-version: "3.5"
-name: "super-productive-services"
+version: '3.8'
+
 services:
+  app:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:password@db:5432/super_productive
+      - NEXTAUTH_URL=http://localhost:8001
+      - NEXTAUTH_SECRET=your-secret-key
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
   db:
-    image: "postgres"
-    restart: always
+    image: postgres:15
     container_name: super-productive-db
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_DB: "super-productive"
+      POSTGRES_DB: super_productive
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-    volumes:
-      - database-data:/var/lib/postgresql-data/
     ports:
-      - 8010:5432
+      - "8010:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: super-productive-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8020:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
 
 volumes:
   database-data:
+
+networks:
+  app-network:
+    driver: bridge

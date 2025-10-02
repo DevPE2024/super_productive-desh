@@ -13,17 +13,17 @@ export default async function Home() {
     
     // Se completou o onboarding, redirecionar para dashboard
     if (session.user.completedOnboarding) {
-      console.log('Redirecionando para /dashboard');
-      redirect("/dashboard");
+      console.log('Redirecionando para /en/dashboard');
+      redirect("/en/dashboard");
     } else {
       // Se não completou o onboarding, redirecionar para onboarding
-      console.log('Redirecionando para /onboarding');
-      redirect("/onboarding");
+      console.log('Redirecionando para /en/onboarding');
+      redirect("/en/onboarding");
     }
   }
   
   // Se não está logado, redirecionar para sign-in
-  console.log('Usuário não logado, redirecionando para /sign-in');
-  redirect("/sign-in");
+  console.log('Usuário não logado, redirecionando para /en/sign-in');
+  redirect("/en/sign-in");
 }
 

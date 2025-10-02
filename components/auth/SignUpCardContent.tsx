@@ -41,29 +41,34 @@ export const SignUpCardContent = () => {
     setIsLoading(true);
 
     try {
-      const result = await signUp(data.email, data.password, data.username);
+      // Usar API local para cadastro
+      const response = await fetch('/api/auth/signup-local', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast({
-          title: m("SUCCESS.SIGN_UP"),
+          title: "Conta criada com sucesso!",
+          description: "Redirecionando para o login...",
         });
-        // Redirecionar diretamente para o dashboard após cadastro bem-sucedido
-        router.push("/en/dashboard");
+        // Redirecionar para login após cadastro bem-sucedido
+        router.push("/en/sign-in");
       } else {
         toast({
-          title: result.error || m("ERRORS.DEFAULT"),
+          title: result.error || "Erro ao criar conta",
           variant: "destructive",
         });
       }
     } catch (err) {
-      let errMsg = m("ERRORS.DEFAULT");
-      if (typeof err === "string") {
-        errMsg = err;
-      } else if (err instanceof Error) {
-        errMsg = m(err.message);
-      }
+      console.error("Erro no cadastro:", err);
       toast({
-        title: errMsg,
+        title: "Erro interno do servidor",
         variant: "destructive",
       });
     }

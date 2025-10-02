@@ -75,7 +75,7 @@ export const homePageHeaderImgs: HomePageImage[] = [
     alt: "Home page - light theme",
   },
   {
-    src: "/images/workspaceMainPage.png",
+    src: "/images/workspaceMainpage.png",
     alt: "Workspace main page - dark theme",
   },
   {
