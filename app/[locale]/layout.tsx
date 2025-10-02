@@ -29,24 +29,20 @@ export default async function RootLayout({
   //@ts-ignore
   const messages = await getMessages(locale);
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={` antialiased`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>
-            <QueryProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-                disableTransitionOnChange
-              >
-                <Toaster />
-                {children}
-              </ThemeProvider>
-            </QueryProvider>
-          </AuthProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <AuthProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster />
+            {children}
+          </ThemeProvider>
+        </QueryProvider>
+      </AuthProvider>
+    </NextIntlClientProvider>
   );
 }

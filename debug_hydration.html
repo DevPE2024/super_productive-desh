@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Hydration Errors</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .error { color: red; margin: 10px 0; padding: 10px; border: 1px solid red; }
+        .log { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Debug de Erros de Hidratação</h1>
+    <div id="errors"></div>
+    <div id="logs"></div>
+    
+    <script>
+        const errorsDiv = document.getElementById('errors');
+        const logsDiv = document.getElementById('logs');
+        
+        // Capturar erros de hidratação
+        window.addEventListener('error', (event) => {
+            if (event.message.includes('hydration') || event.message.includes('Hydration')) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.innerHTML = `
+                    <strong>Erro de Hidratação:</strong><br>
+                    Mensagem: ${event.message}<br>
+                    Arquivo: ${event.filename}<br>
+                    Linha: ${event.lineno}<br>
+                    Coluna: ${event.colno}<br>
+                    Stack: ${event.error ? event.error.stack : 'N/A'}
+                `;
+                errorsDiv.appendChild(errorDiv);
+            }
+        });
+        
+        // Capturar erros do console
+        const originalConsoleError = console.error;
+        console.error = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('hydration') || message.includes('Hydration')) {
+                const logDiv = document.createElement('div');
+                logDiv.className = 'error';
+                logDiv.innerHTML = `<strong>Console Error:</strong> ${message}`;
+                errorsDiv.appendChild(logDiv);
+            }
+            originalConsoleError.apply(console, args);
+        };
+        
+        // Abrir a aplicação em um iframe para capturar erros
+        setTimeout(() => {
+            const iframe = document.createElement('iframe');
+            iframe.src = 'http://localhost:8001';
+            iframe.style.width = '100%';
+            iframe.style.height = '600px';
+            iframe.style.border = '1px solid #ccc';
+            document.body.appendChild(iframe);
+            
+            // Tentar capturar erros do iframe
+            iframe.onload = () => {
+                try {
+                    const iframeWindow = iframe.contentWindow;
+                    if (iframeWindow) {
+                        iframeWindow.addEventListener('error', (event) => {
+                            const errorDiv = document.createElement('div');
+                            errorDiv.className = 'error';
+                            errorDiv.innerHTML = `<strong>Iframe Error:</strong> ${event.message}`;
+                            errorsDiv.appendChild(errorDiv);
+                        });
+                    }
+                } catch (e) {
+                    console.log('Não foi possível acessar o iframe devido a CORS');
+                }
+            };
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -78,17 +78,26 @@ export async function GET(request: NextRequest) {
       { expiresIn: '7d' }
     );
 
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-        surname: user.surname,
-        username: user.username,
-      }
+    // Criar resposta de redirecionamento
+    let redirectUrl = `${process.env.NEXTAUTH_URL}/en/dashboard`;
+    
+    // Se o usuário não completou o onboarding, redirecionar para onboarding
+    if (!user.completedOnboarding) {
+      redirectUrl = `${process.env.NEXTAUTH_URL}/en/onboarding`;
+    }
+
+    const response = NextResponse.redirect(redirectUrl);
+    
+    // Definir cookie de autenticação
+    response.cookies.set('auth-token', token, {
+      httpOnly: false, // Permitir acesso via JavaScript para compatibilidade com useAuth
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 dias
+      path: '/'
     });
+
+    return response;
 
   } catch (error) {
     console.error('Erro no callback Google:', error);

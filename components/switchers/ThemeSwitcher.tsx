@@ -12,6 +12,7 @@ import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { HoverCard } from "../ui/hover-card";
 import { HoverCardContent } from "@radix-ui/react-hover-card";
+import { useEffect, useState } from "react";
 
 interface Props {
   variant?:
@@ -33,8 +34,22 @@ export const ThemeSwitcher = ({
   alignHover = "center",
   alignDropdown = "center",
 }: Props) => {
+  const [mounted, setMounted] = useState(false);
   const { setTheme } = useTheme();
   const t = useTranslations("COMMON");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <Button variant={variant} size={size}>
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle Theme</span>
+      </Button>
+    );
+  }
 
   return (
     <HoverCard openDelay={250} closeDelay={250}>

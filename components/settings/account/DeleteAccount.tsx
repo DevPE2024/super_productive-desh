@@ -80,7 +80,10 @@ export const DeleteAccount = ({ userEmail }: Props) => {
       });
 
       await signOut();
-      window.location.href = `/${lang}`;
+      // Verificar se estamos no cliente antes de acessar window
+      if (typeof window !== 'undefined') {
+        window.location.href = `/${lang}`;
+      }
     },
     mutationKey: ["deleteProfile"],
   });

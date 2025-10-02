@@ -21,7 +21,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: string }>;
-  signInWithProvider: (provider: 'google' | 'github') => Promise<void>;
+  signInWithProvider: (provider: 'google') => Promise<void>;
   signOut: () => Promise<{ success: boolean; error?: string }>;
   isAuthenticated: boolean;
 }
@@ -34,37 +34,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<LocalUser | null>(null);
   const [session, setSession] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
   const router = useRouter();
 
-  // Inicializar autenticação local
+  // Garantir hidratação consistente
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Inicializar autenticação local apenas após hidratação
+  useEffect(() => {
+    if (!isHydrated) return;
+
     const initAuth = async () => {
       try {
-        // Verificar se há um token de sessão no localStorage
-        const token = localStorage.getItem('auth_token');
-        const userData = localStorage.getItem('user_data');
-        
-        if (token && userData) {
-          const user = JSON.parse(userData);
-          setUser(user);
-          setSession({ token, user });
+        // Verificar se estamos no cliente antes de acessar localStorage
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('auth_token');
+          const userData = localStorage.getItem('user_data');
           
-          // Garantir que o cookie também esteja definido
-          document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+          if (token && userData) {
+            const user = JSON.parse(userData);
+            setUser(user);
+            setSession({ token, user });
+            
+            // Garantir que o cookie também esteja definido
+            document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+          }
         }
       } catch (error) {
         console.error('Erro ao inicializar autenticação:', error);
-        // Limpar dados corrompidos
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_data');
-        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        // Limpar dados corrompidos apenas no cliente
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('user_data');
+          document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        }
       } finally {
         setLoading(false);
       }
     };
 
     initAuth();
-  }, []);
+  }, [isHydrated]);
 
   // Login com email e senha (autenticação local)
   const signIn = async (email: string, password: string) => {
@@ -86,11 +98,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = result.token; // Usar o token JWT real do servidor
         
         // Salvar no localStorage
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_data', JSON.stringify(userData));
-        
-        // Salvar no cookie para o servidor poder acessar
-        document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', token);
+          localStorage.setItem('user_data', JSON.stringify(userData));
+          
+          // Salvar no cookie para o servidor poder acessar
+          document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        }
         
         // Atualizar estado
         setUser(userData);
@@ -133,11 +147,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const token = result.token; // Usar o token JWT real do servidor
         
         // Salvar no localStorage
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_data', JSON.stringify(userData));
-        
-        // Salvar no cookie para o servidor poder acessar
-        document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', token);
+          localStorage.setItem('user_data', JSON.stringify(userData));
+          
+          // Salvar no cookie para o servidor poder acessar
+          document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        }
         
         // Atualizar estado
         setUser(userData);
@@ -160,13 +176,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Login com provedor OAuth
-  const signInWithProvider = async (provider: 'google' | 'github') => {
+  const signInWithProvider = async (provider: 'google') => {
     try {
       setLoading(true);
       
       // Redirecionar para o endpoint OAuth do provedor
       const authUrl = `/api/auth/${provider}?action=login`;
-      window.location.href = authUrl;
+      // Verificar se estamos no cliente antes de acessar window
+      if (typeof window !== 'undefined') {
+        window.location.href = authUrl;
+      }
       
     } catch (error) {
       console.error(`Erro no login com ${provider}:`, error);
@@ -185,11 +204,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       
       // Limpar localStorage
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_data');
-      
-      // Limpar cookie
-      document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_data');
+        
+        // Limpar cookie
+        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      }
       
       // Limpar estado
       setUser(null);

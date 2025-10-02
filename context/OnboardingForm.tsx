@@ -71,8 +71,8 @@ interface Props {
 
 const initialFormState: OnboardingFormReducer = {
   currentStep: 1,
-  name: null,
-  surname: null,
+  name: "",
+  surname: "",
   profileImage: null,
   useCase: null,
   workspaceName: "",
@@ -82,14 +82,17 @@ const initialFormState: OnboardingFormReducer = {
 export const OnboardingFormProvider = ({ children, session }: Props) => {
   const user = session?.user;
   
-  const [state, dispatch] = useReducer<
-    React.Reducer<OnboardingFormReducer, Action>
-  >(onBoardingFormReducer, {
+  // Criar estado inicial com valores consistentes para evitar hidratação
+  const getInitialState = () => ({
     ...initialFormState,
     name: user?.name?.split(' ')[0] || null,
-        surname: user?.name?.split(' ')[1] || user?.surname || null,
-        profileImage: user?.image || null,
+    surname: user?.name?.split(' ')[1] || user?.surname || null,
+    profileImage: user?.image || null,
   });
+  
+  const [state, dispatch] = useReducer<
+    React.Reducer<OnboardingFormReducer, Action>
+  >(onBoardingFormReducer, getInitialState());
 
   return (
     <OnboardingFormCtx.Provider value={{ ...state, dispatch }}>

@@ -18,7 +18,10 @@ export const Bottom = () => {
   const { signOut } = useAuth();
   const logOutHandler = () => {
     signOut();
-    window.location.href = `${window.location.origin}/${lang}`;
+    // Verificar se estamos no cliente antes de acessar window
+    if (typeof window !== 'undefined') {
+      window.location.href = `${window.location.origin}/${lang}`;
+    }
   };
 
   return (

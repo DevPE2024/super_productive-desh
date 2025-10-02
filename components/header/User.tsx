@@ -21,6 +21,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface Props {
   profileImage?: string | null;
@@ -29,16 +30,33 @@ interface Props {
 }
 
 export const User = ({ profileImage, username, email }: Props) => {
+  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const { onSelectChange } = useChangeLocale();
   const lang = useLocale();
   const t = useTranslations("COMMON");
   const { signOut } = useAuth();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const logOutHandler = () => {
     signOut();
-    window.location.href = `${window.location.origin}/${lang}`;
+    // Verificar se estamos no cliente antes de acessar window
+    if (typeof window !== 'undefined') {
+      window.location.href = `${window.location.origin}/${lang}`;
+    }
   };
+
+  if (!mounted) {
+    return (
+      <div className="rounded-full ml-2">
+        <UserAvatar className="w-10 h-10" />
+      </div>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background ml-2">

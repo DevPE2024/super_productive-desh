@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  providerName: "google" | "github";
+  providerName: "google";
   onLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

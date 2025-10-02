@@ -49,8 +49,8 @@ export const authHelpers = {
     return { data: null, error: { message: 'Use autenticação local' } };
   },
 
-  // Login com provedor OAuth (Google, GitHub)
-  signInWithProvider: async (provider: 'google' | 'github') => {
+  // Login com provedor OAuth (Google)
+  signInWithProvider: async (provider: 'google') => {
     console.warn('authHelpers.signInWithProvider chamado, mas autenticação local está ativa');
     return { data: null, error: { message: 'Use autenticação local' } };
   },

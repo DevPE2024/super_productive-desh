@@ -79,6 +79,9 @@ export const getMonth = (month = dayjs().month()) => {
 };
 
 export const scrollToHash = (elementId: string) => {
+  // Verificar se estamos no cliente antes de acessar document
+  if (typeof window === 'undefined') return;
+  
   const element = document.getElementById(elementId);
   element?.scrollIntoView({
     behavior: "smooth",

@@ -5,6 +5,9 @@ export const useOnKeyDown = <T extends HTMLElement = HTMLElement>(
   handler: (event: KeyboardEvent) => void
 ) => {
   useEffect(() => {
+    // Verificar se estamos no cliente antes de acessar document
+    if (typeof window === 'undefined') return;
+    
     const listener = (event: KeyboardEvent) => {
       if (ref.current && ref.current.contains(document.activeElement))
         handler(event);

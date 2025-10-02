@@ -9,7 +9,7 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useTheme } from "next-themes";
 import { useLocale } from "next-intl";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -41,11 +41,18 @@ export const EmojiSelector = ({
   align,
   id,
 }: Props) => {
+  const [isHydrated, setIsHydrated] = useState(false);
   const { theme, setTheme, systemTheme } = useTheme();
   const locale = useLocale();
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   const emojiTheme = useMemo(() => {
+    if (!isHydrated) return "light"; // Valor padrão durante SSR
+    
     switch (theme) {
       case "dark":
         return "dark";
@@ -53,8 +60,10 @@ export const EmojiSelector = ({
         return "light";
       case "system":
         return systemTheme;
+      default:
+        return "light";
     }
-  }, [theme, systemTheme]);
+  }, [theme, systemTheme, isHydrated]);
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>

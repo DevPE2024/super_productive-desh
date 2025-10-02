@@ -7,6 +7,9 @@ export const useOnClickOutside = <T extends HTMLElement = HTMLElement>(
   handler: (event: Event) => void
 ) => {
   useEffect(() => {
+    // Verificar se estamos no cliente antes de acessar document
+    if (typeof window === 'undefined') return;
+    
     const listener = (event: Event) => {
       const el = ref?.current;
       if (!el || el.contains((event?.target as Node) || null)) {

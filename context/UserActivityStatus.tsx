@@ -41,6 +41,8 @@ export const UserActivityStatusCtx = createContext<UserActivityStatus | null>(
 export const UserActivityStatusProvider = ({ children }: Props) => {
   const { toast } = useToast();
   const m = useTranslations("MESSAGES");
+  const { user } = useAuth();
+  const params = useParams();
 
   const [allInactiveUsers, setAllInactiveUsers] = useState<
     UserActiveItemList[]
@@ -48,10 +50,14 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
   const [allActiveUsers, setAllActiveUsers] = useState<UserActiveItemList[]>(
     []
   );
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const params = useParams();
-  const { user } = useAuth();
-  const workspaceId = params.workspace_id ? params.workspace_id : null;
+  // Garantir hidratação consistente
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const workspaceId = params?.workspaceId as string;
 
   const {
     data: users,
@@ -73,7 +79,7 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
 
       return response;
     },
-    enabled: !!workspaceId,
+    enabled: !!workspaceId && isHydrated && !!user,
     queryKey: ["getUserActivityStatus", workspaceId],
   });
 
