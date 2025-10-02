@@ -1,7 +1,8 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { User } from "@supabase/supabase-js";
+// Supabase removido - usando autenticação local
+// import { User } from "@supabase/supabase-js";
 import { useLocale, useTranslations } from "next-intl";
 import { AddUserImage } from "@/components/onboarding/common/AddUserImage";
 import {
@@ -61,10 +62,10 @@ const languages = [
 ] as const;
 
 export const AccountInfo = ({ user }: Props) => {
-  const image = user.image || user.user_metadata?.avatar_url;
-  const name = user.name || user.user_metadata?.name;
-  const surname = user.surname || user.user_metadata?.surname;
-  const username = user.username || user.user_metadata?.username;
+  const image = user.image;
+  const name = user.name;
+  const surname = user.surname;
+  const username = user.username;
   const t = useTranslations("SETTINGS");
   const m = useTranslations("MESSAGES");
   const lang = useLocale();

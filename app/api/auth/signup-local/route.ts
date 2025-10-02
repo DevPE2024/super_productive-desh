@@ -2,6 +2,7 @@ import { signUpSchema } from "@/schema/signUpSchema";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export async function POST(request: Request) {
   const body: unknown = await request.json();
@@ -45,15 +46,40 @@ export async function POST(request: Request) {
       }
     });
 
-    return NextResponse.json({
+    // Gerar JWT token
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        email: user.email,
+        provider: 'local'
+      },
+      process.env.NEXTAUTH_SECRET || 'fallback-secret',
+      { expiresIn: '7d' }
+    );
+
+    // Criar resposta com cookie
+    const response = NextResponse.json({
       success: true,
+      token,
       user: {
         id: user.id,
         email: user.email,
         username: user.username,
-        name: user.name
+        name: user.name,
+        completedOnboarding: user.completedOnboarding
       }
     }, { status: 201 });
+
+    // Definir cookie com o token
+    response.cookies.set('auth-token', token, {
+      httpOnly: false, // Permitir acesso via JavaScript para compatibilidade
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60, // 7 dias
+      path: '/'
+    });
+
+    return response;
 
   } catch (err) {
     console.error("Erro no signup local:", err);

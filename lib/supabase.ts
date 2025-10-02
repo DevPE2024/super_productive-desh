@@ -1,29 +1,6 @@
 "use client";
 
-import { createBrowserClient } from "@supabase/ssr";
-import { Database } from "@/types/supabase";
-
-// Cliente Supabase para uso no browser
-export const supabase = () =>
-  createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
-// Cliente Supabase singleton para uso consistente
-let supabaseInstance: ReturnType<typeof createBrowserClient<Database>> | null = null;
-
-export const getSupabaseClient = () => {
-  if (!supabaseInstance) {
-    supabaseInstance = createBrowserClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-  }
-  return supabaseInstance;
-};
-
-// Tipos para autenticação
+// Tipos para autenticação local
 export type AuthUser = {
   id: string;
   email?: string;
@@ -47,62 +24,59 @@ export type AuthSession = {
   expires_at?: number;
 };
 
-// Funções de autenticação
+// Cliente mock para compatibilidade com código existente
+export const supabase = () => {
+  console.warn('Supabase client chamado, mas autenticação local está ativa');
+  return null;
+};
+
+export const getSupabaseClient = () => {
+  console.warn('Supabase client chamado, mas autenticação local está ativa');
+  return null;
+};
+
+// Funções de autenticação (desabilitadas para autenticação local)
 export const authHelpers = {
   // Login com email e senha
   signInWithEmail: async (email: string, password: string) => {
-    const client = getSupabaseClient();
-    return await client.auth.signInWithPassword({ email, password });
+    console.warn('authHelpers.signInWithEmail chamado, mas autenticação local está ativa');
+    return { data: null, error: { message: 'Use autenticação local' } };
   },
 
   // Registro com email e senha
   signUpWithEmail: async (email: string, password: string, name?: string) => {
-    const client = getSupabaseClient();
-    return await client.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          name: name || '',
-          full_name: name || '',
-        }
-      }
-    });
+    console.warn('authHelpers.signUpWithEmail chamado, mas autenticação local está ativa');
+    return { data: null, error: { message: 'Use autenticação local' } };
   },
 
   // Login com provedor OAuth (Google, GitHub)
   signInWithProvider: async (provider: 'google' | 'github') => {
-    const client = getSupabaseClient();
-    return await client.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
-    });
+    console.warn('authHelpers.signInWithProvider chamado, mas autenticação local está ativa');
+    return { data: null, error: { message: 'Use autenticação local' } };
   },
 
   // Logout
   signOut: async () => {
-    const client = getSupabaseClient();
-    return await client.auth.signOut();
+    console.warn('authHelpers.signOut chamado, mas autenticação local está ativa');
+    return { error: null };
   },
 
   // Obter sessão atual
   getSession: async () => {
-    const client = getSupabaseClient();
-    return await client.auth.getSession();
+    console.warn('authHelpers.getSession chamado, mas autenticação local está ativa');
+    return { data: { session: null }, error: null };
   },
 
   // Obter usuário atual
   getUser: async () => {
-    const client = getSupabaseClient();
-    return await client.auth.getUser();
+    console.warn('authHelpers.getUser chamado, mas autenticação local está ativa');
+    return { data: { user: null }, error: null };
   },
 
   // Escutar mudanças de autenticação
   onAuthStateChange: (callback: (event: string, session: any) => void) => {
-    const client = getSupabaseClient();
-    return client.auth.onAuthStateChange(callback);
+    console.warn('authHelpers.onAuthStateChange chamado, mas autenticação local está ativa');
+    return { data: { subscription: { unsubscribe: () => {} } } };
   }
 };
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
+// Supabase removido - usando autenticação local
+// import { supabase } from "@/lib/supabase";
 import { UserActiveItemList } from "@/types/extended";
 import { UserPermission } from "@/types/enums";
 import { useQuery } from "@tanstack/react-query";
@@ -79,42 +80,20 @@ export const UserActivityStatusProvider = ({ children }: Props) => {
   useEffect(() => {
     if (!user) return;
 
-    const supabaseClient = supabase();
-    const channel = supabaseClient.channel(`activity-status`);
-    channel
-      .on("presence", { event: "sync" }, () => {
-        const userIds: string[] = [];
+    // Supabase realtime removido - usando autenticação local
+    // Simulando comportamento de usuários ativos/inativos
+    if (users) {
+      const activeUsers: UserActiveItemList[] = [];
+      const inactiveUsers: UserActiveItemList[] = [];
 
-        const activeUsers: UserActiveItemList[] = [];
-        const inactiveUsers: UserActiveItemList[] = [];
-
-        for (const id in channel.presenceState()) {
-          //@ts-ignore
-          userIds.push(channel.presenceState()[id][0].userId);
-        }
-
-        const uniqueIds = new Set(userIds);
-
-        users &&
-          users.forEach((user) => {
-            if (uniqueIds.has(user.id)) {
-              activeUsers.push(user);
-            } else {
-              inactiveUsers.push(user);
-            }
-          });
-
-        setAllActiveUsers(activeUsers);
-        setAllInactiveUsers(inactiveUsers);
-      })
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await channel.track({
-            online_at: new Date().toISOString(),
-            userId: user.id,
-          });
-        }
+      users.forEach((user) => {
+        // Por enquanto, consideramos todos os usuários como ativos
+        activeUsers.push(user);
       });
+
+      setAllActiveUsers(activeUsers);
+      setAllInactiveUsers(inactiveUsers);
+    }
   }, [user, users]);
 
   const getActiveUsersRoleType = useCallback(

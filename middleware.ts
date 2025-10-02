@@ -1,5 +1,4 @@
 import createMiddleware from "next-intl/middleware";
-import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from "next/server";
 
 const locales = ["te", "en"];
@@ -21,62 +20,33 @@ export default async function middleware(req: NextRequest) {
     return intlMiddleware(req);
   }
 
-  // Verificar autenticação com Supabase
-  let response = NextResponse.next({
-    request: {
-      headers: req.headers,
-    },
-  });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          try {
-            return req.cookies.get(name)?.value;
-          } catch (error) {
-            console.warn(`Erro ao ler cookie ${name}:`, error);
-            return undefined;
-          }
-        },
-        set(name: string, value: string, options: any) {
-          try {
-            response.cookies.set({
-              name,
-              value,
-              ...options,
-            });
-          } catch (error) {
-            console.warn(`Erro ao definir cookie ${name}:`, error);
-          }
-        },
-        remove(name: string, options: any) {
-          try {
-            response.cookies.set({
-              name,
-              value: '',
-              ...options,
-            });
-          } catch (error) {
-            console.warn(`Erro ao remover cookie ${name}:`, error);
-          }
-        },
-      },
+  // Verificar autenticação local
+  const useLocalAuth = process.env.USE_LOCAL_AUTH === 'true';
+  
+  if (useLocalAuth) {
+    // Para autenticação local, verificar se há token JWT válido
+    const authToken = req.cookies.get('auth-token')?.value;
+    
+    if (!authToken) {
+      // Redirecionar para página de login com locale correto
+      const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
+      const redirectUrl = new URL(`/${locale}/sign-in`, req.url);
+      return NextResponse.redirect(redirectUrl);
     }
-  );
+    
+    return intlMiddleware(req);
+  } else {
+    // Verificação Supabase (código original comentado para referência futura)
+    const hasAuthTokens = req.cookies.get('sb-access-token') || 
+                         req.cookies.get('supabase-auth-token') ||
+                         req.cookies.get('sb-jmahdwisqkcbtgaavaji-auth-token');
 
-  // Verificação simplificada - apenas verificar se há tokens de sessão
-  const hasAuthTokens = req.cookies.get('sb-access-token') || 
-                       req.cookies.get('supabase-auth-token') ||
-                       req.cookies.get('sb-jmahdwisqkcbtgaavaji-auth-token');
-
-  if (!hasAuthTokens) {
-    // Redirecionar para página de login com locale correto
-    const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
-    const redirectUrl = new URL(`/${locale}/sign-in`, req.url);
-    return NextResponse.redirect(redirectUrl);
+    if (!hasAuthTokens) {
+      // Redirecionar para página de login com locale correto
+      const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
+      const redirectUrl = new URL(`/${locale}/sign-in`, req.url);
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   return intlMiddleware(req);

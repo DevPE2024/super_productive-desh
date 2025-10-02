@@ -71,8 +71,8 @@ export const NewMessageContainer = ({ chatId, workspaceId }: Props) => {
         updatedAt: null,
         sender: {
           id: user.id,
-          image: user.user_metadata?.avatar_url || null,
-          username: user.user_metadata?.full_name || user.email!,
+          image: user.image || null,
+          username: user.username || user.name || user.email!,
         },
         senderId: user.id,
       };

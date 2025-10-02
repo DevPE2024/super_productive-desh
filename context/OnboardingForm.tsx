@@ -86,9 +86,9 @@ export const OnboardingFormProvider = ({ children, session }: Props) => {
     React.Reducer<OnboardingFormReducer, Action>
   >(onBoardingFormReducer, {
     ...initialFormState,
-    name: user?.user_metadata?.full_name?.split(' ')[0] || null,
-    surname: user?.user_metadata?.full_name?.split(' ')[1] || null,
-    profileImage: user?.user_metadata?.avatar_url || null,
+    name: user?.name?.split(' ')[0] || null,
+        surname: user?.name?.split(' ')[1] || user?.surname || null,
+        profileImage: user?.image || null,
   });
 
   return (

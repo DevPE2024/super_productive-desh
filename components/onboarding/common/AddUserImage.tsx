@@ -18,7 +18,19 @@ import { Input } from "../../ui/input";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { User as UserType } from "@supabase/supabase-js";
+// Supabase removido - usando autenticação local
+// import { User as UserType } from "@supabase/supabase-js";
+
+// Definindo tipo local para usuário
+interface UserType {
+  id: string;
+  email?: string;
+  name?: string;
+  username?: string;
+  surname?: string;
+  image?: string;
+  completedOnboarding?: boolean;
+}
 import { useRouter } from "@/lib/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { LoadingState } from "../../ui/loadingState";

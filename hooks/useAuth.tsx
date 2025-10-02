@@ -1,20 +1,28 @@
 "use client";
 
 import { useState, useEffect, useContext, createContext, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { getSupabaseClient, authHelpers, AuthUser } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/hooks/use-toast';
 
-// Tipos para o contexto de autenticação
+// Tipos para o contexto de autenticação local
+interface LocalUser {
+  id: string;
+  email?: string;
+  name?: string;
+  username?: string;
+  surname?: string;
+  image?: string;
+  completedOnboarding?: boolean;
+}
+
 interface AuthContextType {
-  user: AuthUser | null;
-  session: Session | null;
+  user: LocalUser | null;
+  session: any | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, name?: string) => Promise<{ success: boolean; error?: string }>;
   signInWithProvider: (provider: 'google' | 'github') => Promise<void>;
-  signOut: () => Promise<void>;
+  signOut: () => Promise<{ success: boolean; error?: string }>;
   isAuthenticated: boolean;
 }
 
@@ -23,130 +31,128 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider de autenticação
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<LocalUser | null>(null);
+  const [session, setSession] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Função para transformar User do Supabase em AuthUser
-  const transformUser = (supabaseUser: User): AuthUser => ({
-    id: supabaseUser.id,
-    email: supabaseUser.email,
-    name: supabaseUser.user_metadata?.name || supabaseUser.user_metadata?.full_name || '',
-    image: supabaseUser.user_metadata?.avatar_url || '',
-    user_metadata: supabaseUser.user_metadata
-  });
-
-  // Inicializar autenticação
+  // Inicializar autenticação local
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const { data: { session } } = await authHelpers.getSession();
+        // Verificar se há um token de sessão no localStorage
+        const token = localStorage.getItem('auth_token');
+        const userData = localStorage.getItem('user_data');
         
-        if (session?.user) {
-          setSession(session);
-          setUser(transformUser(session.user));
+        if (token && userData) {
+          const user = JSON.parse(userData);
+          setUser(user);
+          setSession({ token, user });
+          
+          // Garantir que o cookie também esteja definido
+          document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
         }
       } catch (error) {
         console.error('Erro ao inicializar autenticação:', error);
+        // Limpar dados corrompidos
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_data');
+        document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       } finally {
         setLoading(false);
       }
     };
 
     initAuth();
-
-    // Escutar mudanças de autenticação
-    const { data: { subscription } } = authHelpers.onAuthStateChange(
-      async (event, session) => {
-        console.log('Evento de autenticação:', event, session);
-        
-        if (session?.user) {
-          setSession(session);
-          setUser(transformUser(session.user));
-        } else {
-          setSession(null);
-          setUser(null);
-        }
-        
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
   }, []);
 
-  // Login com email e senha
+  // Login com email e senha (autenticação local)
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { data, error } = await authHelpers.signInWithEmail(email, password);
       
-      if (error) {
-        toast({
-          title: "Erro no login",
-          description: error.message,
-          variant: "destructive",
-        });
-        return { success: false, error: error.message };
-      }
+      const response = await fetch('/api/auth/signin-local', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (data.user) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        const userData = result.user;
+        const token = result.token; // Usar o token JWT real do servidor
+        
+        // Salvar no localStorage
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        
+        // Salvar no cookie para o servidor poder acessar
+        document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        
+        // Atualizar estado
+        setUser(userData);
+        setSession({ token, user: userData });
+        
         toast({
           title: "Login realizado com sucesso!",
           description: "Bem-vindo de volta!",
         });
-        router.push('/en/dashboard');
+        
         return { success: true };
+      } else {
+        return { success: false, error: result.error || "Credenciais inválidas" };
       }
-
-      return { success: false, error: "Erro desconhecido" };
     } catch (error: any) {
       const errorMessage = error?.message || "Erro interno do servidor";
-      toast({
-        title: "Erro no login",
-        description: errorMessage,
-        variant: "destructive",
-      });
       return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }
   };
 
-  // Registro com email e senha
+  // Registro com email e senha (autenticação local)
   const signUp = async (email: string, password: string, name?: string) => {
     try {
       setLoading(true);
-      const { data, error } = await authHelpers.signUpWithEmail(email, password, name);
       
-      if (error) {
-        toast({
-          title: "Erro no registro",
-          description: error.message,
-          variant: "destructive",
-        });
-        return { success: false, error: error.message };
-      }
+      const response = await fetch('/api/auth/signup-local', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, username: name || email.split('@')[0] }),
+      });
 
-      if (data.user) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        const userData = result.user;
+        const token = result.token; // Usar o token JWT real do servidor
+        
+        // Salvar no localStorage
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        
+        // Salvar no cookie para o servidor poder acessar
+        document.cookie = `auth-token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+        
+        // Atualizar estado
+        setUser(userData);
+        setSession({ token, user: userData });
+        
         toast({
           title: "Conta criada com sucesso!",
-          description: "Redirecionando para o dashboard...",
+          description: "Você já está logado!",
         });
-        // Redirecionar diretamente para o dashboard após cadastro
-        router.push('/en/dashboard');
         return { success: true };
+      } else {
+        return { success: false, error: result.error || "Erro ao criar conta" };
       }
-
-      return { success: false, error: "Erro desconhecido" };
     } catch (error: any) {
       const errorMessage = error?.message || "Erro interno do servidor";
-      toast({
-        title: "Erro no registro",
-        description: errorMessage,
-        variant: "destructive",
-      });
       return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
@@ -157,22 +163,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithProvider = async (provider: 'google' | 'github') => {
     try {
       setLoading(true);
-      const { error } = await authHelpers.signInWithProvider(provider);
       
-      if (error) {
-        toast({
-          title: "Erro no login",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error: any) {
+      // Redirecionar para o endpoint OAuth do provedor
+      const authUrl = `/api/auth/${provider}?action=login`;
+      window.location.href = authUrl;
+      
+    } catch (error) {
+      console.error(`Erro no login com ${provider}:`, error);
       toast({
         title: "Erro no login",
-        description: error?.message || "Erro interno do servidor",
+        description: `Não foi possível fazer login com ${provider}. Tente novamente.`,
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -181,23 +183,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     try {
       setLoading(true);
-      await authHelpers.signOut();
       
+      // Limpar localStorage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_data');
+      
+      // Limpar cookie
+      document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      
+      // Limpar estado
       setUser(null);
       setSession(null);
       
       toast({
-        title: "Logout realizado",
-        description: "Você foi desconectado com sucesso.",
+        title: "Logout realizado com sucesso!",
+        description: "Até logo!",
       });
       
-      router.push('/');
+      return { success: true };
     } catch (error: any) {
-      toast({
-        title: "Erro no logout",
-        description: error?.message || "Erro interno do servidor",
-        variant: "destructive",
-      });
+      const errorMessage = error?.message || "Erro ao fazer logout";
+      return { success: false, error: errorMessage };
     } finally {
       setLoading(false);
     }

@@ -47,7 +47,8 @@ export const SignInCardContent = () => {
         toast({
           title: m("SUCCESS.SIGN_IN"),
         });
-        router.push("/onboarding");
+        // Redirecionar para dashboard após login bem-sucedido
+        router.push("/en/dashboard");
         router.refresh();
       } else {
         toast({

@@ -1,82 +1,90 @@
-import { createServerClient } from "@supabase/ssr";
+import { NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { AuthUser } from "./supabase";
-import { syncUserWithPrisma } from "./syncUser";
+import jwt from "jsonwebtoken";
+import { db } from "@/lib/db";
 
-interface CookieToSet {
-  name: string;
-  value: string;
-  options?: any;
+export interface AuthSession {
+  user: {
+    id: string;
+    email?: string;
+    name?: string;
+    image?: string;
+    username?: string;
+    surname?: string;
+    completedOnboarding?: boolean;
+  };
 }
 
-export async function getAuthSession() {
-  const cookieStore = await cookies();
-  
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: CookieToSet[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }: CookieToSet) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-      },
-    }
-  );
-
+export async function getAuthSession(request?: NextRequest): Promise<AuthSession | null> {
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
+    // Pegar token do cookie ou header Authorization
+    let token: string | undefined;
     
-    if (error || !session) {
-      console.log("Nenhuma sessão encontrada:", error?.message);
+    if (request) {
+      // Tentar pegar do cookie primeiro
+      token = request.cookies.get("auth-token")?.value;
+      
+      // Se não encontrar no cookie, tentar no header Authorization
+      if (!token) {
+        const authHeader = request.headers.get("authorization");
+        if (authHeader?.startsWith("Bearer ")) {
+          token = authHeader.substring(7);
+        }
+      }
+    } else {
+      // Para server components, usar cookies() do Next.js
+      try {
+        const cookieStore = cookies();
+        token = cookieStore.get("auth-token")?.value;
+      } catch (error) {
+        console.log("Erro ao acessar cookies:", error);
+        return null;
+      }
+    }
+
+    if (!token) {
+      console.log("Token não encontrado");
       return null;
     }
 
-    // Buscar dados adicionais do usuário na tabela auth.users
-    const { data: userData, error: userError } = await supabase.auth.getUser();
+    // Verificar e decodificar o JWT
+    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
     
-    if (userError || !userData.user) {
-      console.log("Erro ao buscar dados do usuário:", userError?.message);
+    if (!decoded.userId) {
       return null;
     }
 
-    // Criar um usuário com dados do Supabase Auth
-    const user: AuthUser & { completedOnboarding: boolean } = {
-      id: userData.user.id,
-      email: userData.user.email,
-      name: userData.user.user_metadata?.full_name || userData.user.user_metadata?.name || userData.user.email?.split('@')[0],
-      username: userData.user.user_metadata?.username || userData.user.email?.split('@')[0],
-      surname: userData.user.user_metadata?.surname,
-      image: userData.user.user_metadata?.avatar_url,
-      user_metadata: userData.user.user_metadata,
-      completedOnboarding: true // Assumir que completou onboarding para permitir acesso ao dashboard
-    };
-
-    // Sincronizar usuário com a tabela User do Prisma
-    await syncUserWithPrisma(userData.user.id);
-
-    console.log("Usuário autenticado:", {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      completedOnboarding: user.completedOnboarding
+    // Buscar usuário no banco de dados
+    const user = await db.user.findUnique({
+      where: { id: decoded.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        username: true,
+        surname: true,
+        completedOnboarding: true,
+      },
     });
 
-    return { user };
+    if (!user) {
+      return null;
+    }
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email || undefined,
+        name: user.name || undefined,
+        image: user.image || undefined,
+        username: user.username || undefined,
+        surname: user.surname || undefined,
+        completedOnboarding: user.completedOnboarding || undefined,
+      },
+    };
   } catch (error) {
-    console.error("Erro na autenticação:", error);
+    console.error("Erro ao verificar sessão:", error);
     return null;
   }
 }
-

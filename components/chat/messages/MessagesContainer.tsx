@@ -6,12 +6,13 @@ import { useMessage } from "@/store/conversation/messages";
 import React, { useEffect, useRef, useState } from "react";
 import { Message } from "./Message";
 import { DeleteMessage } from "./DeleteMessage";
-import { supabase } from "@/lib/supabase";
-import {
-  RealtimePostgresDeletePayload,
-  RealtimePostgresInsertPayload,
-  RealtimePostgresUpdatePayload,
-} from "@supabase/supabase-js";
+// Supabase removido - usando autenticação local
+// import { supabase } from "@/lib/supabase";
+// import {
+//   RealtimePostgresDeletePayload,
+//   RealtimePostgresInsertPayload,
+//   RealtimePostgresUpdatePayload,
+// } from "@supabase/supabase-js";
 import axios from "axios";
 import { ExtendedMessage } from "@/types/extended";
 import { domain } from "@/lib/api";
@@ -54,79 +55,80 @@ export const MessagesContainer = ({
   const [notifications, setNotifications] = useState(0);
 
   useEffect(() => {
-    const supabaseClient = supabase();
+    // Supabase realtime removido - usando autenticação local
+    // const supabaseClient = supabase();
 
-    const handleAddMessage = async (
-      payload: RealtimePostgresInsertPayload<{
-        [key: string]: any;
-      }>
-    ) => {
-      if (sessionUserId !== payload.new.senderId) {
-        try {
-          const { data, status } = await axios.get<ExtendedMessage>(
-            `${domain}/api/conversation/get/new_message?messageId=${payload.new.id}`
-          );
-          console.log(data);
+    // const handleAddMessage = async (
+    //   payload: RealtimePostgresInsertPayload<{
+    //     [key: string]: any;
+    //   }>
+    // ) => {
+    //   if (sessionUserId !== payload.new.senderId) {
+    //     try {
+    //       const { data, status } = await axios.get<ExtendedMessage>(
+    //         `${domain}/api/conversation/get/new_message?messageId=${payload.new.id}`
+    //       );
+    //       console.log(data);
 
-          if (data) addMessage(data);
+    //       if (data) addMessage(data);
 
-          const scrollContainer = scrollRef.current;
-          if (
-            scrollContainer.scrollTop <
-            scrollContainer.scrollHeight - scrollContainer.clientHeight - 10
-          ) {
-            setNotifications((current) => current + 1);
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    };
+    //       const scrollContainer = scrollRef.current;
+    //       if (
+    //         scrollContainer.scrollTop <
+    //         scrollContainer.scrollHeight - scrollContainer.clientHeight - 10
+    //       ) {
+    //         setNotifications((current) => current + 1);
+    //       }
+    //     } catch (err) {
+    //       console.log(err);
+    //     }
+    //   }
+    // };
 
-    const handleUpdateMessage = (
-      payload: RealtimePostgresUpdatePayload<{
-        [key: string]: any;
-      }>
-    ) => {
-      if (sessionUserId !== payload.new.senderId) {
-        editMessage(payload.new.id, payload.new.content);
-      }
-    };
+    // const handleUpdateMessage = (
+    //   payload: RealtimePostgresUpdatePayload<{
+    //     [key: string]: any;
+    //   }>
+    // ) => {
+    //   if (sessionUserId !== payload.new.senderId) {
+    //     editMessage(payload.new.id, payload.new.content);
+    //   }
+    // };
 
-    const handleDeleteMessage = (
-      payload: RealtimePostgresDeletePayload<{
-        [key: string]: any;
-      }>
-    ) => {
-      const messageExists = messages.find(
-        (message) => message.id === payload.old.id
-      );
+    // const handleDeleteMessage = (
+    //   payload: RealtimePostgresDeletePayload<{
+    //     [key: string]: any;
+    //   }>
+    // ) => {
+    //   const messageExists = messages.find(
+    //     (message) => message.id === payload.old.id
+    //   );
 
-      if (messageExists) deleteMessage(payload.old.id);
-    };
+    //   if (messageExists) deleteMessage(payload.old.id);
+    // };
 
-    const channel = supabaseClient
-      .channel(`chat-${chatId}`)
-      .on(
-        `postgres_changes`,
-        { event: "INSERT", schema: "public", table: "Message" },
-        handleAddMessage
-      )
-      .on(
-        `postgres_changes`,
-        { event: "UPDATE", schema: "public", table: "Message" },
-        handleUpdateMessage
-      )
-      .on(
-        `postgres_changes`,
-        { event: "DELETE", schema: "public", table: "Message" },
-        handleDeleteMessage
-      )
-      .subscribe();
+    // const channel = supabaseClient
+    //   .channel(`chat-${chatId}`)
+    //   .on(
+    //     `postgres_changes`,
+    //     { event: "INSERT", schema: "public", table: "Message" },
+    //     handleAddMessage
+    //   )
+    //   .on(
+    //     `postgres_changes`,
+    //     { event: "UPDATE", schema: "public", table: "Message" },
+    //     handleUpdateMessage
+    //   )
+    //   .on(
+    //     `postgres_changes`,
+    //     { event: "DELETE", schema: "public", table: "Message" },
+    //     handleDeleteMessage
+    //   )
+    //   .subscribe();
 
-    return () => {
-      channel.unsubscribe();
-    };
+    // return () => {
+    //   channel.unsubscribe();
+    // };
   }, [chatId, messages, sessionUserId]);
 
   const handleOnScroll = () => {
