@@ -33,21 +33,18 @@ export const MobileNav = () => {
         >
           <SheetHeader>
             <SheetTitle asChild>
-              <Button
-                className="w-fit bg-transparent text-secondary-foreground hover:bg-transparent flex items-center gap-2 hover:scale-105 transition-transform duration-200"
+              <Link
+                href="/"
+                className="w-fit bg-transparent text-secondary-foreground hover:bg-transparent flex items-center gap-2 hover:scale-105 transition-transform duration-200 p-2 rounded-md"
                 onClick={() => {
                   setOpen(false);
-                  window.scrollTo({
-                    top: 0,
-                    behavior: "smooth",
-                  });
                 }}
               >
                 <AppleLogo className="w-10 h-10" />
                 <p className="text-2xl font-semibold">
                   Super<span className="text-primary">Productive</span>
                 </p>
-              </Button>
+              </Link>
             </SheetTitle>
           </SheetHeader>
 
@@ -99,6 +96,12 @@ export const MobileNav = () => {
           size={"icon"}
           variant={"outline"}
         />
+        <Link
+          href="/pricing"
+          className={`${buttonVariants({ variant: "outline", size: "sm" })} text-sm`}
+        >
+          Price
+        </Link>
         <ThemeSwitcher
           alignHover="end"
           alignDropdown="end"

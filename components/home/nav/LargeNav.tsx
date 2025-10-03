@@ -18,20 +18,15 @@ export const LargeNav = () => {
   return (
     <div className="container md:flex py-4 max-w-screen-2xl items-center justify-between hidden">
       <div className="flex items-center">
-        <Button
-          className="w-fit bg-transparent text-secondary-foreground hover:bg-transparent flex items-center gap-2 hover:scale-105 transition-transform duration-200"
-          onClick={() => {
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            });
-          }}
+        <Link
+          href="/"
+          className="w-fit bg-transparent text-secondary-foreground hover:bg-transparent flex items-center gap-2 hover:scale-105 transition-transform duration-200 p-2 rounded-md"
         >
           <AppleLogo className="w-10 h-10" />
           <p className="text-2xl font-semibold">
             Super<span className="text-primary">Productive</span>
           </p>
-        </Button>
+        </Link>
 
         <NavigationMenu>
           <NavigationMenuList>
@@ -82,6 +77,12 @@ export const LargeNav = () => {
             size={"icon"}
             variant={"outline"}
           />
+          <Link
+            href="/pricing"
+            className={`${buttonVariants({ variant: "outline", size: "sm" })} text-sm`}
+          >
+            Price
+          </Link>
           <ThemeSwitcher
             alignHover="end"
             alignDropdown="end"

@@ -1,3 +1,4 @@
+"use client";
 import {
   homePageAssignmentFilterAndStarredImgs,
   homePageCalendarImgs,
@@ -22,7 +23,7 @@ export const HomePage = () => {
         <main>
           <TextSection
             title="Your Productivity Partner"
-            desc="Maximize your team’s efficiency with SuperProductive—an all-in-one workspace designed to consolidate your essential tools into one cohesive platform."
+            desc="Maximize your team's efficiency with SuperProductive—an all-in-one workspace designed to consolidate your essential tools into one cohesive platform."
           />
 
           <Section
@@ -41,13 +42,13 @@ export const HomePage = () => {
           <Section
             id="Roles"
             title="Roles & Permissions"
-            desc="SuperProductive’s role management system simplifies workspace oversight. Admins and owners can adjust user roles, manage account and workspace settings, and oversee permissions to ensure smooth collaboration."
+            desc="SuperProductive's role management system simplifies workspace oversight. Admins and owners can adjust user roles, manage account and workspace settings, and oversee permissions to ensure smooth collaboration."
             images={homePageRolesAndSettingsImgs}
           />
           <Section
             id="Pomodoro"
             title="Pomodoro Timer"
-            desc="The built-in Pomodoro timer supports focused work sessions by letting users set custom session times, rounds, breaks, and alerts—tailoring the experience to each user’s productivity needs."
+            desc="The built-in Pomodoro timer supports focused work sessions by letting users set custom session times, rounds, breaks, and alerts—tailoring the experience to each user's productivity needs."
             images={homePagePomodoroImgs}
             reverse
           />
@@ -59,7 +60,7 @@ export const HomePage = () => {
           <Section
             id="Chat"
             title="Chat & Alerts"
-            desc="Engage in real-time discussions, share files, and keep everyone informed with instant notifications so you’re always in sync with your team."
+            desc="Engage in real-time discussions, share files, and keep everyone informed with instant notifications so you're always in sync with your team."
             images={homePageChatImgs}
           />
 
