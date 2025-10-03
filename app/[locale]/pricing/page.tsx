@@ -9,14 +9,14 @@ const PricingPage = () => {
   const pricingPlans = [
     {
       name: "Free",
-      price: "$0",
-      yearlyPrice: "$0",
+      price: "0",
+      yearlyPrice: "0",
       period: "month",
       features: [
-        "Up to 3 workspaces",
-        "Basic task management",
-        "Simple mind maps",
-        "Community support"
+        "Até 3 workspaces",
+        "Tarefas básicas",
+        "Mapas mentais simples",
+        "Suporte via comunidade"
       ],
       description: "Perfect for individuals getting started",
       buttonText: "Get Started",
@@ -25,16 +25,17 @@ const PricingPage = () => {
     },
     {
       name: "Pro",
-      price: "$12",
-      yearlyPrice: "$120",
+      price: "29",
+      yearlyPrice: "278",
       period: "month",
       features: [
-        "Unlimited workspaces",
-        "Advanced task management",
-        "Collaborative mind maps",
-        "Pomodoro timer",
-        "Priority support",
-        "Advanced analytics"
+        "Workspaces ilimitados",
+        "Gestão avançada de tarefas",
+        "Mapas mentais colaborativos",
+        "Timer Pomodoro",
+        "Suporte prioritário",
+        "Analytics avançado",
+        "300 pontos/mês para IA"
       ],
       description: "Best for teams and professionals",
       buttonText: "Start Free Trial",
@@ -43,16 +44,17 @@ const PricingPage = () => {
     },
     {
       name: "Enterprise",
-      price: "$29",
-      yearlyPrice: "$290",
+      price: "59",
+      yearlyPrice: "566",
       period: "month",
       features: [
-        "Everything in Pro",
-        "Advanced security",
-        "Custom integrations",
-        "Dedicated support",
-        "Custom branding",
-        "Advanced permissions"
+        "Tudo do Pro",
+        "Segurança avançada",
+        "Integrações customizadas",
+        "Domínio próprio + branding",
+        "Suporte dedicado",
+        "Permissões avançadas",
+        "500 pontos/mês para IA"
       ],
       description: "For large organizations",
       buttonText: "Contact Sales",

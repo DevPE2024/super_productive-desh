@@ -163,6 +163,11 @@
       "HOME_HOVER": "Home",
       "LOG_OUT_HOVER": "Log out",
       "SETTINGS_HOVER": "Settings",
+      "POMODORO_HOVER": "Pomodoro",
+      "STARRED_HOVER": "Starred",
+      "ASSIGNED_TO_ME_HOVER": "Assigned to me",
+      "CALENDAR_HOVER": "Calendar",
+      "POINTS_HOVER": "Points",
       "NEW_WORKSPACE_HOVER": "New Workspace",
       "NEW_WORKSPACE_DIALOG_TITLE": "Create new workspace",
       "NEW_WORKSPACE_DIALOG_DESC": "some text"

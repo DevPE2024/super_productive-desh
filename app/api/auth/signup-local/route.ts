@@ -34,6 +34,15 @@ export async function POST(request: Request) {
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Buscar o plano Free
+    const freePlan = await db.plan.findFirst({
+      where: { name: 'Free' }
+    });
+
+    if (!freePlan) {
+      return NextResponse.json({ error: "Plano Free não encontrado" }, { status: 500 });
+    }
+
     // Criar usuário no banco
     const user = await db.user.create({
       data: {
@@ -42,7 +51,8 @@ export async function POST(request: Request) {
         hashedPassword,
         name: username,
         completedOnboarding: true,
-        emailVerified: new Date()
+        emailVerified: new Date(),
+        planId: freePlan.id
       }
     });
 

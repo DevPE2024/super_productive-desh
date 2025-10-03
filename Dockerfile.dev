@@ -19,6 +19,10 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
+# Copy and make executable the database initialization script
+COPY scripts/init-db.sh /usr/local/bin/init-db.sh
+RUN chmod +x /usr/local/bin/init-db.sh
+
 # Expose port
 EXPOSE 8001
 
@@ -26,5 +30,5 @@ EXPOSE 8001
 ENV NODE_ENV=development
 ENV PORT=8001
 
-# Start the application in development mode with hot reload
-CMD ["npm", "run", "dev"]
+# Start the application using the initialization script
+CMD ["/usr/local/bin/init-db.sh"]

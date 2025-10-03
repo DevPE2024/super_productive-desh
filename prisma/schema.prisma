@@ -35,6 +35,13 @@ model User {
   userNotifications Notification[] @relation("NotifyUser")
   userCreatedNotifications Notification[] @relation("NotifyCreator")
   messages Message[]
+  // Sistema de Pontos
+  plan Plan? @relation(fields: [planId], references: [id])
+  planId String? @default("1") // Default para Free Plan
+  pointsBalance Int @default(10) // Saldo atual de pontos
+  renewDate DateTime @default(now()) // Data de renovação mensal
+  usageLogs UsageLog[]
+  extraPointsPurchases ExtraPointsPurchase[]
 }
 
 model savedMindMaps {
@@ -329,5 +336,61 @@ model MindMap {
   @@index([workspaceId])
   @@index([updatedUserId])
   @@index([creatorId])
+}
+
+// Sistema de Pontos - Tabela de Planos
+model Plan {
+  id String @id @default(cuid())
+  name String @unique // Free, Pro, Enterprise
+  pointsPerMonth Int // 10, 300, 500
+  priceUsd Decimal @db.Decimal(10,2) // 0.00, 29.00, 59.00
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users User[]
+  
+  @@map("plans")
+}
+
+// Sistema de Pontos - Logs de Uso
+model UsageLog {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  actionType String // image_generation, video_generation, ai_code_edit, etc.
+  pointsUsed Int
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("usage_logs")
+}
+
+// Sistema de Pontos - Pacotes de Pontos Extras
+model ExtraPointsPackage {
+  id String @id @default(cuid())
+  extraPoints Int // 100, 300
+  priceUsd Decimal @db.Decimal(10,2) // 10.00, 25.00
+  name String // "100 Points Pack", "300 Points Pack"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  purchases ExtraPointsPurchase[]
+  
+  @@map("extra_points_packages")
+}
+
+// Sistema de Pontos - Compras de Pontos Extras
+model ExtraPointsPurchase {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  package ExtraPointsPackage @relation(fields: [packageId], references: [id])
+  packageId String
+  pointsAdded Int
+  amountPaid Decimal @db.Decimal(10,2)
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("extra_points_purchases")
 }
 

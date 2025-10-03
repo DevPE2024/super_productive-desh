@@ -12,7 +12,12 @@
     "docker:dev:clean": "docker-compose -f docker-compose.dev.yml down -v",
     "docker:prod": "docker-compose up --build",
     "docker:prod:down": "docker-compose down",
-    "docker:prod:clean": "docker-compose down -v"
+    "docker:prod:clean": "docker-compose down -v",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
@@ -115,6 +120,10 @@
     "postcss": "^8",
     "prisma": "^5.21.1",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.0",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

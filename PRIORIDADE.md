@@ -17,7 +17,7 @@ docker-compose up --build -d
 ### 🛠️ **DESENVOLVIMENTO**
 ```bash
 # Parar aplicação e remover volumes
-docker-compose down -v
+docker-compose -f docker-compose.dev.yml down -v
 
 # Subir aplicação em modo desenvolvimento
 docker-compose -f docker-compose.dev.yml up --build
@@ -71,16 +71,16 @@ docker-compose -f docker-compose.dev.yml start
 ### 🗄️ **COMANDOS DE BANCO DE DADOS**
 ```bash
 # Aplicar migrações do Prisma (dentro do container)
-docker-compose exec app npx prisma migrate deploy
+docker-compose -f docker-compose.dev.yml exec app npx prisma migrate deploy
 
 # Gerar cliente Prisma
-docker-compose exec app npx prisma generate
+docker-compose -f docker-compose.dev.yml exec app npx prisma generate
 
 # Resetar banco de dados
-docker-compose exec app npx prisma migrate reset
+docker-compose -f docker-compose.dev.yml exec app npx prisma migrate reset
 
 # Inserir usuário de teste
-docker-compose exec db psql -U postgres -d super_productive -f /docker-entrypoint-initdb.d/insert_user.sql
+docker-compose -f docker-compose.dev.yml exec db psql -U postgres -d super_productive -f /docker-entrypoint-initdb.d/insert_user.sql
 ```
 
 ### 📊 **VERIFICAÇÃO DE STATUS**
@@ -89,19 +89,19 @@ docker-compose exec db psql -U postgres -d super_productive -f /docker-entrypoin
 docker ps
 
 # Ver logs da aplicação
-docker-compose logs app
+docker-compose -f docker-compose.dev.yml logs app
 
 # Ver logs do banco
-docker-compose logs db
+docker-compose -f docker-compose.dev.yml logs db
 
 # Ver logs em tempo real
-docker-compose logs -f app
+docker-compose -f docker-compose.dev.yml logs -f app
 ```
 
 ### 🧹 **LIMPEZA DO SISTEMA**
 ```bash
 # Remover containers, redes e volumes
-docker-compose down -v
+docker-compose -f docker-compose.dev.yml down -v
 
 # Limpar imagens não utilizadas
 docker image prune -f
