@@ -1,0 +1,1 @@
+SELECT id, name, "extraPoints", "priceUsd", "createdAt" FROM extra_points_packages ORDER BY name, "createdAt";

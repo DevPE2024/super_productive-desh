@@ -18,6 +18,7 @@ export function PointsBalance() {
   const [pointsInfo, setPointsInfo] = useState<UserPointsInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const fetchPointsInfo = async () => {
     try {
@@ -40,8 +41,28 @@ export function PointsBalance() {
   };
 
   useEffect(() => {
-    fetchPointsInfo();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      fetchPointsInfo();
+    }
+  }, [mounted]);
+
+  if (!mounted) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (loading) {
     return (
@@ -87,9 +108,9 @@ export function PointsBalance() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
+        <CardTitle className="flex items-center gap-2 text-lg text-gray-900 dark:text-gray-100">
           <Coins className="h-5 w-5 text-blue-600" />
           Points Balance
         </CardTitle>
@@ -100,14 +121,14 @@ export function PointsBalance() {
           <div className={`text-3xl font-bold ${getBalanceColor(pointsInfo.pointsBalance, pointsInfo.pointsPerMonth)}`}>
             {pointsInfo.pointsBalance}
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             of {pointsInfo.pointsPerMonth} monthly points
           </p>
         </div>
 
         {/* Plano atual */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Current Plan:</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">Current Plan:</span>
           <Badge variant={pointsInfo.planName === 'Free' ? 'secondary' : 'default'}>
             {pointsInfo.planName}
           </Badge>
@@ -115,28 +136,28 @@ export function PointsBalance() {
 
         {/* Data de renovação */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600 flex items-center gap-1">
+          <span className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             Renewal:
           </span>
-          <span className="text-sm font-medium">
+          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
             {pointsInfo.daysUntilRenewal} days
           </span>
         </div>
 
         {/* Barra de progresso */}
         <div className="space-y-2">
-          <div className="flex justify-between text-xs text-gray-600">
-            <span>Usage this month</span>
+          <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+            <span>Remaining this month</span>
             <span>
-              {Math.round(((pointsInfo.pointsPerMonth - pointsInfo.pointsBalance) / pointsInfo.pointsPerMonth) * 100)}%
+              {Math.round(Math.min((pointsInfo.pointsBalance / pointsInfo.pointsPerMonth) * 100, 100))}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ 
-                width: `${Math.min(((pointsInfo.pointsPerMonth - pointsInfo.pointsBalance) / pointsInfo.pointsPerMonth) * 100, 100)}%` 
+                width: `${Math.min((pointsInfo.pointsBalance / pointsInfo.pointsPerMonth) * 100, 100)}%` 
               }}
             />
           </div>
@@ -144,7 +165,7 @@ export function PointsBalance() {
 
         {/* Botão de upgrade se necessário */}
         {pointsInfo.pointsBalance < 10 && (
-          <Button className="w-full" size="sm">
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" size="sm">
             <TrendingUp className="h-4 w-4 mr-2" />
             Upgrade Plan or Buy Points
           </Button>

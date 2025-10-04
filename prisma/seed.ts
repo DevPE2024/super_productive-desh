@@ -6,21 +6,21 @@ async function main() {
   console.log('Iniciando seed do banco de dados...');
 
   // Criar planos
-  const freePlan = await prisma.plan.upsert({
-    where: { name: 'Free' },
+  const starterPlan = await prisma.plan.upsert({
+    where: { name: 'Starter' },
     update: {},
     create: {
-      name: 'Free',
+      name: 'Starter',
       pointsPerMonth: 10,
       priceUsd: 0
     }
   });
 
-  const proPlan = await prisma.plan.upsert({
-    where: { name: 'Pro' },
+  const professionalPlan = await prisma.plan.upsert({
+    where: { name: 'Professional' },
     update: {},
     create: {
-      name: 'Pro',
+      name: 'Professional',
       pointsPerMonth: 300,
       priceUsd: 29
     }
@@ -36,31 +36,37 @@ async function main() {
     }
   });
 
-  console.log('Planos criados:', { freePlan, proPlan, enterprisePlan });
+  console.log('Planos criados:', { starterPlan, professionalPlan, enterprisePlan });
 
-  // Criar pacotes de pontos extras
-  const packages = await prisma.extraPointsPackage.createMany({
-    data: [
-      {
-        name: "Small Pack",
-        extraPoints: 100,
-        priceUsd: 10
-      },
-      {
-        name: "Medium Pack",
-        extraPoints: 250,
-        priceUsd: 20
-      },
-      {
-        name: "Large Pack",
-        extraPoints: 500,
-        priceUsd: 35
-      }
-    ],
-    skipDuplicates: true
-  });
+  // Criar pacotes de pontos extras - verificar se já existem primeiro
+  const existingPackages = await prisma.extraPointsPackage.findMany();
+  
+  if (existingPackages.length === 0) {
+    const packages = await prisma.extraPointsPackage.createMany({
+      data: [
+        {
+          name: "Small Pack",
+          extraPoints: 100,
+          priceUsd: 10
+        },
+        {
+          name: "Medium Pack",
+          extraPoints: 250,
+          priceUsd: 20
+        },
+        {
+          name: "Large Pack",
+          extraPoints: 500,
+          priceUsd: 35
+        }
+      ],
+      skipDuplicates: true
+    });
 
-  console.log('Pacotes de pontos criados:', packages);
+    console.log('Pacotes de pontos criados:', packages);
+  } else {
+    console.log('Pacotes de pontos já existem, pulando criação...');
+  }
 
   console.log('Seed concluído com sucesso!');
 }

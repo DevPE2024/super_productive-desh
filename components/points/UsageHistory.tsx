@@ -46,6 +46,7 @@ export function UsageHistory() {
   const [data, setData] = useState<UsageHistoryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const fetchUsageHistory = async (offset = 0, append = false) => {
     try {
@@ -80,10 +81,16 @@ export function UsageHistory() {
   };
 
   useEffect(() => {
-    fetchUsageHistory();
+    setMounted(true);
   }, []);
 
-  if (loading) {
+  useEffect(() => {
+    if (mounted) {
+      fetchUsageHistory();
+    }
+  }, [mounted]);
+
+  if (!mounted || loading) {
     return (
       <Card>
         <CardHeader>
@@ -93,15 +100,17 @@ export function UsageHistory() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="animate-pulse flex items-center space-x-4">
-                <div className="rounded-full bg-gray-200 h-10 w-10"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-center justify-between p-3 border rounded-lg animate-pulse">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
+                  <div className="space-y-1">
+                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                  </div>
                 </div>
-                <div className="h-6 bg-gray-200 rounded w-16"></div>
+                <div className="h-6 bg-gray-200 rounded w-12"></div>
               </div>
             ))}
           </div>
