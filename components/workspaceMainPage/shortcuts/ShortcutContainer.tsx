@@ -16,6 +16,7 @@ import { useNewMindMap } from "@/hooks/useNewMindMap";
 import { PermissionIndicator } from "@/components/workspaceMainPage/shortcuts/permissionIndicator/Permissionindicator";
 import { ShortcutContainerLinkItem } from "./ShortcutContainerLinkItem";
 import { ExtendedWorkspace } from "@/types/extended";
+import { useTranslations } from "next-intl";
 
 interface Props {
   workspace: ExtendedWorkspace;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export const ShortcutContainer = ({ workspace, userRole }: Props) => {
+  const t = useTranslations("WORKSPACE_MAIN_PAGE.SHORTCUT_CONTAINER");
   const { newTask, isPending: isNewTaskLoading } = useNewTask(workspace.id);
   const { newMindMap, isPending: isNewMindMapLoading } = useNewMindMap(
     workspace.id
@@ -37,13 +39,13 @@ export const ShortcutContainer = ({ workspace, userRole }: Props) => {
         <ShortcutContainerLinkItem
           userRole={userRole}
           Icon={MessagesSquare}
-          title="Group chat"
+          title={t("GROUP_CHAT")}
           href={`/dashboard/workspace/${workspace.id}/chat/${workspace.conversation.id}`}
         />
         <ShortcutContainerBtnItem
           userRole={userRole}
           Icon={PencilRuler}
-          title="New task"
+          title={t("NEW_TASK")}
           isLoading={isNewTaskLoading}
           onClick={newTask}
         />

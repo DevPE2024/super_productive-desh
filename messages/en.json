@@ -1,4 +1,65 @@
 {
+  "hero": {
+    "badge": "Affinify presents",
+    "title_1": "Your Ultimate",
+    "title_2": "Prodify",
+    "title_3": "Experience",
+    "subtitle": "Maximize your team's efficiency with Prodify—an all-in-one workspace designed to consolidate your essential tools into one cohesive platform."
+  },
+  "cta": {
+    "launch": "Launch App",
+    "pricing": "See Pricing"
+  },
+  "sections": {
+    "productivity_partner": {
+      "title": "Your Productivity Partner",
+      "desc": "Maximize your team's efficiency with Prodify—an all-in-one workspace designed to consolidate your essential tools into one cohesive platform."
+    },
+    "mind_maps": {
+      "title": "Visualize with Mind Maps",
+      "desc": "Mind Maps allow users to build visually compelling projects, making complex ideas easier to understand. The user-friendly interface offers extensive customization, enabling smooth navigation and collaboration through tagging and task assignment features."
+    },
+    "tasks": {
+      "title": "Tasks & Notes",
+      "desc": "The Tasks feature provides a smooth environment for creating notes and organizing projects. With an enhanced editor and auto-save functionality, users can assign tasks, add categories, tag items, and set deadlines, all integrated seamlessly with the calendar for optimal organization."
+    },
+    "roles": {
+      "title": "Roles & Permissions",
+      "desc": "Prodify's role management system simplifies workspace oversight. Admins and owners can adjust user roles, manage account and workspace settings, and oversee permissions to ensure smooth collaboration."
+    },
+    "pomodoro": {
+      "title": "Pomodoro Timer",
+      "desc": "The built-in Pomodoro timer supports focused work sessions by letting users set custom session times, rounds, breaks, and alerts—tailoring the experience to each user's productivity needs."
+    },
+    "collaboration": {
+      "title": "The Future of Team Collaboration",
+      "desc": "Effortlessly share projects and invite others to join with easy shareable links. Prodify enables instant project review and real-time chatting with team members from anywhere."
+    },
+    "chat": {
+      "title": "Chat & Alerts",
+      "desc": "Engage in real-time discussions, share files, and keep everyone informed with instant notifications so you're always in sync with your team."
+    },
+    "calendar": {
+      "title": "Unified Calendar",
+      "desc": "Stay organized with the Unified Calendar, where all scheduled tasks and deadlines are displayed. It enhances teamwork by ensuring everyone has clear visibility of project timelines and due dates."
+    },
+    "filters": {
+      "title": "Quick Access",
+      "desc": "Instantly locate what you need with a smart search feature, quick access tabs, and filtering tools. Tagging and marking essential items make it easy to keep your most important projects just a click away, streamlining your workflow."
+    }
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "product": "Product",
+    "log_in": "Log in",
+    "sign_up": "Sign up",
+    "price": "Price"
+  },
+  "footer": {
+    "copyright": "© {year} Affinify • Prodify",
+    "rights": "All rights reserved."
+  },
   "Index": {
     "title": "Hello world!"
   },
@@ -139,7 +200,7 @@
       "SIGN_IN": "You have been logged in!",
       "IMAGE_PROFILE_UPDATE": "Your profile image has been updated!",
       "IMAGE_PROFILE_DELETE": "Your profile image has been deleted!",
-      "ONBOARDING_COMPLETE": "Welcome to Super Productive!",
+      "ONBOARDING_COMPLETE": "Welcome to Prodify!",
       "PASSWORD_CHANGED": "Password has been changed!",
       "NEW_WORKSPACE": "The workspace has been created!"
     },
@@ -474,7 +535,7 @@
   "SETTINGS": {
     "ACCOUNT": {
       "TITLE": "Account",
-      "DESC": "Manage your Super Productive account. All changes to your account will be applied to all workspaces.",
+      "DESC": "Manage your Prodify account. All changes to your account will be applied to all workspaces.",
       "IMAGE": "PROFILE IMAGE",
       "USERNAME": "USERNAME",
       "FIRST_NAME": "FIRST NAME (OPTIONAL)",

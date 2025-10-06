@@ -11,7 +11,7 @@ import { format } from "date-fns";
 import { CalendarIcon, Info } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { te, enUS } from "date-fns/locale";
+import { ptBR, enUS } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -49,7 +49,7 @@ export function TaskCalendar({
   const { status, onSetStatus } = useAutosaveIndicator();
 
   const currentLocale = useMemo(() => {
-    if (lang === "te") return te;
+    if (lang === "pt-BR") return ptBR;
     else return enUS;
   }, [lang]);
 

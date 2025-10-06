@@ -1,9 +1,12 @@
 "use client";
 
-import { CustomColors, Workspace } from "@prisma/client";
+import { CustomColors } from "@prisma/client";
 import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+
+import { Workspace } from "@/types/workspace";
 
 interface Props {
   workspace: Workspace;
@@ -12,6 +15,8 @@ interface Props {
 export const ActiveWorkspaceInfo = ({
   workspace: { color, image, name },
 }: Props) => {
+  const t = useTranslations("COMMON");
+  
   const workspaceColor = useMemo(() => {
     switch (color) {
       case CustomColors.PURPLE:
@@ -64,7 +69,7 @@ export const ActiveWorkspaceInfo = ({
         </div>
       </div>
       <div className="flex-grow break-words flex items-center justify-center gap-2">
-        <p>{name ? name : "Untitled workspace"}</p>
+        <p>{name ? name : t("UNTITLED.WORKSPACE")}</p>
         <ChevronRight className="text-muted-foreground" size={18} />
       </div>
     </div>

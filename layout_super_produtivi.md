@@ -67,7 +67,7 @@ tailwind.config.ts
 ## CHECKLIST DE TAREFAS
 
 ### 0) Criar branch de migração
-- [ ] **Criar branch**: `git checkout -b feat/brand-prodify`
+- [x] ✅ **Criar branch**: `git checkout -b feat/brand-prodify`
 - [ ] **Backup**: `git add -A && git commit -m "chore: snapshot before Prodify branding"`
 
 ---
@@ -127,10 +127,11 @@ const config: Config = {
 export default config;
 ```
 
-- [ ] Implementar
-- [ ] Restart Docker: `docker-compose -f docker-compose.dev.yml restart app`
-- [ ] MCP Google Dev: checar cores aplicadas / contraste / sem erros no console
-- [ ] **Checkpoint** ✅
+- [x] ✅ Implementar paleta no `globals.css`
+- [x] ✅ Implementar paleta no `tailwind.config.ts`
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: inspecionar CSS vars e classes Tailwind
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
@@ -180,11 +181,11 @@ export const metadata = {
 }
 ```
 
-- [ ] Substituir logo original e atualizar metadados
-- [ ] Gerar `favicon.ico` (a partir do SVG) — qualquer gerador online/local
-- [ ] Restart Docker
-- [ ] MCP Google Dev: checar <head>, manifest e redes sociais/OG
-- [ ] **Checkpoint** ✅
+- [x] ✅ Substituir logo original e atualizar metadados
+- [x] ✅ Gerar `favicon.ico` (a partir do SVG) — qualquer gerador online/local
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: checar <head>, manifest e redes sociais/OG
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
@@ -229,10 +230,10 @@ export default function Footer() {
 }
 ```
 
-- [ ] Implementar
-- [ ] Restart Docker
-- [ ] MCP Google Dev: checar header/footer e links
-- [ ] **Checkpoint** ✅
+- [x] ✅ Implementar
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: checar header/footer e links
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
@@ -270,10 +271,10 @@ export default function HomePage() {
 }
 ```
 
-- [ ] Implementar estrutura visual (sem alterar lógica)
-- [ ] Restart Docker
-- [ ] MCP Google Dev: verificar layout/CLS/sem erros
-- [ ] **Checkpoint** ✅
+- [x] ✅ Implementar estrutura visual (sem alterar lógica)
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: verificar layout/CLS/sem erros
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
@@ -404,10 +405,10 @@ export const config = {
 };
 ```
 
-- [ ] Instalar pacote e criar arquivos
-- [ ] Restart Docker
-- [ ] MCP Google Dev: navegar /en e /pt-BR; verificar textos traduzidos
-- [ ] **Checkpoint** ✅
+- [x] ✅ Instalar pacote e criar arquivos
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: navegar /en e /pt-BR; verificar textos traduzidos
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
@@ -434,43 +435,43 @@ export default function LanguageSwitcher() {
 
 > Incluir o `LanguageSwitcher` na `Navbar` à direita.
 
-- [ ] Implementar e plugar na Navbar
-- [ ] Restart Docker
-- [ ] MCP Google Dev: alternar idiomas e conferir rotas
-- [ ] **Checkpoint** ✅
+- [x] ✅ Implementar e plugar na Navbar
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: alternar idiomas e conferir rotas
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
 ### 7) Remover outros idiomas/conteúdos legados
-- [ ] Usar MCP ChatCI para localizar: `i18n`, `locales`, `lang`, chaves não usadas
-- [ ] Remover arquivos de traduções que **não** sejam `en` e `pt-BR`
-- [ ] Varredura por menções a marcas antigas (nomes, logos)
+- [x] ✅ Usar MCP ChatCI para localizar: `i18n`, `locales`, `lang`, chaves não usadas
+- [x] ✅ Remover arquivos de traduções que **não** sejam `en` e `pt-BR`
+- [x] ✅ Varredura por menções a marcas antigas (nomes, logos)
 
-- [ ] Restart Docker
-- [ ] MCP Google Dev: console limpo, sem 404 de mensagens
-- [ ] **Checkpoint** ✅
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: console limpo, sem 404 de mensagens
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
 ### 8) Varredura de marca/asset (legal & UX)
-- [ ] Substituir todas as instâncias textuais de nome antigo (SuperProductive, etc.) por `Prodify`
-- [ ] Conferir `robots.txt`, `sitemap`, `manifest`, `meta og:*`
-- [ ] Substituir screenshots/og-image por versões com sua marca (mesmo layout, novo logo)
+- [x] ✅ Substituir todas as instâncias textuais de nome antigo (SuperProductive, etc.) por `Prodify`
+- [x] ✅ Conferir `robots.txt`, `sitemap`, `manifest`, `meta og:*`
+- [x] ✅ Substituir screenshots/og-image por versões com sua marca (mesmo layout, novo logo)
 
-- [ ] Restart Docker
-- [ ] MCP Google Dev: testar `/` e páginas principais
-- [ ] **Checkpoint** ✅
+- [x] ✅ Restart Docker
+- [x] ✅ MCP Google Dev: testar `/` e páginas principais
+- [x] ✅ **Checkpoint** ✅
 
 ---
 
 ### 9) QA visual e acessibilidade
-- [ ] Contraste AA (texto x fundo) — especialmente brand/accent
-- [ ] Estados hover/focus, foco de teclado visível
-- [ ] Lighthouse (mobile/desktop) — performance e SEO
+- [x] ✅ Contraste AA (texto x fundo) — especialmente brand/accent
+- [x] ✅ Estados hover/focus, foco de teclado visível
+- [x] ✅ Lighthouse (mobile/desktop) — performance e SEO
 
-- [ ] Restart Docker (se ajustes)
-- [ ] MCP Google Dev: Lighthouse/Accessibility ok
-- [ ] **Checkpoint** ✅
+- [x] ✅ Restart Docker (se ajustes)
+- [x] ✅ MCP Google Dev: Lighthouse/Accessibility ok
+- [x] ✅ **Checkpoint** ✅
 
 ---
 

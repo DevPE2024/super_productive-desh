@@ -1,12 +1,12 @@
 // Sistema de Pontos - Constantes e Lógica baseado no arquivo preco.txt
 export const ACTION_COSTS = {
-  // Super Productive - Gratuito
+  // Prodify - Gratuito
   task_basic: 0,
   mindmap_simple: 0,
   pomodoro: 0,
   analytics_basic: 0,
   
-  // Super Productive - Premium
+  // Prodify - Premium
   mindmap_collab: 1,
   analytics_advanced: 1,
   
@@ -158,7 +158,7 @@ export function getPlanRestrictions(planName: string) {
         "video_generation", "search_perplexica", "mind_map_ai_generation", "task_ai_suggestion"
       ] as ActionType[],
       maxWorkspaces: -1, // Ilimitado
-      features: ["all_super_productive", "onlook_ai", "jaaz_images_videos", "perplexica_all", "openwebui_rag", "hoppscotch_collab"]
+      features: ["all_prodify", "onlook_ai", "jaaz_images_videos", "perplexica_all", "openwebui_rag", "hoppscotch_collab"]
     },
     Enterprise: {
       allowedActions: Object.keys(ACTION_COSTS) as ActionType[], // Todas as ações

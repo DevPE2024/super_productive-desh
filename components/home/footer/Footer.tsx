@@ -10,9 +10,9 @@ export const Footer = () => {
       <div className="container py-6 sm:py-12 max-w-screen-2xl border-t border-border flex flex-col-reverse sm:flex-row sm:justify-between items-center gap-4">
         <div className="text-center space-y-0.5 sm:text-left">
           <p className="font-semibold sm:text-lg">
-            Made with <span className="text-primary">love</span>
+            Made with <span className="text-brand">love</span>
           </p>
-          <p className="text-muted-foreground">@ 2024 SuperProductive</p>
+          <p className="text-muted-foreground">@ 2024 Prodify by Affinify</p>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Link

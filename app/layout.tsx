@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Super Productive",
-  description: "A productivity application",
+  title: "Prodify — Affinify",
+  description: "Your ultimate productive app by Affinify. Centralize tasks, notes, pomodoro, calendar and collaboration — without friction.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/logo.svg",
+  },
+  openGraph: {
+    title: "Prodify — Affinify",
+    description: "All-in-one productivity workspace by Affinify.",
+    images: ["/logo.svg"],
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({

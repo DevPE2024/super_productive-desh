@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-  title: 'Points System - Super Productive',
+  title: 'Points System - Prodify',
   description: 'Manage your AI points, purchase extra points, and view usage history',
 };
 

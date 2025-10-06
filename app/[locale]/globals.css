@@ -8,66 +8,80 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 5%;
+    /* Prodify Brand Colors */
+    --brand: #4727CD;
+    --accent: #FAA72C;
+    --bg: #0E0E12;
+    --surface: #16161D;
+    --text: #EAEAF0;
+    --border-subtle: #23232E;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 5%;
+    /* Original shadcn/ui variables adapted for Prodify */
+    --background: 222 84% 5%;
+    --foreground: 240 10% 94%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 5%;
+    --card: 222 84% 7%;
+    --card-foreground: 240 10% 94%;
 
-    --primary: 0 80% 44%;
-    --primary-foreground: 0 0% 98%;
+    --popover: 222 84% 7%;
+    --popover-foreground: 240 10% 94%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 5%;
+    --primary: 258 78% 48%;
+    --primary-foreground: 240 10% 98%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 240 10% 94%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 5%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 38 92% 58%;
+    --accent-foreground: 222 84% 5%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 240 10% 98%;
 
-    --border: 0 0% 92%;
-    --input: 0 0% 85%;
-    --ring: 0 0% 76%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 258 78% 48%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 3% 6%;
-    --foreground: 0 0% 98%;
+    --background: 222 84% 5%;
+    --foreground: 240 10% 94%;
 
-    --card: 0 6% 7%;
-    --card-foreground: 0 0% 98%;
+    --card: 222 84% 7%;
+    --card-foreground: 240 10% 94%;
 
-    --popover: 0 6% 7%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 84% 7%;
+    --popover-foreground: 240 10% 94%;
 
-    --primary: 0 78% 55%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 258 78% 48%;
+    --primary-foreground: 240 10% 98%;
 
-    --secondary: 0 5% 15%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 240 10% 94%;
 
-    --muted: 0 5% 22%;
-    --muted-foreground: 0 5% 49%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 0 45% 14%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 38 92% 58%;
+    --accent-foreground: 222 84% 5%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive-foreground: 240 10% 98%;
 
-    --border: 0 5% 12%;
-    --input: 0 4% 18%;
-    --ring: 0 78% 40%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 258 78% 48%;
   }
+}
+
+html, body { 
+  background: var(--bg); 
+  color: var(--text); 
 }
 
 @layer base {

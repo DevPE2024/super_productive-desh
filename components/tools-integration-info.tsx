@@ -19,7 +19,7 @@ import {
 
 const tools = [
   {
-    name: "Super Productive",
+    name: "Prodify",
     icon: <Zap className="h-6 w-6" />,
     description: "Advanced task management with pomodoro timer, analytics, and workspace organization",
     features: ["Task Management", "Pomodoro Timer", "Analytics", "Workspaces"],
@@ -70,7 +70,7 @@ export function ToolsIntegrationInfo() {
           Integrated Tools Suite
         </h2>
         <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-          Super Productive integrates seamlessly with powerful tools to create the ultimate productivity ecosystem. 
+          Prodify integrates seamlessly with powerful tools to create the ultimate productivity ecosystem. 
           Each tool is designed to work together, providing you with everything you need for modern development and productivity.
         </p>
       </div>

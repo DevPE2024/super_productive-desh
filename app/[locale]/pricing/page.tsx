@@ -17,7 +17,7 @@ const PricingPage = () => {
         "💲 US$ 0 / month",
         "⚡ 50 AI credits/month",
         "Up to 3 workspaces",
-        "Super Productive: Basic tasks, simple mind maps, pomodoro, basic analytics",
+        "Prodify: Basic tasks, simple mind maps, pomodoro, basic analytics",
         "Onlook: View only (no AI editing)",
         "Jaaz: Basic image generation (1 credit = 1 image)",
         "Perplexica: Basic search (2 credits per search)",
@@ -39,7 +39,7 @@ const PricingPage = () => {
         "💲 US$ 29 / month",
         "⚡ 300 AI credits/month",
         "Unlimited workspaces",
-        "Super Productive: All features (collaborative mind maps, advanced analytics)",
+        "Prodify: All features (collaborative mind maps, advanced analytics)",
         "Onlook: Full AI code editing + Next.js project generation",
         "Jaaz: Images + advanced images + short videos",
         "Perplexica: All search modes (academic, YouTube, Reddit, etc.)",
@@ -81,7 +81,7 @@ const PricingPage = () => {
       <Pricing 
         plans={pricingPlans}
         title="Choose Your Perfect Plan"
-        description="Select the ideal plan for your productivity needs with Super Productive + Onlook + Jaaz + Perplexica + Open WebUI + Hoppscotch integrated suite"
+        description="Select the ideal plan for your productivity needs with Prodify + Onlook + Jaaz + Perplexica + Open WebUI + Hoppscotch integrated suite"
       />
       <ToolsIntegrationInfo />
       <Footer />

@@ -1,0 +1,20 @@
+{
+  "name": "Prodify",
+  "short_name": "Prodify",
+  "description": "Your ultimate productive app by Affinify",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E0E12",
+  "theme_color": "#4727CD",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/prodify.svg",
+      "sizes": "256x256",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

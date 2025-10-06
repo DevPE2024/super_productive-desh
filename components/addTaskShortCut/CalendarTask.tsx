@@ -7,7 +7,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
-import { enUS, te } from "date-fns/locale";
+import { enUS, ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Calendar } from "../ui/calendar";
 
@@ -21,7 +21,7 @@ export const CalendarTask = ({ date, onSelectedDate }: Props) => {
   const t = useTranslations("TASK_SHORTCUT");
 
   const currentLocale = useMemo(() => {
-    if (lang === "te") return te;
+    if (lang === "pt-BR") return ptBR;
     else return enUS;
   }, [lang]);
 

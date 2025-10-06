@@ -1,0 +1,115 @@
+{
+  "hero": {
+    "badge": "Affinify apresenta",
+    "title_1": "Sua Experiência",
+    "title_2": "Prodify",
+    "title_3": "Definitiva",
+    "subtitle": "Maximize a eficiência da sua equipe com o Prodify—um workspace completo projetado para consolidar suas ferramentas essenciais em uma plataforma coesa."
+  },
+  "cta": {
+    "launch": "Abrir App",
+    "pricing": "Ver Preços"
+  },
+  "sections": {
+    "productivity_partner": {
+      "title": "Seu Parceiro de Produtividade",
+      "desc": "Maximize a eficiência da sua equipe com o Prodify—um workspace completo projetado para consolidar suas ferramentas essenciais em uma plataforma coesa."
+    },
+    "mind_maps": {
+      "title": "Visualize com Mapas Mentais",
+      "desc": "Os Mapas Mentais permitem aos usuários construir projetos visualmente atraentes, tornando ideias complexas mais fáceis de entender. A interface amigável oferece ampla personalização, permitindo navegação suave e colaboração através de recursos de marcação e atribuição de tarefas."
+    },
+    "tasks": {
+      "title": "Tarefas e Notas",
+      "desc": "O recurso de Tarefas oferece um ambiente fluido para criar notas e organizar projetos. Com um editor aprimorado e funcionalidade de salvamento automático, os usuários podem atribuir tarefas, adicionar categorias, marcar itens e definir prazos, tudo integrado perfeitamente com o calendário para organização ideal."
+    },
+    "roles": {
+      "title": "Funções e Permissões",
+      "desc": "O sistema de gerenciamento de funções do Prodify simplifica a supervisão do workspace. Administradores e proprietários podem ajustar funções de usuário, gerenciar configurações de conta e workspace, e supervisionar permissões para garantir colaboração suave."
+    },
+    "pomodoro": {
+      "title": "Timer Pomodoro",
+      "desc": "O timer Pomodoro integrado suporta sessões de trabalho focadas, permitindo aos usuários definir tempos de sessão personalizados, rodadas, pausas e alertas—adaptando a experiência às necessidades de produtividade de cada usuário."
+    },
+    "collaboration": {
+      "title": "O Futuro da Colaboração em Equipe",
+      "desc": "Compartilhe projetos sem esforço e convide outros para participar com links compartilháveis fáceis. O Prodify permite revisão instantânea de projetos e chat em tempo real com membros da equipe de qualquer lugar."
+    },
+    "chat": {
+      "title": "Chat e Alertas",
+      "desc": "Participe de discussões em tempo real, compartilhe arquivos e mantenha todos informados com notificações instantâneas para que você esteja sempre sincronizado com sua equipe."
+    },
+    "calendar": {
+      "title": "Calendário Unificado",
+      "desc": "Mantenha-se organizado com o Calendário Unificado, onde todas as tarefas agendadas e prazos são exibidos. Ele melhora o trabalho em equipe garantindo que todos tenham visibilidade clara dos cronogramas e datas de vencimento dos projetos."
+    },
+    "filters": {
+      "title": "Acesso Rápido",
+      "desc": "Localize instantaneamente o que você precisa com um recurso de busca inteligente, abas de acesso rápido e ferramentas de filtragem. Marcar e destacar itens essenciais torna fácil manter seus projetos mais importantes a apenas um clique de distância, otimizando seu fluxo de trabalho."
+    }
+  },
+  "nav": {
+    "features": "Recursos",
+    "pricing": "Preços",
+    "product": "Produto",
+    "log_in": "Entrar",
+    "sign_up": "Cadastrar",
+    "price": "Preço"
+  },
+  "footer": {
+    "copyright": "© {year} Affinify • Prodify",
+    "rights": "Todos os direitos reservados."
+  },
+  "COMMON": {
+    "WELCOMEBACK": "Bem-vindo de volta",
+    "LANG_HOVER": "Alterar idioma",
+    "THEME_HOVER": "Alterar Tema",
+    "DARK": "Escuro",
+    "LIGHT": "Claro",
+    "SYSTEM": "Sistema",
+    "LOG_OUT": "Sair",
+    "SETTINGS": "Configurações",
+    "WARNING": "AVISO",
+    "NOTICE": "AVISO",
+    "DEFAULT_NAME": {
+      "MIND_MAP": "Mapa Mental Sem Título",
+      "TASK": "Tarefa Sem Título"
+    },
+    "ACTIVE_WORKSPACES": {
+      "FIRST": "Você tem",
+      "SECOND": "de",
+      "THIRD": "workspaces ativos"
+    },
+    "BACK_BTN": "Voltar",
+    "SAVING_STATUS": {
+      "SAVED": "Salvo",
+      "SAVING": "Salvando",
+      "UNSAVED": "Não salvo"
+    },
+    "TAG": {
+      "FILTER": "Filtrar",
+      "NEW_TAG": "Nova tag",
+      "TAG": "Tag",
+      "ERROR": "Ops... Algo deu errado",
+      "ERROR_BTN": "Tentar novamente",
+      "NOT_FOUND": "Não encontrado",
+      "TAGS_HEADING": "TAGS",
+      "NEW_HEADING": "NOVO",
+      "ADD_TAG": "Adicionar tag",
+      "COLORS": "Cores",
+      "TAG_NAME": "Nome",
+      "BTNS": {
+        "CREATE": "Criar",
+        "CANCEL": "Cancelar",
+        "DELETE": "Excluir",
+        "UPDATE": "Atualizar"
+      }
+    },
+    "EDITED_ITEM_SENTENCE": {
+      "MIND_MAP": "Mapa mental editado",
+      "TASK": "Tarefa editada",
+      "BY": "por",
+      "IN": " - em"
+    }
+  }
+}

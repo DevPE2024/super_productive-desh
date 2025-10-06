@@ -27,7 +27,7 @@ export const BreadcrumbNav = ({ addManualRoutes, workspaceHref }: Props) => {
   const pathNames = paths
     .split("/")
     .filter(
-      (path) => path !== "te" && path !== "workspace" && path.trim() !== ""
+      (path) => path !== "pt-BR" && path !== "workspace" && path.trim() !== ""
     );
   const t = useTranslations("ROUTES");
 

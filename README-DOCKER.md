@@ -1,4 +1,4 @@
-# Docker Setup - Super Productive
+# Docker Setup - Prodify
 
 Este projeto possui duas configurações Docker: uma para **desenvolvimento** com hot reload e outra para **produção**.
 

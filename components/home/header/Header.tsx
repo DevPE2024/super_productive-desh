@@ -1,19 +1,23 @@
 "use client";
-import { homePageHeaderImgs, homePageHeaderLinks } from "@/lib/constants";
-import { HeaderLink } from "./HeaderLink";
-import { VideoContainer } from "../video/VideoContainer";
-import { ImagesCarousel } from "../carousel/ImagesCarousel";
+
+import { homePageHeaderLinks } from "@/lib/constants";
 import { useIsVisible } from "@/hooks/useIsVisible";
+import { HeaderLink } from "./HeaderLink";
+import { ImagesCarousel } from "../carousel/ImagesCarousel";
+import { homePageHeaderImgs } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 export const Header = () => {
   const { isVisible, ref } = useIsVisible();
+  const t = useTranslations("hero");
+  
   return (
     <header className="flex flex-col items-center mt-20 w-full relative isolate group">
       <h1
         ref={ref}
         className="font-bold text-5xl sm:text-6xl lg:text-8xl max-w-2xl text-center"
       >
-        Your Ultimate Productive App
+        {t("title_1")} <span className="text-brand">{t("title_2")}</span> {t("title_3")}
       </h1>
       <div className="w-full flex flex-wrap items-center justify-center mt-12 gap-2 sm:gap-4">
         {homePageHeaderLinks.map((link, i) => (
@@ -21,7 +25,7 @@ export const Header = () => {
             key={i}
             Icon={link.Icon}
             href={link.href}
-            title={link.title}
+            titleKey={link.titleKey}
           />
         ))}
       </div>

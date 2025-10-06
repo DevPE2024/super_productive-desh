@@ -56,9 +56,9 @@ const languages = [
     value: "en",
   },
   {
-    label: "Telugu",
-    value: "te",
-  },
+      label: "Português",
+      value: "pt-BR",
+    },
 ] as const;
 
 export const AccountInfo = ({ user }: Props) => {
@@ -102,7 +102,7 @@ export const AccountInfo = ({ user }: Props) => {
       });
     },
     onSuccess: async (res: AccountInfoSettingsSchema) => {
-      if (res.language !== lang) onSelectChange(res.language as "te" | "en");
+      if (res.language !== lang) onSelectChange(res.language as "pt-BR" | "en");
       // Refresh the page to update user data
       router.refresh();
     },

@@ -56,7 +56,7 @@ export const LocaleSwitcher = ({
             {isLoading ? (
               <LoadingState className="mr-0" />
             ) : (
-              locale.toUpperCase()
+              locale === "pt-BR" ? "PT" : locale.toUpperCase()
             )}
             <span className="sr-only">{t("LANG_HOVER")}</span>
           </Button>
@@ -64,11 +64,11 @@ export const LocaleSwitcher = ({
         <DropdownMenuContent align={alignDropdown}>
           <DropdownMenuItem
             onClick={() => {
-              onSelectChange("te");
+              onSelectChange("pt-BR");
             }}
             className="cursor-pointer"
           >
-            TE
+            <span className="font-semibold">PT</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
@@ -76,7 +76,7 @@ export const LocaleSwitcher = ({
             }}
             className="cursor-pointer"
           >
-            EN
+            <span className="font-semibold">EN</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

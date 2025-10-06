@@ -1,6 +1,7 @@
 "use client";
-import { AppleLogo } from "@/components/svg/AppleLogo";
+import { ProdifyLogo } from "@/components/svg/ProdifyLogo";
 import { LocaleSwitcher } from "@/components/switchers/LocaleSwitcher";
+
 import { ThemeSwitcher } from "@/components/switchers/ThemeSwitcher";
 import { buttonVariants, Button } from "@/components/ui/button";
 import {
@@ -13,8 +14,11 @@ import {
 import { navLinks } from "@/lib/constants";
 import { scrollToHash } from "@/lib/utils";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 export const LargeNav = () => {
+  const t = useTranslations("nav");
+  
   return (
     <div className="container md:flex py-4 max-w-screen-2xl items-center justify-between hidden">
       <div className="flex items-center">
@@ -22,9 +26,9 @@ export const LargeNav = () => {
           href="/"
           className="w-fit bg-transparent text-secondary-foreground hover:bg-transparent flex items-center gap-2 hover:scale-105 transition-transform duration-200 p-2 rounded-md"
         >
-          <AppleLogo className="w-10 h-10" />
+          <ProdifyLogo className="w-10 h-10" />
           <p className="text-2xl font-semibold">
-            Super<span className="text-primary">Productive</span>
+            <span className="text-brand">Prodify</span>
           </p>
         </Link>
 
@@ -32,7 +36,7 @@ export const LargeNav = () => {
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuTrigger className="text-lg">
-                Product
+                {t("product")}
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:grid-cols-2">
@@ -61,13 +65,13 @@ export const LargeNav = () => {
             className="border-b inline-block border-transparent hover:border-primary duration-200 transition-colors"
             href={"/sign-in"}
           >
-            Log in
+            {t("log_in")}
           </Link>
           <Link
             className={`${buttonVariants({ variant: "default" })}`}
             href={"/sign-up"}
           >
-            Sign up
+            {t("sign_up")}
           </Link>
         </div>
         <div className="flex items-center gap-2">
@@ -81,14 +85,9 @@ export const LargeNav = () => {
             href="/pricing"
             className={`${buttonVariants({ variant: "outline", size: "sm" })} text-sm`}
           >
-            Price
+            {t("price")}
           </Link>
-          <ThemeSwitcher
-            alignHover="end"
-            alignDropdown="end"
-            size={"icon"}
-            variant={"outline"}
-          />
+          <ThemeSwitcher />
         </div>
       </div>
     </div>

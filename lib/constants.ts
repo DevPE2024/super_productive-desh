@@ -14,27 +14,27 @@ export const homePageHeaderLinks = [
   {
     href: "Tasks",
     Icon: PencilRuler,
-    title: "Tasks & Notes",
+    titleKey: "tasks.title",
   },
   {
     href: "Mind-Maps",
     Icon: Workflow,
-    title: "Mind Maps",
+    titleKey: "mind_maps.title",
   },
   {
     href: "Calendar",
     Icon: CalendarDays,
-    title: "Calendar",
+    titleKey: "calendar.title",
   },
   {
     href: "Chat",
     Icon: MessageSquare,
-    title: "Group Chat",
+    titleKey: "chat.title",
   },
   {
     href: "Pomodoro",
     Icon: Clock,
-    title: "Pomodoro",
+    titleKey: "pomodoro.title",
   },
 ];
 

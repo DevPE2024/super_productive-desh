@@ -1,5 +1,5 @@
 "use client";
-import { AppleLogo } from "@/components/svg/AppleLogo";
+import { ProdifyLogo } from "@/components/svg/ProdifyLogo";
 import { LocaleSwitcher } from "@/components/switchers/LocaleSwitcher";
 import { ThemeSwitcher } from "@/components/switchers/ThemeSwitcher";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -16,9 +16,12 @@ import { scrollToHash } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export const MobileNav = () => {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("nav");
+  
   return (
     <div className="md:hidden py-2 px-2 w-full flex items-center justify-between">
       <Sheet onOpenChange={setOpen} open={open}>
@@ -40,9 +43,9 @@ export const MobileNav = () => {
                   setOpen(false);
                 }}
               >
-                <AppleLogo className="w-10 h-10" />
+                <ProdifyLogo className="w-10 h-10" />
                 <p className="text-2xl font-semibold">
-                  Super<span className="text-primary">Productive</span>
+                  <span className="text-brand">Prodify</span>
                 </p>
               </Link>
             </SheetTitle>
@@ -74,7 +77,7 @@ export const MobileNav = () => {
               href={"/"}
               className={`${buttonVariants({ variant: "default" })}`}
             >
-              Sign up
+              {t("sign_up")}
             </Link>
             <Link
               href={"/"}
@@ -83,7 +86,7 @@ export const MobileNav = () => {
               }}
               className={`${buttonVariants({ variant: "outline" })}`}
             >
-              Log in
+              {t("log_in")}
             </Link>
           </div>
         </SheetContent>
@@ -100,7 +103,7 @@ export const MobileNav = () => {
           href="/pricing"
           className={`${buttonVariants({ variant: "outline", size: "sm" })} text-sm`}
         >
-          Price
+          {t("price")}
         </Link>
         <ThemeSwitcher
           alignHover="end"
