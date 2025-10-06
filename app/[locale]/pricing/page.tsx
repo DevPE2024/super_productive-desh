@@ -6,23 +6,23 @@ import { Nav } from "@/components/home/nav/Nav";
 import { Footer } from "@/components/home/footer/Footer";
 
 const PricingPage = () => {
-  // Pricing plans data
+  // Pricing plans data baseado no arquivo preco.txt
   const pricingPlans = [
     {
-      name: "Starter",
+      name: "Free",
       price: "0",
       yearlyPrice: "0",
       period: "month",
       features: [
         "💲 US$ 0 / month",
-        "Up to 3 workspaces (Super Productive)",
-        "Basic task management",
-        "Simple mind maps",
-        "Basic Hoppscotch (API testing)",
-        "⚡ 10 AI credits/month for testing:",
-        "• Search in Perplexica",
-        "• Generate 1–2 images in Jaaz",
-        "• Simple AI chat (Open WebUI)",
+        "⚡ 50 AI credits/month",
+        "Up to 3 workspaces",
+        "Super Productive: Basic tasks, simple mind maps, pomodoro, basic analytics",
+        "Onlook: View only (no AI editing)",
+        "Jaaz: Basic image generation (1 credit = 1 image)",
+        "Perplexica: Basic search (2 credits per search)",
+        "Open WebUI: Simple AI chat (1 credit per message)",
+        "Hoppscotch: Basic API testing",
         "Community support"
       ],
       description: "Perfect for individuals getting started with productivity tools",
@@ -31,7 +31,7 @@ const PricingPage = () => {
       isPopular: false,
     },
     {
-      name: "Professional",
+      name: "Pro",
       price: "29",
       yearlyPrice: "278",
       period: "month",
@@ -39,12 +39,12 @@ const PricingPage = () => {
         "💲 US$ 29 / month",
         "⚡ 300 AI credits/month",
         "Unlimited workspaces",
-        "Super Productive complete (advanced tasks, pomodoro, analytics)",
-        "Onlook → AI for code (editing, Next.js generation, Figma/GitHub integration)",
-        "Jaaz → images, advanced images, short videos",
-        "Perplexica → all modes (academic, YouTube, Reddit, Wolfram etc.)",
-        "Open WebUI → AI Chat + RAG on documents + image generation",
-        "Hoppscotch → real-time collaboration",
+        "Super Productive: All features (collaborative mind maps, advanced analytics)",
+        "Onlook: Full AI code editing + Next.js project generation",
+        "Jaaz: Images + advanced images + short videos",
+        "Perplexica: All search modes (academic, YouTube, Reddit, etc.)",
+        "Open WebUI: AI Chat + RAG on documents",
+        "Hoppscotch: Real-time collaboration",
         "Priority support"
       ],
       description: "Most popular - Best for teams and professionals",
@@ -60,13 +60,13 @@ const PricingPage = () => {
       features: [
         "💲 US$ 59 / month",
         "⚡ 500 AI credits/month",
-        "Everything in Professional",
-        "Long videos and storyboard in Jaaz",
-        "Open WebUI with external model integration (Groq, Gemini, Anthropic, etc.)",
+        "Everything in Pro",
+        "Jaaz: Long videos + storyboard creation",
+        "Open WebUI: External model integration (Groq, Gemini, Anthropic)",
         "Advanced permissions (Admin, Editor, Viewer)",
-        "Custom branding and own domain",
+        "Custom branding and domain",
         "Custom integrations (Slack, GitHub, Drive)",
-        "Dedicated support (SLA, guaranteed response time)"
+        "Dedicated support with SLA"
       ],
       description: "For large organizations with advanced needs",
       buttonText: "Contact Sales",

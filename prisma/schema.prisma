@@ -40,8 +40,10 @@ model User {
   planId String? @default("1") // Default para Free Plan
   pointsBalance Int @default(10) // Saldo atual de pontos
   renewDate DateTime @default(now()) // Data de renovação mensal
-  usageLogs UsageLog[]
+  stripeCustomerId String? @unique // ID do cliente no Stripe
+  
   extraPointsPurchases ExtraPointsPurchase[]
+  usageLogs UsageLog[]
 }
 
 model savedMindMaps {
@@ -344,11 +346,23 @@ model Plan {
   name String @unique // Free, Pro, Enterprise
   pointsPerMonth Int // 10, 300, 500
   priceUsd Decimal @db.Decimal(10,2) // 0.00, 29.00, 59.00
+  stripePriceId String? @unique // ID do preço no Stripe
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   users User[]
   
   @@map("plans")
+}
+
+// Sistema de Pontos - Eventos do Stripe
+model StripeEvent {
+  id String @id @default(cuid())
+  eventId String @unique
+  type String
+  payload Json
+  createdAt DateTime @default(now())
+  
+  @@map("stripe_events")
 }
 
 // Sistema de Pontos - Logs de Uso
