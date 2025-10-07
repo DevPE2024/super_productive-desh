@@ -72,3 +72,4 @@ export const Section = ({ reverse, title, desc, images, id }: Props) => {
   );
 };
 
+

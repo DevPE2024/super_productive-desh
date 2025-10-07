@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         id: session.user.id,
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId: id,
           },
@@ -81,12 +81,12 @@ export async function POST(request: Request) {
       });
     }
 
-    if (user.subscriptions[0].userRole === "OWNER") {
+    if (user.workspaceSubscriptions[0].userRole === "OWNER") {
       return NextResponse.json("ERRORS.CANT_LEAVE", { status: 403 });
     }
 
     const savedMindMapsIds = user.savedMindMaps.map((mindMap) => mindMap.id);
-    const savedTaskIds = user.savedMindMaps.map((task) => task.id);
+    const savedTaskIds = user.savedTask.map((task) => task.id);
 
     const assignedToMindMapIds = user.assignedToMindMap.map(
       (mindMap) => mindMap.id
@@ -117,16 +117,16 @@ export async function POST(request: Request) {
       },
     });
 
-    await db.subscription.delete({
+    await db.workspaceSubscription.delete({
       where: {
         userId_workspaceId: {
-          workspaceId: id,
           userId: session.user.id,
+          workspaceId: id,
         },
       },
     });
 
-    const workspaceUsers = await db.subscription.findMany({
+    const workspaceUsers = await db.workspaceSubscription.findMany({
       where: {
         workspaceId: id,
       },

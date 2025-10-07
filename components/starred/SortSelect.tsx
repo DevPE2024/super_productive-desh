@@ -55,3 +55,4 @@ export const SortSelect = ({ sortType, refetch }: Props) => {
   );
 };
 
+

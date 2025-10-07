@@ -63,3 +63,4 @@ export const LanguageSwitcher = () => {
     </DropdownMenu>
   );
 };
+

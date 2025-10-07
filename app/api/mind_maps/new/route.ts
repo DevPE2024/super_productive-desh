@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         id: session.user.id,
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId: workspaceId,
           },
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       });
     }
 
-    if (user.subscriptions[0].userRole === "READ_ONLY") {
+    if (user.workspaceSubscriptions[0].userRole === "READ_ONLY") {
       return NextResponse.json("ERRORS.NO_PERMISSION", { status: 403 });
     }
 
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const workspaceUsers = await db.subscription.findMany({
+    const workspaceUsers = await db.workspaceSubscription.findMany({
       where: {
         workspaceId,
       },
@@ -105,4 +105,5 @@ export async function POST(request: Request) {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 }
+
 

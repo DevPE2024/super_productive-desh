@@ -130,3 +130,4 @@ export const TextNode = ({ data, id }: NodeProps<NodeData>) => {
   );
 };
 
+

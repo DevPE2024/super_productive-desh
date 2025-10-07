@@ -48,7 +48,7 @@ export async function getAuthSession(request?: NextRequest): Promise<AuthSession
     }
 
     // Verificar e decodificar o JWT
-    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { userId: string };
     
     if (!decoded.userId) {
       return null;
@@ -88,3 +88,4 @@ export async function getAuthSession(request?: NextRequest): Promise<AuthSession
     return null;
   }
 }
+

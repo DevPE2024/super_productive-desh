@@ -14,3 +14,4 @@ export interface Workspace {
   canEditCode: string;
   readOnlyCode: string;
 }
+

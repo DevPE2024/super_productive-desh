@@ -9,7 +9,7 @@ export const GET = async (request: Request) => {
   if (!userId) return NextResponse.json("ERRORS.WRONG_DATA", { status: 404 });
 
   try {
-    const userSubscriptions = await db.subscription.findMany({
+    const userSubscriptions = await db.workspaceSubscription.findMany({
       where: {
         userId: userId,
       },
@@ -55,4 +55,5 @@ export const GET = async (request: Request) => {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };
+
 

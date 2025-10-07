@@ -3,3 +3,4 @@ export const changeCodeToEmoji = (code: string) => {
   return isValidHex ? String.fromCodePoint(parseInt(code, 16)) : "1f9e0";
 };
 
+

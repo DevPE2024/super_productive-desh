@@ -36,3 +36,4 @@ export const NewMindMap = ({ workspaceId }: Props) => {
   );
 };
 
+

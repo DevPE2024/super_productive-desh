@@ -38,3 +38,4 @@ HydratedTabs.displayName = "HydratedTabs"
 
 // Re-exportar outros componentes
 export { TabsContent, TabsList, TabsTrigger }
+

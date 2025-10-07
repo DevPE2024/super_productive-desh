@@ -25,3 +25,4 @@ export const UserAvatar = ({ className, profileImage, size = 16 }: Props) => {
   );
 };
 
+

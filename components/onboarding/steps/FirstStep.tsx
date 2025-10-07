@@ -117,3 +117,4 @@ export const FirstStep = ({ profileImage }: Props) => {
   );
 };
 
+

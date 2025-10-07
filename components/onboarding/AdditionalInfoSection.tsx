@@ -30,3 +30,4 @@ export const AdditionalInfoSection = ({ profileImage }: Props) => {
   );
 };
 
+

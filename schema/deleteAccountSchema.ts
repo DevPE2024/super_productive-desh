@@ -6,3 +6,4 @@ export const deleteAccountSchema = z.object({
 
 export type DeleteAccountSchema = z.infer<typeof deleteAccountSchema>;
 
+

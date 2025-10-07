@@ -43,3 +43,4 @@ export const useNewMindMap = (workspaceId: string) => {
   return { newMindMap, isPending };
 };
 
+

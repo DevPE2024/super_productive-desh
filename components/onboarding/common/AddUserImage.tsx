@@ -285,3 +285,4 @@ export const AddUserImage = ({ profileImage, className }: Props) => {
     </div>
   );
 };
+

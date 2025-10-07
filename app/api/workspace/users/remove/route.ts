@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         id: session.user.id,
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId,
           },
@@ -48,13 +48,13 @@ export async function POST(request: Request) {
     }
 
     if (
-      user.subscriptions[0].userRole === "CAN_EDIT" ||
-      user.subscriptions[0].userRole === "READ_ONLY"
+      user.workspaceSubscriptions[0].userRole === "CAN_EDIT" ||
+      user.workspaceSubscriptions[0].userRole === "READ_ONLY"
     ) {
       return NextResponse.json("ERRORS.NO_PERMISSION", { status: 403 });
     }
 
-    await db.subscription.delete({
+    await db.workspaceSubscription.delete({
       where: {
         userId_workspaceId: {
           userId,
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const workspaceUsers = await db.subscription.findMany({
+    const workspaceUsers = await db.workspaceSubscription.findMany({
       where: {
         workspaceId,
       },

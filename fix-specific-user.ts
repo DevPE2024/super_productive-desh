@@ -10,21 +10,31 @@ const db = new PrismaClient({
 
 async function fixSpecificUser() {
   try {
-    console.log('🔧 Corrigindo usuário específico com 600 pontos...');
+    console.log('🔧 Corrigindo usuário específico...');
     
-    // Corrigir o usuário test-user-id-123 que tem 600 pontos
+    // Buscar o plano Free
+    const freePlan = await db.plan.findFirst({
+      where: { 
+        OR: [
+          { name: 'Free' },
+          { name: 'Starter' }
+        ]
+      }
+    });
+    
+    // Corrigir o usuário test-user-id-123
     const result = await db.user.update({
       where: {
         id: 'test-user-id-123'
       },
       data: {
-        pointsBalance: 10
+        planId: freePlan?.id || 1
       }
     });
     
     console.log('✅ Usuário corrigido:', result);
     console.log(`📧 Email: ${result.email}`);
-    console.log(`💰 Pontos atualizados para: ${result.pointsBalance}`);
+    console.log(`📋 Plano atualizado para: ${freePlan?.name || 'Free'}`);
     
   } catch (error) {
     console.error('❌ Erro ao corrigir usuário:', error);

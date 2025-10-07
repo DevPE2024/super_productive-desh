@@ -160,3 +160,4 @@ export const EditInfo = ({ workspaceId, mapId, emoji, title }: Props) => {
   );
 };
 
+

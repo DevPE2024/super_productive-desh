@@ -15,7 +15,7 @@ export const GET = async (request: Request) => {
         id: userId,
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId,
           },
@@ -28,11 +28,12 @@ export const GET = async (request: Request) => {
 
     if (!user) return NextResponse.json("ERRORS.NO_USER_API", { status: 404 });
 
-    const userRole = user.subscriptions[0].userRole;
+    const userRole = user.workspaceSubscriptions[0].userRole;
 
     return NextResponse.json(userRole, { status: 200 });
   } catch (_) {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };
+
 

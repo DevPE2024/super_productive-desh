@@ -24,3 +24,4 @@ export const ActiveFilteredUser = ({ username, id, image }: Props) => {
   );
 };
 
+

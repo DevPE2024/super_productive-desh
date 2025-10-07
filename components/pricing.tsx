@@ -211,3 +211,4 @@ export function Pricing({
     </div>
   );
 }
+

@@ -1,73 +1,120 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, AppKey, App } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('Iniciando seed do banco de dados...');
 
+  // Criar aplicativos
+  const apps = await Promise.all([
+    prisma.app.upsert({
+      where: { key: AppKey.PRODIFY },
+      update: {},
+      create: { key: AppKey.PRODIFY, name: 'Prodify Hub' }
+    }),
+    prisma.app.upsert({
+      where: { key: AppKey.ONSCOPE },
+      update: {},
+      create: { key: AppKey.ONSCOPE, name: 'OnScope' }
+    }),
+    prisma.app.upsert({
+      where: { key: AppKey.JAZZUP },
+      update: {},
+      create: { key: AppKey.JAZZUP, name: 'JazzUp' }
+    }),
+    prisma.app.upsert({
+      where: { key: AppKey.DEEPQUEST },
+      update: {},
+      create: { key: AppKey.DEEPQUEST, name: 'DeepQuest' }
+    }),
+    prisma.app.upsert({
+      where: { key: AppKey.OPENUIX },
+      update: {},
+      create: { key: AppKey.OPENUIX, name: 'OpenUIX' }
+    }),
+    prisma.app.upsert({
+      where: { key: AppKey.TESTPATH },
+      update: {},
+      create: { key: AppKey.TESTPATH, name: 'TestPath' }
+    })
+  ]);
+
+  console.log('Aplicativos criados:', apps);
+
   // Criar planos
-  const starterPlan = await prisma.plan.upsert({
-    where: { name: 'Starter' },
+  const freePlan = await prisma.plan.upsert({
+    where: { name: 'Free' },
     update: {},
     create: {
-      name: 'Starter',
-      pointsPerMonth: 10,
-      priceUsd: 0
+      name: 'Free',
+      priceUsd: 0,
+      stripePriceId: null
     }
   });
 
-  const professionalPlan = await prisma.plan.upsert({
-    where: { name: 'Professional' },
+  const proPlan = await prisma.plan.upsert({
+    where: { name: 'Pro' },
     update: {},
     create: {
-      name: 'Professional',
-      pointsPerMonth: 300,
-      priceUsd: 29
+      name: 'Pro',
+      priceUsd: 25,
+      stripePriceId: null // Será preenchido quando configurar o Stripe
     }
   });
 
-  const enterprisePlan = await prisma.plan.upsert({
-    where: { name: 'Enterprise' },
+  const maxPlan = await prisma.plan.upsert({
+    where: { name: 'Max' },
     update: {},
     create: {
-      name: 'Enterprise',
-      pointsPerMonth: 500,
-      priceUsd: 59
+      name: 'Max',
+      priceUsd: 60,
+      stripePriceId: null // Será preenchido quando configurar o Stripe
     }
   });
 
-  console.log('Planos criados:', { starterPlan, professionalPlan, enterprisePlan });
+  console.log('Planos criados:', { freePlan, proPlan, maxPlan });
 
-  // Criar pacotes de pontos extras - verificar se já existem primeiro
-  const existingPackages = await prisma.extraPointsPackage.findMany();
-  
-  if (existingPackages.length === 0) {
-    const packages = await prisma.extraPointsPackage.createMany({
-      data: [
-        {
-          name: "Small Pack",
-          extraPoints: 100,
-          priceUsd: 10
-        },
-        {
-          name: "Medium Pack",
-          extraPoints: 250,
-          priceUsd: 20
-        },
-        {
-          name: "Large Pack",
-          extraPoints: 500,
-          priceUsd: 35
+  // Criar alocações de créditos por plano e app
+  const allocations = [
+    // Free Plan
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.PRODIFY)!.id, monthlyPoints: null }, // Ilimitado
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.ONSCOPE)!.id, monthlyPoints: 10 },
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.JAZZUP)!.id, monthlyPoints: 10 },
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.DEEPQUEST)!.id, monthlyPoints: 10 },
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.OPENUIX)!.id, monthlyPoints: 10 },
+    { planId: freePlan.id, appId: apps.find((a: App) => a.key === AppKey.TESTPATH)!.id, monthlyPoints: null }, // Ilimitado
+
+    // Pro Plan
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.PRODIFY)!.id, monthlyPoints: null }, // Ilimitado
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.ONSCOPE)!.id, monthlyPoints: 100 },
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.JAZZUP)!.id, monthlyPoints: 100 },
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.DEEPQUEST)!.id, monthlyPoints: 100 },
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.OPENUIX)!.id, monthlyPoints: 100 },
+    { planId: proPlan.id, appId: apps.find((a: App) => a.key === AppKey.TESTPATH)!.id, monthlyPoints: null }, // Ilimitado
+
+    // Max Plan
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.PRODIFY)!.id, monthlyPoints: null }, // Ilimitado
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.ONSCOPE)!.id, monthlyPoints: 200 },
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.JAZZUP)!.id, monthlyPoints: 200 },
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.DEEPQUEST)!.id, monthlyPoints: 200 },
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.OPENUIX)!.id, monthlyPoints: 200 },
+    { planId: maxPlan.id, appId: apps.find((a: App) => a.key === AppKey.TESTPATH)!.id, monthlyPoints: null }, // Ilimitado
+  ];
+
+  for (const allocation of allocations) {
+    await prisma.planAppAllocation.upsert({
+      where: {
+        planId_appId: {
+          planId: allocation.planId,
+          appId: allocation.appId
         }
-      ],
-      skipDuplicates: true
+      },
+      update: { monthlyPoints: allocation.monthlyPoints },
+      create: allocation
     });
-
-    console.log('Pacotes de pontos criados:', packages);
-  } else {
-    console.log('Pacotes de pontos já existem, pulando criação...');
   }
 
+  console.log('Alocações de créditos criadas');
   console.log('Seed concluído com sucesso!');
 }
 

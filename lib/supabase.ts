@@ -38,19 +38,19 @@ export const getSupabaseClient = () => {
 // Funções de autenticação (desabilitadas para autenticação local)
 export const authHelpers = {
   // Login com email e senha
-  signInWithEmail: async (email: string, password: string) => {
+  signInWithEmail: async () => {
     console.warn('authHelpers.signInWithEmail chamado, mas autenticação local está ativa');
     return { data: null, error: { message: 'Use autenticação local' } };
   },
 
   // Registro com email e senha
-  signUpWithEmail: async (email: string, password: string, name?: string) => {
+  signUpWithEmail: async () => {
     console.warn('authHelpers.signUpWithEmail chamado, mas autenticação local está ativa');
     return { data: null, error: { message: 'Use autenticação local' } };
   },
 
   // Login com provedor OAuth (Google)
-  signInWithProvider: async (provider: 'google') => {
+  signInWithProvider: async () => {
     console.warn('authHelpers.signInWithProvider chamado, mas autenticação local está ativa');
     return { data: null, error: { message: 'Use autenticação local' } };
   },
@@ -74,9 +74,10 @@ export const authHelpers = {
   },
 
   // Escutar mudanças de autenticação
-  onAuthStateChange: (callback: (event: string, session: any) => void) => {
+  onAuthStateChange: () => {
     console.warn('authHelpers.onAuthStateChange chamado, mas autenticação local está ativa');
     return { data: { subscription: { unsubscribe: () => {} } } };
   }
 };
+
 

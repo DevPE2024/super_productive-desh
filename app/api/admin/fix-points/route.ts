@@ -14,8 +14,7 @@ export async function POST(request: NextRequest) {
       where: { 
         OR: [
           { name: 'Free' },
-          { name: 'Starter' },
-          { pointsPerMonth: 10 }
+          { name: 'Starter' }
         ]
       }
     });
@@ -26,7 +25,6 @@ export async function POST(request: NextRequest) {
       freePlan = await db.plan.create({
         data: {
           name: 'Free',
-          pointsPerMonth: 10,
           priceUsd: 0
         }
       });
@@ -34,17 +32,14 @@ export async function POST(request: NextRequest) {
       console.log('✅ Plano Free criado:', freePlan);
     }
 
-    // Buscar usuários com pontos incorretos (diferentes de 10) no plano Free
+    // Buscar usuários com pontos incorretos no plano Free
     const usersToFix = await db.user.findMany({
       where: {
         OR: [
           { planId: freePlan.id },
           { planId: null },
-          { planId: '1' } // Default planId
-        ],
-        pointsBalance: {
-          not: 10
-        }
+          { planId: 1 } // Default planId como number
+        ]
       },
       include: {
         plan: true
@@ -69,7 +64,6 @@ export async function POST(request: NextRequest) {
         }
       },
       data: {
-        pointsBalance: 10,
         planId: freePlan.id
       }
     });
@@ -80,8 +74,8 @@ export async function POST(request: NextRequest) {
     const userDetails = usersToFix.map(user => ({
       id: user.id,
       email: user.email || user.username || 'N/A',
-      oldBalance: user.pointsBalance,
-      newBalance: 10
+      oldBalance: 0, // placeholder já que pointsBalance não existe
+      newBalance: 0  // placeholder já que pointsBalance não existe
     }));
 
     return NextResponse.json({
@@ -103,3 +97,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+

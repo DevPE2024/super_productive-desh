@@ -22,3 +22,4 @@ export const ProdifyLogo = ({ className, width = "40", height = "40" }: LogoProp
     />
   );
 };
+

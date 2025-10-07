@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { db } from "@/lib/db";
-import { planMapping } from "@/lib/stripe-config";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-09-30.clover"
-});
+import { stripe, getPlanByPriceId } from "@/lib/stripe-config";
+import { createSubscription, updateSubscriptionStatus } from "@/lib/subscription-manager";
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -62,6 +59,12 @@ export async function POST(req: NextRequest) {
         break;
       }
 
+      case "customer.subscription.updated": {
+        const subscription = event.data.object as Stripe.Subscription;
+        await handleSubscriptionUpdated(subscription);
+        break;
+      }
+
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
         await handleSubscriptionCanceled(subscription);
@@ -83,111 +86,85 @@ export async function POST(req: NextRequest) {
 }
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
-  if (!session.customer || !session.subscription) return;
+  if (!session.metadata?.userId || !session.subscription) return;
 
+  const userId = session.metadata.userId;
   const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
   const priceId = subscription.items.data[0]?.price.id;
+  
   if (!priceId) return;
 
-  // Buscar plano pelo stripePriceId
-  const plan = await db.plan.findFirst({
-    where: { stripePriceId: priceId },
-  });
+  // Buscar configuração do plano pelo priceId
+  const planConfig = getPlanByPriceId(priceId);
+  if (!planConfig) {
+    console.error(`Plano não encontrado para priceId: ${priceId}`);
+    return;
+  }
 
-  if (!plan) return;
+  try {
+    // Criar assinatura usando o subscription manager
+    await createSubscription(
+      userId,
+      subscription.id,
+      planConfig.id,
+      subscription.status,
+      new Date((subscription as any).current_period_start * 1000),
+      new Date((subscription as any).current_period_end * 1000)
+    );
 
-  // Buscar usuário pelo stripeCustomerId
-  const user = await db.user.findFirst({
-    where: { stripeCustomerId: session.customer as string },
-  });
-
-  if (!user) return;
-
-  // Atualizar usuário com novo plano
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      planId: plan.id,
-      pointsBalance: plan.pointsPerMonth,
-      renewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 dias
-    },
-  });
-
-  console.log(`Usuário ${user.id} atualizado para plano ${plan.name}`);
+    console.log(`Checkout concluído para usuário ${userId}, plano ${planConfig.name}`);
+  } catch (error) {
+    console.error("Erro ao processar checkout:", error);
+  }
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  // Verificar se o invoice tem customer e subscription
-  if (!invoice.customer) return;
+  if (!(invoice as any).subscription) return;
+
+  const subscriptionId = (invoice as any).subscription as string;
   
-  // Para invoices, precisamos buscar a subscription através do customer
-  const customerId = typeof invoice.customer === 'string' ? invoice.customer : invoice.customer.id;
-  
-  // Buscar todas as subscriptions ativas do customer
-  const subscriptions = await stripe.subscriptions.list({
-    customer: customerId,
-    status: 'active',
-    limit: 1,
-  });
-  
-  if (subscriptions.data.length === 0) return;
-  
-  const subscription = subscriptions.data[0];
-  const priceId = subscription.items.data[0]?.price.id;
-  if (!priceId) return;
+  try {
+    // Buscar subscription no Stripe para obter dados atualizados
+    const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
+    
+    // Atualizar status da assinatura
+    await updateSubscriptionStatus(
+      subscriptionId,
+      stripeSubscription.status,
+      new Date((stripeSubscription as any).current_period_start * 1000),
+      new Date((stripeSubscription as any).current_period_end * 1000)
+    );
 
-  // Buscar plano pelo stripePriceId
-  const plan = await db.plan.findFirst({
-    where: { stripePriceId: priceId },
-  });
+    console.log(`Pagamento processado para subscription ${subscriptionId}`);
+  } catch (error) {
+    console.error("Erro ao processar pagamento:", error);
+  }
+}
 
-  if (!plan) return;
+async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+  try {
+    // Atualizar status da assinatura
+    await updateSubscriptionStatus(
+      subscription.id,
+      subscription.status,
+      new Date((subscription as any).current_period_start * 1000),
+      new Date((subscription as any).current_period_end * 1000)
+    );
 
-  // Buscar usuário pelo stripeCustomerId
-  const user = await db.user.findFirst({
-    where: { stripeCustomerId: invoice.customer as string },
-  });
-
-  if (!user) return;
-
-  // Renovar pontos mensais
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      pointsBalance: plan.pointsPerMonth,
-      renewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 dias
-    },
-  });
-
-  console.log(`Pontos renovados para usuário ${user.id}`);
+    console.log(`Subscription ${subscription.id} atualizada`);
+  } catch (error) {
+    console.error("Erro ao atualizar subscription:", error);
+  }
 }
 
 async function handleSubscriptionCanceled(subscription: Stripe.Subscription) {
-  const customerId = subscription.customer as string;
-  
-  // Buscar usuário pelo stripeCustomerId
-  const user = await db.user.findFirst({
-    where: { stripeCustomerId: customerId },
-  });
+  try {
+    // Cancelar assinatura usando o subscription manager
+    await updateSubscriptionStatus(subscription.id, "canceled");
 
-  if (!user) return;
-
-  // Buscar plano Free
-  const freePlan = await db.plan.findFirst({
-    where: { name: "Free" },
-  });
-
-  if (!freePlan) return;
-
-  // Reverter para plano Free
-  await db.user.update({
-    where: { id: user.id },
-    data: {
-      planId: freePlan.id,
-      pointsBalance: freePlan.pointsPerMonth,
-      renewDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 dias
-    },
-  });
-
-  console.log(`Usuário ${user.id} revertido para plano Free`);
+    console.log(`Subscription ${subscription.id} cancelada`);
+  } catch (error) {
+    console.error("Erro ao cancelar subscription:", error);
+  }
 }
+

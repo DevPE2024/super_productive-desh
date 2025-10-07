@@ -9,7 +9,7 @@ export const GET = async (request: Request) => {
   if (!userId) return NextResponse.json("ERRORS.NO_USER_API", { status: 404 });
 
   try {
-    const subscriptions = await db.subscription.findMany({
+    const workspaceSubscriptions = await db.workspaceSubscription.findMany({
       where: {
         userId,
       },
@@ -18,7 +18,7 @@ export const GET = async (request: Request) => {
       },
     });
 
-    const workspace = subscriptions.map(
+    const workspace = workspaceSubscriptions.map(
       (subscription) => subscription.workspace
     );
 
@@ -29,4 +29,5 @@ export const GET = async (request: Request) => {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };
+
 

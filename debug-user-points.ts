@@ -16,14 +16,13 @@ async function debugUserPoints() {
         id: true,
         email: true,
         username: true,
-        pointsBalance: true,
         planId: true,
-        renewDate: true,
+        cycleStart: true,
         plan: {
           select: {
             id: true,
             name: true,
-            pointsPerMonth: true
+            priceUsd: true
           }
         }
       }
@@ -36,11 +35,10 @@ async function debugUserPoints() {
 👤 Usuário: ${user.id}
 📧 Email: ${user.email || 'N/A'}
 👤 Username: ${user.username || 'N/A'}
-💰 Pontos: ${user.pointsBalance}
 📋 Plano ID: ${user.planId}
 📋 Plano Nome: ${user.plan?.name || 'N/A'}
-📋 Pontos por Mês: ${user.plan?.pointsPerMonth || 'N/A'}
-📅 Data de Renovação: ${user.renewDate}
+💰 Preço do Plano: $${user.plan?.priceUsd || 'N/A'}
+📅 Início do Ciclo: ${user.cycleStart}
 ---`);
     }
 
@@ -51,7 +49,6 @@ async function debugUserPoints() {
       console.log(`
 ID: ${plan.id}
 Nome: ${plan.name}
-Pontos por Mês: ${plan.pointsPerMonth}
 Preço: $${plan.priceUsd}
 ---`);
     }

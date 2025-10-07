@@ -22,6 +22,7 @@ model User {
   sessions      Session[]
   createdWorkspaces Workspace[] @relation("CreatedBy")
   subscriptions Subscription[]
+  workspaceSubscriptions WorkspaceSubscription[]
   useCase UseCase?
   createdTasks Task[] @relation("TaskCreatedByUser")
   updatedTasks Task[] @relation("TaskUpdatedByUser")
@@ -37,12 +38,12 @@ model User {
   messages Message[]
   // Sistema de Pontos
   plan Plan? @relation(fields: [planId], references: [id])
-  planId String? @default("1") // Default para Free Plan
-  pointsBalance Int @default(10) // Saldo atual de pontos
-  renewDate DateTime @default(now()) // Data de renovação mensal
+  planId Int? @default(1) // Default para Free Plan
+  cycleStart DateTime @default(now()) // Início do ciclo mensal
+  cycleEnd DateTime @default(now()) // Fim do ciclo mensal
   stripeCustomerId String? @unique // ID do cliente no Stripe
   
-  extraPointsPurchases ExtraPointsPurchase[]
+  balances UserAppBalance[]
   usageLogs UsageLog[]
 }
 
@@ -125,7 +126,7 @@ model Notification {
   notifyCreator User @relation(name: "NotifyCreator", fields: [notifyCreatorId], references: [id], onDelete: Cascade)
   notifyCreatorId String
   workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String
+  workspaceId String?
   seen Boolean @default(false)
   clicked Boolean @default(false)
   createdDate DateTime @default(now())
@@ -179,7 +180,7 @@ model Workspace {
   updatedAt DateTime @updatedAt
   creatorId String?
   Creator User? @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: Cascade)
-  subscribers Subscription[]
+  subscribers WorkspaceSubscription[]
   image String?
   color CustomColors @default(BLUE)
   inviteCode String @unique 
@@ -307,6 +308,22 @@ enum CustomColors {
 }
 
 model Subscription {
+  id                    String   @id @default(cuid())
+  userId                String
+  stripeSubscriptionId  String   @unique
+  status                String   // active, past_due, canceled, incomplete, trialing
+  planId                Int
+  currentPeriodStart    DateTime
+  currentPeriodEnd      DateTime
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+  
+  @@map("subscriptions")
+}
+
+model WorkspaceSubscription {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   workspace Workspace @relation(fields: [workspaceId],references: [id], onDelete: Cascade)
@@ -340,71 +357,93 @@ model MindMap {
   @@index([creatorId])
 }
 
-// Sistema de Pontos - Tabela de Planos
+// Enum para as chaves dos aplicativos
+enum AppKey {
+  PRODIFY
+  ONSCOPE
+  JAZZUP
+  DEEPQUEST
+  OPENUIX
+  TESTPATH
+}
+
+// Tabela de Aplicativos
+model App {
+  id     Int    @id @default(autoincrement())
+  key    AppKey @unique
+  name   String
+  allocations PlanAppAllocation[]
+  balances    UserAppBalance[]
+  usageLogs   UsageLog[]
+  
+  @@map("apps")
+}
+
+// Sistema de Pontos - Tabela de Planos (Atualizada)
 model Plan {
-  id String @id @default(cuid())
-  name String @unique // Free, Pro, Enterprise
-  pointsPerMonth Int // 10, 300, 500
-  priceUsd Decimal @db.Decimal(10,2) // 0.00, 29.00, 59.00
-  stripePriceId String? @unique // ID do preço no Stripe
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  users User[]
+  id            Int      @id @default(autoincrement())
+  name          String   @unique // Free, Pro, Max
+  priceUsd      Float    // 0, 25, 60
+  stripePriceId String?  @unique // ID do preço no Stripe
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  allocations   PlanAppAllocation[]
+  users         User[]
+  subscriptions Subscription[]
   
   @@map("plans")
 }
 
-// Sistema de Pontos - Eventos do Stripe
-model StripeEvent {
-  id String @id @default(cuid())
-  eventId String @unique
-  type String
-  payload Json
-  createdAt DateTime @default(now())
+// Alocação de Créditos por Plano e App
+model PlanAppAllocation {
+  id            Int   @id @default(autoincrement())
+  planId        Int
+  appId         Int
+  monthlyPoints Int?  // null = ilimitado (PRODIFY, TESTPATH)
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
   
-  @@map("stripe_events")
+  @@unique([planId, appId])
+  @@map("plan_app_allocations")
 }
 
-// Sistema de Pontos - Logs de Uso
-model UsageLog {
-  id String @id @default(cuid())
+// Saldo de Créditos do Usuário por App
+model UserAppBalance {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  appId     Int
+  remaining Int      @default(0)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  actionType String // image_generation, video_generation, ai_code_edit, etc.
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, appId])
+  @@map("user_app_balances")
+}
+
+// Sistema de Pontos - Logs de Uso (Atualizado)
+model UsageLog {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  appId      Int
+  actionType String   // ai_edit, project_generation, image_basic, etc.
   pointsUsed Int
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
   
   @@index([userId])
   @@index([createdAt])
   @@map("usage_logs")
 }
 
-// Sistema de Pontos - Pacotes de Pontos Extras
-model ExtraPointsPackage {
-  id String @id @default(cuid())
-  extraPoints Int // 100, 300
-  priceUsd Decimal @db.Decimal(10,2) // 10.00, 25.00
-  name String // "100 Points Pack", "300 Points Pack"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  purchases ExtraPointsPurchase[]
-  
-  @@map("extra_points_packages")
-}
-
-// Sistema de Pontos - Compras de Pontos Extras
-model ExtraPointsPurchase {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  package ExtraPointsPackage @relation(fields: [packageId], references: [id])
-  packageId String
-  pointsAdded Int
-  amountPaid Decimal @db.Decimal(10,2)
+// Sistema de Pontos - Eventos do Stripe
+model StripeEvent {
+  id        Int      @id @default(autoincrement())
+  eventId   String   @unique
+  type      String
+  payload   Json
   createdAt DateTime @default(now())
   
-  @@index([userId])
-  @@index([createdAt])
-  @@map("extra_points_purchases")
+  @@map("stripe_events")
 }
 

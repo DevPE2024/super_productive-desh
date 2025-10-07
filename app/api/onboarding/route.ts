@@ -71,8 +71,11 @@ export async function POST(request: Request) {
     await db.subscription.create({
       data: {
         userId: user.id,
-        workspaceId: workspace.id,
-        userRole: "OWNER",
+        stripeSubscriptionId: `temp_${user.id}`, // ID temporário
+        status: "active",
+        planId: 1, // Free plan
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
       },
     });
 
@@ -93,4 +96,5 @@ export async function POST(request: Request) {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 }
+
 

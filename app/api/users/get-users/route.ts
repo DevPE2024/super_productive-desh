@@ -11,12 +11,12 @@ export const GET = async (request: Request) => {
   try {
     const users = await db.user.findMany({
       where: {
-        subscriptions: {
+        workspaceSubscriptions: {
           some: { workspaceId },
         },
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId,
           },
@@ -32,7 +32,7 @@ export const GET = async (request: Request) => {
         id: user.id,
         username: user.username,
         image: user.image,
-        userRole: user.subscriptions[0].userRole,
+        userRole: user.workspaceSubscriptions[0].userRole,
       };
     });
 
@@ -41,4 +41,5 @@ export const GET = async (request: Request) => {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };
+
 

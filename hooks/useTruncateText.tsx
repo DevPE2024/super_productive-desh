@@ -14,3 +14,4 @@ export const useTruncateText = (text: string, maxLength: number) => {
   }
 };
 
+

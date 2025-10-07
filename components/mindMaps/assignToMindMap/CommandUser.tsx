@@ -81,3 +81,4 @@ export const CommandUser = ({ user, mindMapId, workspaceId }: Props) => {
   );
 };
 
+

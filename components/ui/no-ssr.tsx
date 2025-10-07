@@ -24,3 +24,4 @@ export const NoSSR = ({ children, fallback = null }: NoSSRProps) => {
 
   return <>{children}</>;
 };
+

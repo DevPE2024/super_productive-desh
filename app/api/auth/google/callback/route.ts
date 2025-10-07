@@ -115,3 +115,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/en/sign-in?error=callback_failed`);
   }
 }
+

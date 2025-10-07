@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         id: session.user.id,
       },
       include: {
-        subscriptions: {
+        workspaceSubscriptions: {
           where: {
             workspaceId: id,
           },
@@ -52,8 +52,8 @@ export async function POST(request: Request) {
     }
 
     if (
-      user.subscriptions[0].userRole === "CAN_EDIT" ||
-      user.subscriptions[0].userRole === "READ_ONLY"
+      user.workspaceSubscriptions[0].userRole === "CAN_EDIT" ||
+      user.workspaceSubscriptions[0].userRole === "READ_ONLY"
     ) {
       return NextResponse.json("ERRORS.NO_PERMISSION", { status: 403 });
     }
@@ -73,4 +73,5 @@ export async function POST(request: Request) {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 }
+
 

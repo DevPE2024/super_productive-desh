@@ -85,7 +85,7 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
   // TypeScript assertion - we know inviteCodeValid is not null after the check above
   const validWorkspace = inviteCodeValid!;
 
-  const workspaceUsers = await db.subscription.findMany({
+  const workspaceUsers = await db.workspaceSubscription.findMany({
     where: {
       workspaceId: validWorkspace.id,
     },
@@ -132,7 +132,7 @@ const Workspace = async ({ params: { invite_code }, searchParams }: Params) => {
     }
   };
 
-  await db.subscription.create({
+  await db.workspaceSubscription.create({
     data: {
       userId: session.user.id,
       workspaceId: validWorkspace.id,

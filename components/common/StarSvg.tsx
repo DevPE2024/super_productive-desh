@@ -29,3 +29,4 @@ export const StarSvg = ({ className }: { className?: string }) => {
   );
 };
 
+

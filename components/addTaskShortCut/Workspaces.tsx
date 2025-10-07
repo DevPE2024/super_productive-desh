@@ -24,3 +24,4 @@ export const Workspaces = ({ workspaces, onSelectActiveWorkspace }: Props) => {
   );
 };
 
+

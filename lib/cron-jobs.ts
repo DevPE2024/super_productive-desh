@@ -39,3 +39,4 @@ export async function manualRenewal() {
   console.log('Executando renovação manual de pontos...');
   await runMonthlyRenewal();
 }
+

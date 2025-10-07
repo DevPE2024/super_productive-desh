@@ -8,3 +8,4 @@ export const getRandomWorkspaceColor = () => {
   return colors[randomIndex] as CustomColors;
 };
 
+

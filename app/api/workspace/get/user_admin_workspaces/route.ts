@@ -9,7 +9,7 @@ export const GET = async (request: Request) => {
   if (!userId) return NextResponse.json("ERRORS.NO_USER_API", { status: 404 });
 
   try {
-    const subscriptions = await db.subscription.findMany({
+    const subscriptions = await db.workspaceSubscription.findMany({
       where: {
         userId,
         OR: [{ userRole: "ADMIN" }, { userRole: "OWNER" }],
@@ -30,4 +30,5 @@ export const GET = async (request: Request) => {
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };
+
 

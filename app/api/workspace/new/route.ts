@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       },
     });
 
-    await db.subscription.create({
+    await db.workspaceSubscription.create({
       data: {
         userId: user.id,
         workspaceId: workspace.id,

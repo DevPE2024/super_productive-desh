@@ -11,8 +11,7 @@ async function fixFreeUserPoints() {
       where: { 
         OR: [
           { name: 'Free' },
-          { name: 'Starter' },
-          { pointsPerMonth: 10 }
+          { name: 'Starter' }
         ]
       }
     });
@@ -23,7 +22,6 @@ async function fixFreeUserPoints() {
       const newFreePlan = await prisma.plan.create({
         data: {
           name: 'Free',
-          pointsPerMonth: 10,
           priceUsd: 0
         }
       });
@@ -37,11 +35,8 @@ async function fixFreeUserPoints() {
         OR: [
           { planId: freePlan?.id },
           { planId: null },
-          { planId: '1' } // Default planId
-        ],
-        pointsBalance: {
-          not: 10
-        }
+          { planId: 1 } // Default planId
+        ]
       },
       include: {
         plan: true
@@ -63,8 +58,7 @@ async function fixFreeUserPoints() {
         }
       },
       data: {
-        pointsBalance: 10,
-        planId: freePlan?.id || '1'
+        planId: freePlan?.id || 1
       }
     });
 
@@ -72,7 +66,7 @@ async function fixFreeUserPoints() {
 
     // Mostrar detalhes dos usuários corrigidos
     for (const user of usersToFix) {
-      console.log(`  - Usuário ${user.email || user.username || user.id}: ${user.pointsBalance} → 10 pontos`);
+      console.log(`  - Usuário ${user.email || user.username || user.id}: plano atualizado para ${freePlan?.name || 'Free'}`);
     }
 
     console.log('🎉 Correção concluída com sucesso!');

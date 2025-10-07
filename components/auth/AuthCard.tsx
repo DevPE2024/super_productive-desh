@@ -48,3 +48,4 @@ export const AuthCard = ({ signInCard }: Props) => {
   );
 };
 
+

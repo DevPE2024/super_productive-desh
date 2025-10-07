@@ -28,3 +28,4 @@ export const CreatedWorkspacesInfo = ({ className, createdNumber }: Props) => {
   );
 };
 
+
