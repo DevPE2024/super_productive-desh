@@ -1,0 +1,1 @@
+SELECT email, username, "hashedPassword" FROM "User" WHERE email = 'test@test.com';

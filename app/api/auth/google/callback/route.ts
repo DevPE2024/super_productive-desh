@@ -45,6 +45,16 @@ export async function GET(request: NextRequest) {
 
     // Se não existe, criar novo usuário
     if (!user) {
+      // Buscar o plano "Starter" padrão
+      const starterPlan = await prisma.plan.findFirst({
+        where: { name: "Starter" }
+      });
+
+      if (!starterPlan) {
+        console.error('Plano "Starter" não encontrado');
+        return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/en/sign-in?error=plan_not_found`);
+      }
+
       user = await prisma.user.create({
         data: {
           email: userInfo.email,
@@ -52,7 +62,8 @@ export async function GET(request: NextRequest) {
           image: userInfo.picture || '',
           completedOnboarding: false,
           surname: userInfo.family_name || '',
-          username: userInfo.email.split('@')[0]
+          username: userInfo.email.split('@')[0],
+          planId: starterPlan.id
         }
       });
     } else {

@@ -1,7 +1,7 @@
-import { GithubLogo } from "@/components/svg/GithubLogo";
 import { buttonVariants } from "@/components/ui/button";
 import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { YoutubeIcon } from "lucide-react";
+import { Twitter } from "lucide-react";
 import Link from "next/link";
 
 export const Footer = () => {
@@ -12,7 +12,7 @@ export const Footer = () => {
           <p className="font-semibold sm:text-lg">
             Made with <span className="text-brand">love</span>
           </p>
-          <p className="text-muted-foreground">@ 2024 Prodify by Affinify</p>
+          <p className="text-muted-foreground">@ 2025 Prodify by Affinify</p>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground">
           <Link
@@ -20,7 +20,7 @@ export const Footer = () => {
             target="_blank"
             className={buttonVariants({ variant: "ghost", size: "icon" })}
           >
-            <GithubLogo />
+            <Twitter />
           </Link>
           <Link
             href={"/"}
