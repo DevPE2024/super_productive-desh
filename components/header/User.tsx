@@ -116,29 +116,18 @@ export const User = ({ profileImage, username, email }: Props) => {
               </DropdownMenuPortal>
             </DropdownMenuSub>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="cursor-pointer gap-2">
+              <DropdownMenuSubTrigger className="cursor-pointer gap-2" disabled>
                 <Globe size={16} />
-                <span>{t("LANG_HOVER")}</span>
+                <span>Language</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent sideOffset={10}>
                   <DropdownMenuItem
-                    onClick={() => {
-                      onSelectChange("en");
-                    }}
-                    className="flex justify-between items-center cursor-pointer"
+                    disabled
+                    className="flex justify-between items-center"
                   >
                     <span>English</span>
-                    {lang === "en" && <Check size={14} />}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      onSelectChange("pt-BR");
-                    }}
-                    className="flex justify-between items-center cursor-pointer"
-                  >
-                    <span>Português</span>
-                    {lang === "pt-BR" && <Check size={14} />}
+                    <Check size={14} />
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>

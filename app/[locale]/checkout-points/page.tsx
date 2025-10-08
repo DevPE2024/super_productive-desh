@@ -8,21 +8,46 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { CreditCard, Lock, ArrowLeft, CheckCircle } from 'lucide-react';
+import { CreditCard, Lock, ArrowLeft, CheckCircle, Sparkles } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-interface PlanInfo {
+interface PointPackage {
+  id: string;
   name: string;
-  price: string;
-  priceId: string;
-  features: string[];
+  extraPoints: number;
+  priceUsd: number;
+  pricePerPoint: string;
 }
 
-export default function CheckoutPage() {
+const POINT_PACKAGES: Record<string, PointPackage> = {
+  'small': {
+    id: 'small',
+    name: 'Small Pack',
+    extraPoints: 100,
+    priceUsd: 15,
+    pricePerPoint: '0.150'
+  },
+  'medium': {
+    id: 'medium',
+    name: 'Medium Pack',
+    extraPoints: 250,
+    priceUsd: 25,
+    pricePerPoint: '0.100'
+  },
+  'large': {
+    id: 'large',
+    name: 'Large Pack',
+    extraPoints: 500,
+    priceUsd: 40,
+    pricePerPoint: '0.080'
+  }
+};
+
+export default function CheckoutPointsPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [planInfo, setPlanInfo] = useState<PlanInfo | null>(null);
+  const [packageInfo, setPackageInfo] = useState<PointPackage | null>(null);
   
   // Form data
   const [cardNumber, setCardNumber] = useState('');
@@ -32,36 +57,13 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    const priceId = searchParams.get('priceId');
+    const packageId = searchParams.get('packageId');
     
-    // Definir informações do plano baseado no priceId
-    if (priceId === 'price_1SFgg12MKUskrPofzBJ9XZE0') {
-      setPlanInfo({
-        name: 'Pro',
-        price: '$25',
-        priceId,
-        features: [
-          '⚡ 400 AI credits/month',
-          'Unlimited workspaces',
-          'Priority support',
-          'Advanced features'
-        ]
-      });
-    } else if (priceId === 'price_1SFggA2MKUskrPofKMMHqWuJ') {
-      setPlanInfo({
-        name: 'Max',
-        price: '$60',
-        priceId,
-        features: [
-          '⚡ 800 AI credits/month',
-          'Everything in Pro',
-          'Advanced permissions',
-          'Dedicated support'
-        ]
-      });
+    if (packageId && POINT_PACKAGES[packageId]) {
+      setPackageInfo(POINT_PACKAGES[packageId]);
     } else {
-      // Redirecionar para pricing se não houver priceId válido
-      router.push('/pricing');
+      // Redirecionar para pontos se não houver packageId válido
+      router.push('/dashboard/points');
     }
   }, [searchParams, router]);
 
@@ -83,7 +85,7 @@ export default function CheckoutPage() {
   };
 
   const formatExpiryDate = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    const v = value.replace(/\D/g, '');
     if (v.length >= 2) {
       return v.substring(0, 2) + '/' + v.substring(2, 4);
     }
@@ -91,78 +93,53 @@ export default function CheckoutPage() {
   };
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatCardNumber(e.target.value);
-    setCardNumber(formatted);
+    setCardNumber(formatCardNumber(e.target.value));
   };
 
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatExpiryDate(e.target.value);
-    setExpiryDate(formatted);
+    setExpiryDate(formatExpiryDate(e.target.value));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!planInfo) return;
-
-    // Validações básicas
-    if (!cardNumber || !expiryDate || !cvv || !cardName || !email) {
-      toast({
-        title: "Campos obrigatórios",
-        description: "Por favor, preencha todos os campos",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
-      // Simular processamento de pagamento
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const response = await fetch('/api/stripe/checkout-points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ packageId: packageInfo?.id })
+      });
 
-      // Em desenvolvimento, simular sucesso
-      if (process.env.NODE_ENV === 'development') {
-        toast({
-          title: "Pagamento processado!",
-          description: "Sua assinatura foi ativada com sucesso",
-          variant: "default"
-        });
-        
-        // Redirecionar para dashboard com sucesso
-        router.push('/dashboard?success=true&plan=' + planInfo.name);
-      } else {
-        // Em produção, usar Stripe real
-        const response = await fetch('/api/stripe/checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            priceId: planInfo.priceId,
-            paymentMethod: {
-              cardNumber: cardNumber.replace(/\s/g, ''),
-              expiryDate,
-              cvv,
-              cardName,
-              email
-            }
-          }),
-        });
+      const data = await response.json();
 
-        const data = await response.json();
-
-        if (response.ok && data.url) {
+      if (data.success) {
+        if (data.url) {
+          // Redirecionar para Stripe Checkout
           window.location.href = data.url;
-        } else {
-          throw new Error(data.error || 'Erro no processamento');
+        } else if (data.newBalance) {
+          // Compra processada diretamente (modo dev)
+          toast({
+            title: "Sucesso!",
+            description: `${packageInfo?.extraPoints} pontos adicionados com sucesso!`,
+            variant: "default"
+          });
+          router.push('/dashboard/points');
         }
+      } else {
+        toast({
+          title: "Erro",
+          description: data.message || "Falha ao processar pagamento",
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      console.error('Erro no checkout:', error);
+      console.error('Erro na compra:', error);
       toast({
-        title: "Erro no pagamento",
-        description: error instanceof Error ? error.message : "Erro desconhecido",
+        title: "Erro",
+        description: "Erro de conexão durante a compra",
         variant: "destructive"
       });
     } finally {
@@ -170,9 +147,9 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!planInfo) {
+  if (!packageInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -191,16 +168,16 @@ export default function CheckoutPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
           </Button>
-          <h1 className="text-4xl font-bold text-white">Complete Your Purchase</h1>
+          <h1 className="text-4xl font-bold text-white">Buy Extra Points</h1>
           <p className="text-gray-300 mt-2 text-lg">
-            Complete your payment to activate the {planInfo.name} plan
+            Complete your payment to add {packageInfo.extraPoints} points to your account
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Formulário de Pagamento */}
           <Card className="order-2 lg:order-1 bg-gray-800 border-gray-700 shadow-2xl">
-            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-lg">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-t-lg">
               <CardTitle className="flex items-center gap-2 text-white text-xl">
                 <CreditCard className="h-6 w-6" />
                 Payment Information
@@ -215,8 +192,8 @@ export default function CheckoutPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="seu@email.com"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                    placeholder="your@email.com"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
                     required
                   />
                 </div>
@@ -228,7 +205,7 @@ export default function CheckoutPage() {
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value)}
                     placeholder="John Silva"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
                     required
                   />
                 </div>
@@ -241,7 +218,7 @@ export default function CheckoutPage() {
                     onChange={handleCardNumberChange}
                     placeholder="1234 5678 9012 3456"
                     maxLength={19}
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
                     required
                   />
                 </div>
@@ -255,7 +232,7 @@ export default function CheckoutPage() {
                       onChange={handleExpiryChange}
                       placeholder="MM/YY"
                       maxLength={5}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
                       required
                     />
                   </div>
@@ -267,7 +244,7 @@ export default function CheckoutPage() {
                       onChange={(e) => setCvv(e.target.value.replace(/\D/g, '').substring(0, 4))}
                       placeholder="123"
                       maxLength={4}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
+                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 focus:ring-purple-500"
                       required
                     />
                   </div>
@@ -280,7 +257,7 @@ export default function CheckoutPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 text-lg"
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 text-lg"
                   disabled={loading}
                 >
                   {loading ? (
@@ -291,7 +268,7 @@ export default function CheckoutPage() {
                   ) : (
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-5 w-5" />
-                      Pay {planInfo.price}/month
+                      Pay ${packageInfo.priceUsd}
                     </div>
                   )}
                 </Button>
@@ -301,32 +278,55 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <Card className="order-1 lg:order-2 h-fit bg-gray-800 border-gray-700 shadow-2xl">
-            <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 rounded-t-lg">
-              <CardTitle className="text-white text-xl">Order Summary</CardTitle>
+            <CardHeader className="bg-gradient-to-r from-yellow-600 to-orange-600 rounded-t-lg">
+              <CardTitle className="text-white text-xl flex items-center gap-2">
+                <Sparkles className="h-6 w-6" />
+                Purchase Summary
+              </CardTitle>
             </CardHeader>
             <CardContent className="bg-gray-800 space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-xl text-white">{planInfo.name} Plan</h3>
-                  <Badge className="bg-blue-600 text-white">Monthly</Badge>
+                  <h3 className="font-semibold text-xl text-white">{packageInfo.name}</h3>
+                  <Badge className="bg-orange-600 text-white">Extra Points</Badge>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-white">{planInfo.price}</div>
-                  <div className="text-sm text-gray-400">per month</div>
+                  <div className="text-3xl font-bold text-white">${packageInfo.priceUsd}</div>
+                  <div className="text-sm text-gray-400">one-time payment</div>
                 </div>
               </div>
 
               <Separator className="bg-gray-600" />
 
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-lg">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">{packageInfo.extraPoints}</div>
+                  <div className="text-lg text-purple-100">extra points</div>
+                  <div className="text-sm text-purple-200 mt-1">
+                    ${packageInfo.pricePerPoint} per point
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <h4 className="font-medium mb-3 text-white text-lg">Included Features:</h4>
+                <h4 className="font-medium mb-3 text-white text-lg">Benefits:</h4>
                 <ul className="space-y-2">
-                  {planInfo.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-3 text-sm text-gray-300">
-                      <CheckCircle className="h-5 w-5 text-green-400" />
-                      {feature}
-                    </li>
-                  ))}
+                  <li className="flex items-center gap-3 text-sm text-gray-300">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    Points never expire
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-gray-300">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    Instant activation
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-gray-300">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    Distributed across all apps
+                  </li>
+                  <li className="flex items-center gap-3 text-sm text-gray-300">
+                    <CheckCircle className="h-5 w-5 text-green-400" />
+                    Used after monthly points
+                  </li>
                 </ul>
               </div>
 
@@ -334,13 +334,13 @@ export default function CheckoutPage() {
 
               <div className="flex justify-between font-semibold text-xl">
                 <span className="text-white">Total</span>
-                <span className="text-white">{planInfo.price}/month</span>
+                <span className="text-white">${packageInfo.priceUsd}</span>
               </div>
 
               <div className="text-xs text-gray-400 space-y-2 bg-gray-700 p-4 rounded-lg">
-                <p>• Monthly recurring billing</p>
-                <p>• Cancel anytime</p>
-                <p>• Priority support included</p>
+                <p>• One-time payment (non-recurring)</p>
+                <p>• Points added instantly</p>
+                <p>• Support included</p>
               </div>
             </CardContent>
           </Card>

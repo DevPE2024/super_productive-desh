@@ -55,67 +55,24 @@ export async function POST(request: NextRequest) {
     if (process.env.NODE_ENV === 'development' || process.env.STRIPE_DEV_MODE === 'true') {
       console.log('🔧 Modo de desenvolvimento: Simulando compra de pontos');
       
-      // Simular adição de pontos diretamente
-      // Nota: Em produção, isso seria feito via webhook do Stripe
-      const user = await db.user.findUnique({
-        where: { id: session.user.id },
-        include: { 
-          balances: {
-            where: { appId: 1 } // App ID 1 para sistema de pontos
-          }
-        }
-      });
-
-      if (!user) {
+      // Usar a função de compra de pontos existente
+      const { purchaseExtraPoints } = await import('@/lib/points-system');
+      const result = await purchaseExtraPoints(session.user.id, packageId);
+      
+      if (result.success) {
+        console.log(`✅ Pontos adicionados: ${pointPackage.extraPoints} para usuário ${session.user.id}`);
+        
+        return NextResponse.json({
+          success: true,
+          newBalance: result.newBalance,
+          message: result.message
+        });
+      } else {
         return NextResponse.json(
-          { success: false, message: 'Usuário não encontrado' },
-          { status: 404 }
+          { success: false, message: result.message },
+          { status: 400 }
         );
       }
-
-      // Atualizar ou criar saldo de pontos
-      let currentBalance = user.balances[0]?.balance || 0;
-      const newBalance = currentBalance + pointPackage.extraPoints;
-
-      await db.userAppBalance.upsert({
-        where: {
-          userId_appId: {
-            userId: session.user.id,
-            appId: 1
-          }
-        },
-        update: {
-          balance: newBalance
-        },
-        create: {
-          userId: session.user.id,
-          appId: 1,
-          balance: newBalance
-        }
-      });
-
-      // Registrar log de compra
-      await db.usageLog.create({
-        data: {
-          userId: session.user.id,
-          appId: 1,
-          actionType: 'points_purchase',
-          pointsUsed: -pointPackage.extraPoints, // Negativo para indicar adição
-          metadata: {
-            packageId,
-            packageName: pointPackage.name,
-            priceUsd: pointPackage.priceUsd
-          }
-        }
-      });
-
-      console.log(`✅ Pontos adicionados: ${pointPackage.extraPoints} para usuário ${session.user.id}`);
-      
-      return NextResponse.json({
-        success: true,
-        newBalance,
-        message: `${pointPackage.extraPoints} pontos adicionados com sucesso!`
-      });
     }
 
     // Produção - criar sessão de checkout do Stripe

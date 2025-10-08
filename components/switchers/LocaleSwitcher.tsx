@@ -45,43 +45,17 @@ export const LocaleSwitcher = ({
 
   return (
     <HoverCard openDelay={250} closeDelay={250}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            disabled={isLoading}
-            variant={variant}
-            size={size}
-            className={textSize}
-          >
-            {isLoading ? (
-              <LoadingState className="mr-0" />
-            ) : (
-              locale === "pt-BR" ? "PT" : locale.toUpperCase()
-            )}
-            <span className="sr-only">{t("LANG_HOVER")}</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align={alignDropdown}>
-          <DropdownMenuItem
-            onClick={() => {
-              onSelectChange("pt-BR");
-            }}
-            className="cursor-pointer"
-          >
-            <span className="font-semibold">PT</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              onSelectChange("en");
-            }}
-            className="cursor-pointer"
-          >
-            <span className="font-semibold">EN</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        disabled
+        variant={variant}
+        size={size}
+        className={textSize}
+      >
+        EN
+        <span className="sr-only">English</span>
+      </Button>
       <HoverCardContent align={alignHover}>
-        <span>{t("LANG_HOVER")}</span>
+        <span>English</span>
       </HoverCardContent>
     </HoverCard>
   );

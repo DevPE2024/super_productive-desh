@@ -56,37 +56,8 @@ export function ExtraPointsShop() {
     try {
       setPurchasing(packageId);
       
-      // Primeiro, tentar criar uma sessão de checkout do Stripe
-      const response = await fetch('/api/stripe/checkout-points', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ packageId })
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.url) {
-        // Redirecionar para o Stripe Checkout
-        window.location.href = data.url;
-      } else if (data.success && data.newBalance) {
-        // Compra processada diretamente (modo dev ou pontos gratuitos)
-        toast({
-          title: "Success!",
-          description: `Points purchased successfully! New balance: ${data.newBalance}`,
-          variant: "default"
-        });
-        
-        // Recarregar a página para atualizar os dados
-        window.location.reload();
-      } else {
-        toast({
-          title: "Error",
-          description: data.message || "Failed to create checkout session",
-          variant: "destructive"
-        });
-      }
+      // Redirecionar para página de checkout de pontos
+      window.location.href = `/checkout-points?packageId=${packageId}`;
     } catch (error) {
       console.error('Erro na compra:', error);
       toast({
