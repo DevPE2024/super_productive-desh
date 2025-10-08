@@ -1,0 +1,1 @@
+SELECT id, email, "hashedPassword" IS NOT NULL as has_password FROM "User" WHERE email = 'test@checkout.com';

@@ -38,6 +38,7 @@ export const ImagesCarousel = ({ className, images }: Props) => {
                   alt={img.alt}
                   width={1900}
                   height={1900}
+                  priority={index === 0}
                 />
               </AspectRatio>
             </div>

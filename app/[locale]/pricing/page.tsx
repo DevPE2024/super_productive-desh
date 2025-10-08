@@ -49,7 +49,7 @@ const PricingPage = () => {
       ],
       description: "Most popular - Best for teams and professionals",
       buttonText: "Start Free Trial",
-      href: "/api/stripe/checkout?priceId=price_pro_monthly",
+      href: "/api/stripe/checkout?priceId=price_1SFgg12MKUskrPofzBJ9XZE0",
       isPopular: true,
     },
     {
@@ -71,7 +71,7 @@ const PricingPage = () => {
       ],
       description: "For large organizations with advanced needs",
       buttonText: "Start Free Trial",
-      href: "/api/stripe/checkout?priceId=price_max_monthly",
+      href: "/api/stripe/checkout?priceId=price_1SFggA2MKUskrPofKMMHqWuJ",
       isPopular: false,
     },
   ];

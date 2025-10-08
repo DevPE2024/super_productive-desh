@@ -34,13 +34,13 @@ export async function POST(request: Request) {
     // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Buscar o plano Starter
-    const starterPlan = await db.plan.findFirst({
-      where: { name: 'Starter' }
+    // Buscar o plano Free
+    const freePlan = await db.plan.findFirst({
+      where: { name: 'Free' }
     });
 
-    if (!starterPlan) {
-      return NextResponse.json({ error: "Plano Starter não encontrado" }, { status: 500 });
+    if (!freePlan) {
+      return NextResponse.json({ error: "Plano Free não encontrado" }, { status: 500 });
     }
 
     // Criar usuário no banco
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         name: username,
         completedOnboarding: true,
         emailVerified: new Date(),
-        planId: starterPlan.id
+        planId: freePlan.id
       }
     });
 

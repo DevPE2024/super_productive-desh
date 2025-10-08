@@ -1,6 +1,7 @@
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -12,6 +13,7 @@ import { useState, useRef } from "react";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 import { CheckIcon } from "@radix-ui/react-icons";
+import { toast } from "@/hooks/use-toast";
 
 interface PricingPlan {
   name: string;
@@ -37,6 +39,7 @@ export function Pricing({
   description = "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.",
 }: PricingProps) {
   const [isMonthly, setIsMonthly] = useState(true);
+  const [loading, setLoading] = useState<string | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const switchRef = useRef<HTMLButtonElement>(null);
 
@@ -66,6 +69,57 @@ export function Pricing({
         startVelocity: 30,
         shapes: ["circle"],
       });
+    }
+  };
+
+  const handleCheckout = async (plan: PricingPlan) => {
+    // Se for o plano Free, redireciona para sign-up
+    if (plan.name === "Free") {
+      window.location.href = plan.href;
+      return;
+    }
+
+    // Para planos pagos, fazer requisição POST para o checkout
+    try {
+      setLoading(plan.name);
+      
+      // Extrair priceId da URL
+      const url = new URL(plan.href, window.location.origin);
+      const priceId = url.searchParams.get('priceId');
+      
+      if (!priceId) {
+        throw new Error('Price ID não encontrado');
+      }
+
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ priceId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao criar sessão de checkout');
+      }
+
+      // Redirecionar para o Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('URL de checkout não recebida');
+      }
+    } catch (error) {
+      console.error('Erro no checkout:', error);
+      toast({
+        title: "Erro no checkout",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -186,21 +240,26 @@ export function Pricing({
 
               <hr className="w-full my-4" />
 
-              <Link
-                href={plan.href}
+              <Button
+                onClick={() => handleCheckout(plan)}
+                disabled={loading === plan.name}
                 className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                  }),
                   "group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter",
-                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:bg-primary hover:text-primary-foreground",
+                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-1",
                   plan.isPopular
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground"
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "bg-background text-foreground border border-input hover:bg-accent hover:text-accent-foreground"
                 )}
               >
-                {plan.buttonText}
-              </Link>
+                {loading === plan.name ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                    Processing...
+                  </div>
+                ) : (
+                  plan.buttonText
+                )}
+              </Button>
               <p className="mt-6 text-xs leading-5 text-muted-foreground">
                 {plan.description}
               </p>

@@ -1,0 +1,1 @@
+SELECT id, name, price, credits, features FROM "Plan" ORDER BY id;

@@ -71,6 +71,20 @@ export async function createCheckoutSession(
       throw new Error('Price ID inválido');
     }
 
+    // Modo de desenvolvimento - simular checkout sem Stripe real
+    if (process.env.NODE_ENV === 'development' || process.env.STRIPE_DEV_MODE === 'true') {
+      console.log('🔧 Modo de desenvolvimento: Simulando checkout do Stripe');
+      
+      // Simular uma sessão de checkout
+      const mockSession = {
+        id: `cs_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        url: `${successUrl}?session_id=cs_test_mock&plan=${getPlanByPriceId(priceId)?.name}`
+      };
+      
+      console.log('✅ Sessão de checkout simulada criada:', mockSession);
+      return mockSession;
+    }
+
     // Buscar ou criar customer no Stripe
     const user = await db.user.findUnique({
       where: { id: userId }

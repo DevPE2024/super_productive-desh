@@ -1,0 +1,1 @@
+SELECT id, email FROM "User" WHERE email = 'test@checkout.com';

@@ -1,6 +1,7 @@
 import Welcoming from "@/components/common/Welcoming";
 import { DashboardHeader } from "@/components/header/DashboardHeader";
 import { HomeRecentActivityContainer } from "@/components/homeRecentActivity/HomeRecentActivityContainer";
+import { CheckoutSuccessHandler } from "@/components/checkout/CheckoutSuccessHandler";
 import { getInitialHomeRecentActivity } from "@/lib/api";
 import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboarding";
 
@@ -19,6 +20,7 @@ const Dashboard = async () => {
     <>
       <DashboardHeader />
       <main className="h-full w-full">
+        <CheckoutSuccessHandler userId={session.user.id} />
         <Welcoming
           hideOnDesktop
           className="px-4 py-2"

@@ -1,0 +1,1 @@
+SELECT id, email, username, "planId" FROM "User" WHERE email = 'testlogin@example.com';
