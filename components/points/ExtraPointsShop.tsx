@@ -140,10 +140,10 @@ export function ExtraPointsShop() {
         {packages.map((pkg) => (
           <Card
             key={pkg.id}
-            className={`relative transition-all duration-200 hover:shadow-lg bg-white dark:bg-gray-800 ${
+            className={`relative transition-all duration-200 hover:shadow-lg bg-gray-800 ${
               pkg.name === 'Medium Pack' 
-                ? 'border-blue-500 shadow-md' 
-                : 'border-gray-200 hover:border-gray-300 dark:border-gray-600 dark:hover:border-gray-500'
+                ? 'border-purple-500 shadow-purple-500/20 shadow-lg' 
+                : 'border-gray-700'
             }`}
           >
             {pkg.name === 'Medium Pack' && (
@@ -153,28 +153,28 @@ export function ExtraPointsShop() {
             )}
             
             <CardHeader className="text-center pb-4">
-              <CardTitle className="flex items-center justify-center gap-2 text-gray-900 dark:text-gray-100">
-                <Coins className="h-5 w-5 text-yellow-500" />
+              <CardTitle className="flex items-center justify-center gap-2 text-white">
+                <Coins className="h-5 w-5 text-yellow-400" />
                 {pkg.name}
               </CardTitle>
             </CardHeader>
             
             <CardContent className="text-center space-y-4">
               <div>
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <div className="text-3xl font-bold text-blue-400">
                   {pkg.extraPoints}
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-300">extra points</p>
+                <p className="text-sm text-gray-300">extra points</p>
               </div>
 
               <div className="space-y-1">
-                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <div className="text-2xl font-bold text-white">
                   ${pkg.priceUsd}
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-gray-400">
                   ${(pkg.priceUsd / pkg.extraPoints).toFixed(3)} per point
                 </p>
-                <div className="text-xs text-green-600 dark:text-green-400 font-medium">
+                <div className="text-xs text-green-400 font-medium">
                   Save {pkg.name === 'Large Pack' ? '30%' : pkg.name === 'Medium Pack' ? '20%' : '0%'} vs individual
                 </div>
               </div>
@@ -198,13 +198,13 @@ export function ExtraPointsShop() {
                 )}
               </Button>
 
-              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+              <div className="text-xs text-gray-400 space-y-1">
                 <div className="flex items-center justify-center gap-1">
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-3 w-3 text-green-400" />
                   Instant activation
                 </div>
                 <div className="flex items-center justify-center gap-1">
-                  <Check className="h-3 w-3 text-green-500" />
+                  <Check className="h-3 w-3 text-green-400" />
                   No expiration
                 </div>
               </div>

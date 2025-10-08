@@ -138,11 +138,11 @@ export function PointsBalance() {
   const progressPercentage = Math.min((pointsInfo.pointsBalance / pointsInfo.pointsPerMonth) * 100, 100);
 
   return (
-    <Card className="w-full max-w-lg bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-gray-200 dark:border-gray-700 shadow-lg">
+    <Card className="w-full max-w-lg bg-gradient-to-br from-gray-800 to-gray-900 border-gray-700 shadow-xl">
       <CardHeader className="pb-4">
-        <CardTitle className="flex items-center justify-between text-xl text-gray-900 dark:text-gray-100">
+        <CardTitle className="flex items-center justify-between text-xl text-white">
           <div className="flex items-center gap-2">
-            <Coins className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            <Coins className="h-6 w-6 text-blue-400" />
             Points Balance
           </div>
           <Badge 
@@ -160,14 +160,14 @@ export function PointsBalance() {
           <div className={`text-4xl font-bold ${getBalanceColor(pointsInfo.pointsBalance, pointsInfo.pointsPerMonth)}`}>
             {pointsInfo.pointsBalance.toLocaleString()}
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm text-gray-300">
             of {pointsInfo.pointsPerMonth.toLocaleString()} monthly points
           </p>
         </div>
 
         {/* Barra de progresso melhorada */}
         <div className="space-y-3">
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex justify-between text-sm text-gray-300">
             <span>Usage this month</span>
             <span className="font-medium">
               {Math.round(progressPercentage)}% remaining
@@ -183,17 +183,17 @@ export function PointsBalance() {
 
         {/* Informações do plano */}
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <Calendar className="h-5 w-5 text-blue-500 mb-1" />
-            <span className="text-gray-600 dark:text-gray-300">Renewal</span>
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
+          <div className="flex flex-col items-center p-3 bg-gray-700 rounded-lg">
+            <Calendar className="h-5 w-5 text-blue-400 mb-1" />
+            <span className="text-gray-300">Renewal</span>
+            <span className="font-semibold text-white">
               {pointsInfo.daysUntilRenewal} days
             </span>
           </div>
-          <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <TrendingUp className="h-5 w-5 text-green-500 mb-1" />
-            <span className="text-gray-600 dark:text-gray-300">Monthly</span>
-            <span className="font-semibold text-gray-900 dark:text-gray-100">
+          <div className="flex flex-col items-center p-3 bg-gray-700 rounded-lg">
+            <TrendingUp className="h-5 w-5 text-green-400 mb-1" />
+            <span className="text-gray-300">Monthly</span>
+            <span className="font-semibold text-white">
               {pointsInfo.pointsPerMonth.toLocaleString()}
             </span>
           </div>

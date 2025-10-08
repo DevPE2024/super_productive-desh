@@ -177,6 +177,16 @@ export async function getUserPointsInfo(userId: string): Promise<UserPointsInfo 
     const user = await db.user.findUnique({
       where: { id: userId },
       include: { 
+        plan: {
+          include: {
+            allocations: {
+              include: { app: true }
+            }
+          }
+        },
+        balances: {
+          include: { app: true }
+        },
         subscriptions: {
           where: { status: 'active' },
           include: { plan: true }
@@ -188,15 +198,51 @@ export async function getUserPointsInfo(userId: string): Promise<UserPointsInfo 
       return null;
     }
 
-    // Obter plano ativo (se houver)
+    // Obter plano (direto do usuário ou da assinatura ativa)
+    let plan = user.plan;
     const activeSubscription = user.subscriptions[0];
-    const plan = activeSubscription?.plan;
+    
+    if (!plan && activeSubscription?.plan) {
+      plan = activeSubscription.plan;
+    }
+
+    // Se não tem plano, usar Free como padrão
+    if (!plan) {
+      // Buscar plano Free
+      const freePlan = await db.plan.findFirst({
+        where: { name: 'Free' },
+        include: {
+          allocations: {
+            include: { app: true }
+          }
+        }
+      });
+      plan = freePlan;
+    }
+
+    // Calcular total de pontos (soma de todos os apps com créditos)
+    // Excluir PRODIFY e TESTPATH que são ilimitados
+    const allocationsWithCredits = plan?.allocations.filter(
+      a => a.monthlyPoints !== null && !['PRODIFY', 'TESTPATH'].includes(a.app.key)
+    ) || [];
+    
+    const totalMonthlyPoints = allocationsWithCredits.reduce(
+      (sum, a) => sum + (a.monthlyPoints || 0), 0
+    );
+
+    // Calcular saldo total (soma de todos os balances)
+    const totalBalance = user.balances
+      .filter(b => !['PRODIFY', 'TESTPATH'].includes(b.app.key))
+      .reduce((sum, b) => sum + b.remaining, 0);
+
+    // Calcular data de renovação
+    const renewDate = user.cycleEnd || new Date(new Date().setMonth(new Date().getMonth() + 1));
 
     return {
-      pointsBalance: 0, // Placeholder - campo não existe no schema
+      pointsBalance: totalBalance,
       planName: plan?.name || "Free",
-      pointsPerMonth: 0, // Placeholder - campo não existe no schema
-      renewDate: activeSubscription?.currentPeriodEnd || new Date()
+      pointsPerMonth: totalMonthlyPoints,
+      renewDate: activeSubscription?.currentPeriodEnd || renewDate
     };
   } catch (error) {
     console.error('Erro ao buscar informações de pontos:', error);
@@ -269,47 +315,81 @@ export async function purchaseExtraPoints(
   try {
     const { db } = await import('./db');
     
-    // Buscar pacote de pontos (assumindo que não existe na schema atual)
-    // const pointsPackage = await db.extraPointsPackage.findUnique({
-    //   where: { id: packageId }
-    // });
+    // Mapear pacotes de pontos
+    const packages = {
+      'small': { extraPoints: 100, priceUsd: 15 },
+      'medium': { extraPoints: 250, priceUsd: 25 },
+      'large': { extraPoints: 500, priceUsd: 40 }
+    };
 
-    // if (!pointsPackage) {
-    //   return { success: false, message: "Pacote de pontos não encontrado" };
-    // }
+    const packageData = packages[packageId as keyof typeof packages];
+    if (!packageData) {
+      return { success: false, message: "Pacote de pontos não encontrado" };
+    }
 
     // Buscar usuário
     const user = await db.user.findUnique({
-      where: { id: userId }
+      where: { id: userId },
+      include: {
+        balances: {
+          include: { app: true }
+        }
+      }
     });
 
     if (!user) {
       return { success: false, message: "Usuário não encontrado" };
     }
 
-    // Placeholder - sistema de pontos não implementado completamente
-    // Atualizar saldo do usuário (removendo pointsBalance que não existe)
-    // const updatedUser = await db.user.update({
-    //   where: { id: userId },
-    //   data: {
-    //     pointsBalance: user.pointsBalance + pointsPackage.points
-    //   }
-    // });
+    // Distribuir pontos extras entre os apps (excluindo PRODIFY e TESTPATH)
+    const appsWithCredits = user.balances.filter(
+      b => !['PRODIFY', 'TESTPATH'].includes(b.app.key)
+    );
 
-    // Registrar a compra (assumindo que não existe na schema atual)
-    // await db.pointsPurchase.create({
-    //   data: {
-    //     userId,
-    //     packageId,
-    //     pointsAdded: pointsPackage.points,
-    //     amountPaid: pointsPackage.price
-    //   }
-    // });
+    if (appsWithCredits.length === 0) {
+      return { success: false, message: "Nenhum app encontrado para adicionar pontos" };
+    }
+
+    // Calcular pontos por app (distribuição igual)
+    const pointsPerApp = Math.floor(packageData.extraPoints / appsWithCredits.length);
+    const remainingPoints = packageData.extraPoints % appsWithCredits.length;
+
+    // Atualizar saldos dos apps
+    for (let i = 0; i < appsWithCredits.length; i++) {
+      const balance = appsWithCredits[i];
+      const extraPoints = pointsPerApp + (i < remainingPoints ? 1 : 0);
+      
+      await db.userAppBalance.update({
+        where: {
+          userId_appId: {
+            userId,
+            appId: balance.appId
+          }
+        },
+        data: {
+          remaining: balance.remaining + extraPoints
+        }
+      });
+    }
+
+    // Calcular novo saldo total
+    const updatedUser = await db.user.findUnique({
+      where: { id: userId },
+      include: {
+        balances: {
+          include: { app: true }
+        }
+      }
+    });
+
+    const newTotalBalance = updatedUser?.balances
+      .filter(b => !['PRODIFY', 'TESTPATH'].includes(b.app.key))
+      .reduce((sum, b) => sum + b.remaining, 0) || 0;
 
     return {
-      success: false,
-      message: "Sistema de pontos não implementado completamente",
-      newBalance: 0
+      success: true,
+      message: `${packageData.extraPoints} pontos extras adicionados com sucesso!`,
+      newBalance: newTotalBalance
     };
   } catch (error) {
     console.error('Erro ao comprar pontos extras:', error);

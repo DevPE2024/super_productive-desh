@@ -9,22 +9,22 @@ const POINT_PACKAGES = {
     id: 'small',
     name: 'Small Pack',
     extraPoints: 100,
-    priceUsd: 5,
-    stripePriceId: process.env.STRIPE_POINTS_SMALL_PRICE_ID
+    priceUsd: 15,
+    stripePriceId: 'price_1SG2eS2MKUskrPofffFwKFkH'
   },
   'medium': {
     id: 'medium', 
     name: 'Medium Pack',
     extraPoints: 250,
-    priceUsd: 10,
-    stripePriceId: process.env.STRIPE_POINTS_MEDIUM_PRICE_ID
+    priceUsd: 25,
+    stripePriceId: 'price_1SG2eV2MKUskrPof46gKnJWS'
   },
   'large': {
     id: 'large',
     name: 'Large Pack', 
     extraPoints: 500,
-    priceUsd: 18,
-    stripePriceId: process.env.STRIPE_POINTS_LARGE_PRICE_ID
+    priceUsd: 40,
+    stripePriceId: 'price_1SG2eZ2MKUskrPofnrekGE7I'
   }
 };
 

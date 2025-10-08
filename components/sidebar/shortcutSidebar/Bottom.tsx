@@ -41,7 +41,7 @@ export const Bottom = () => {
         </HoverCardTrigger>
       </HoverCard>
       <HoverCard openDelay={250} closeDelay={250}>
-        <HoverCardTrigger tabIndex={1}>
+        <HoverCardTrigger asChild>
           <ActiveLink
             include="settings"
             variant={"ghost"}

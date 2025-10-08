@@ -7,22 +7,22 @@ const POINT_PACKAGES = [
     id: 'small',
     name: 'Small Pack',
     extraPoints: 100,
-    priceUsd: 5,
-    pricePerPoint: '0.050'
+    priceUsd: 15,
+    pricePerPoint: '0.150'
   },
   {
     id: 'medium', 
     name: 'Medium Pack',
     extraPoints: 250,
-    priceUsd: 10,
-    pricePerPoint: '0.040'
+    priceUsd: 25,
+    pricePerPoint: '0.100'
   },
   {
     id: 'large',
     name: 'Large Pack', 
     extraPoints: 500,
-    priceUsd: 18,
-    pricePerPoint: '0.036'
+    priceUsd: 40,
+    pricePerPoint: '0.080'
   }
 ];
 
