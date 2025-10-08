@@ -79,7 +79,7 @@ export function Pricing({
       return;
     }
 
-    // Para planos pagos, fazer requisição POST para o checkout
+    // Para planos pagos, redirecionar para nossa página de checkout personalizada
     try {
       setLoading(plan.name);
       
@@ -91,26 +91,9 @@ export function Pricing({
         throw new Error('Price ID não encontrado');
       }
 
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ priceId }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao criar sessão de checkout');
-      }
-
-      // Redirecionar para o Stripe Checkout
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('URL de checkout não recebida');
-      }
+      // Redirecionar para nossa página de checkout com o priceId
+      window.location.href = `/checkout?priceId=${priceId}`;
+      
     } catch (error) {
       console.error('Erro no checkout:', error);
       toast({

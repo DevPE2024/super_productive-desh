@@ -44,10 +44,29 @@ export default function PointsPage() {
               Upgrade your plan or buy extra points to continue using AI features without interruption.
             </p>
             <div className="flex gap-3 flex-wrap">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                onClick={() => window.location.href = '/pricing'}
+              >
                 Upgrade Plan
               </Button>
-              <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-300 dark:hover:bg-blue-900/30 shadow-sm hover:shadow-md transition-all duration-200">
+              <Button 
+                variant="outline" 
+                className="border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-600 dark:text-blue-300 dark:hover:bg-blue-900/30 shadow-sm hover:shadow-md transition-all duration-200"
+                onClick={() => {
+                  const tabsElement = document.querySelector('[data-state="active"][value="shop"]');
+                  if (!tabsElement) {
+                    // Se não estiver na aba shop, mudar para ela
+                    const shopTab = document.querySelector('[value="shop"]') as HTMLButtonElement;
+                    shopTab?.click();
+                  }
+                  // Scroll para a seção de compra
+                  setTimeout(() => {
+                    const shopSection = document.querySelector('[value="shop"]')?.parentElement?.parentElement;
+                    shopSection?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+              >
                 Buy Extra Points
               </Button>
             </div>

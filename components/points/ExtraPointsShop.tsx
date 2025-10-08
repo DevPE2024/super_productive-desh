@@ -55,7 +55,9 @@ export function ExtraPointsShop() {
   const purchasePackage = async (packageId: string) => {
     try {
       setPurchasing(packageId);
-      const response = await fetch('/api/points/purchase', {
+      
+      // Primeiro, tentar criar uma sessão de checkout do Stripe
+      const response = await fetch('/api/stripe/checkout-points', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -65,16 +67,23 @@ export function ExtraPointsShop() {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.url) {
+        // Redirecionar para o Stripe Checkout
+        window.location.href = data.url;
+      } else if (data.success && data.newBalance) {
+        // Compra processada diretamente (modo dev ou pontos gratuitos)
         toast({
           title: "Success!",
           description: `Points purchased successfully! New balance: ${data.newBalance}`,
           variant: "default"
         });
+        
+        // Recarregar a página para atualizar os dados
+        window.location.reload();
       } else {
         toast({
           title: "Error",
-          description: data.message || "Failed to purchase points",
+          description: data.message || "Failed to create checkout session",
           variant: "destructive"
         });
       }

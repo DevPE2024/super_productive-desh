@@ -1,44 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { getAuthSession } from '@/lib/auth';
+
+// Pacotes de pontos disponíveis
+const POINT_PACKAGES = [
+  {
+    id: 'small',
+    name: 'Small Pack',
+    extraPoints: 100,
+    priceUsd: 5,
+    pricePerPoint: '0.050'
+  },
+  {
+    id: 'medium', 
+    name: 'Medium Pack',
+    extraPoints: 250,
+    priceUsd: 10,
+    pricePerPoint: '0.040'
+  },
+  {
+    id: 'large',
+    name: 'Large Pack', 
+    extraPoints: 500,
+    priceUsd: 18,
+    pricePerPoint: '0.036'
+  }
+];
 
 export async function GET(request: NextRequest) {
   try {
-    // Sistema de pontos não implementado completamente
-    // Retornando dados mockados para evitar erros
-    const packages = [
-      {
-        id: 1,
-        name: "Small Pack",
-        extraPoints: 50,
-        priceUsd: 5.00,
-        pricePerPoint: "0.100"
-      },
-      {
-        id: 2,
-        name: "Medium Pack", 
-        extraPoints: 100,
-        priceUsd: 9.00,
-        pricePerPoint: "0.090"
-      },
-      {
-        id: 3,
-        name: "Large Pack",
-        extraPoints: 200,
-        priceUsd: 16.00,
-        pricePerPoint: "0.080"
-      }
-    ];
+    // Verificar autenticação
+    const session = await getAuthSession(request);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { success: false, error: 'Não autorizado' },
+        { status: 401 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      data: packages
+      data: POINT_PACKAGES
     });
   } catch (error) {
-    console.error('Erro no endpoint de pacotes de pontos:', error);
+    console.error('Erro ao buscar pacotes de pontos:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      { success: false, error: 'Erro interno do servidor' },
       { status: 500 }
     );
   }
 }
-
