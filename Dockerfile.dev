@@ -1,8 +1,14 @@
-# Use Node.js 18 as base image
-FROM node:18-alpine
+# Use Node.js 20 as base image
+FROM node:20-alpine
 
-# Install OpenSSL and other required dependencies for Prisma
-RUN apk add --no-cache openssl openssl-dev libc6-compat
+# Install OpenSSL, Python, build tools and other required dependencies for Prisma and bcrypt
+RUN apk add --no-cache \
+    openssl \
+    openssl-dev \
+    libc6-compat \
+    python3 \
+    make \
+    g++
 
 # Set working directory
 WORKDIR /app
