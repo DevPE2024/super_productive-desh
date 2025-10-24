@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { signUpSchema } from "@/schema/signUpSchema";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { initializeUserCredits } from "@/lib/credit-manager";
 
 export async function POST(request: Request) {
   const body: unknown = await request.json();
@@ -34,13 +35,27 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Buscar o plano Free
+    const freePlan = await db.plan.findFirst({
+      where: { name: 'Free' }
+    });
+
+    if (!freePlan) {
+      return NextResponse.json("Plano Free não encontrado", { status: 500 });
+    }
+
     const newUser = await db.user.create({
       data: {
         username,
         email,
         hashedPassword,
+        planId: freePlan.id,
+        completedOnboarding: false
       },
     });
+
+    // Inicializar créditos do usuário
+    await initializeUserCredits(newUser.id, freePlan.id);
 
     return NextResponse.json(newUser, { status: 200 });
   } catch (err) {

@@ -257,4 +257,32 @@ export const homePageRolesAndSettingsImgs: HomePageImage[] = [
   },
 ];
 
+// Affinify Ecosystem Applications
+export const homePageAffinifyEcosystemImgs: HomePageImage[] = [
+  {
+    src: "/images/ecosystem/prodify-placeholder.svg",
+    alt: "Prodify - Task Management & Productivity Tool",
+  },
+  {
+    src: "/images/ecosystem/onscope-placeholder.svg",
+    alt: "OnScope - Visual Web Editor",
+  },
+  {
+    src: "/images/ecosystem/jazzup-placeholder.svg",
+    alt: "JazzUp - Collaborative Canvas",
+  },
+  {
+    src: "/images/ecosystem/deepquest-placeholder.svg",
+    alt: "DeepQuest - AI-Powered Search Engine",
+  },
+  {
+    src: "/images/ecosystem/openuix-placeholder.svg",
+    alt: "OpenUIX - AI Interface Platform",
+  },
+  {
+    src: "/images/ecosystem/testpath-placeholder.svg",
+    alt: "TestPath - API Testing Tool",
+  },
+];
+
 

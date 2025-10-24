@@ -5,6 +5,8 @@ import { OptionsSidebar } from "./optionsSidebar/OptionsSidebar";
 import { ShortcutSidebar } from "./shortcutSidebar/ShortcutSidebar";
 import { CloseSidebar } from "./CloseSidebar";
 import { Workspace } from "@prisma/client";
+import { useState } from "react";
+import { EcosystemPopup } from "@/components/dashboard/EcosystemPopup";
 
 interface Props {
   userWorkspaces: Workspace[];
@@ -18,9 +20,16 @@ export const SidebarContainer = ({
   userAdminWorkspaces,
 }: Props) => {
   const { isOpen, setIsOpen } = useToggleSidebar();
+  const [isEcosystemOpen, setIsEcosystemOpen] = useState(false);
+  
   const createdWorkspaces = userWorkspaces.filter(
     (workspace) => workspace.creatorId == userId
   );
+
+  const handleEcosystemClick = () => {
+    setIsEcosystemOpen(true);
+  };
+
   return (
     <>
       <aside
@@ -31,6 +40,7 @@ export const SidebarContainer = ({
         <ShortcutSidebar
           userWorkspaces={userWorkspaces ? userWorkspaces : []}
           createdWorkspaces={createdWorkspaces.length}
+          onEcosystemClick={handleEcosystemClick}
         />
         <OptionsSidebar
           createdWorkspaces={createdWorkspaces.length}
@@ -47,6 +57,12 @@ export const SidebarContainer = ({
           isOpen ? "block" : "hidden"
         }`}
       ></div>
+      
+      {/* Popup renderizado no nível mais alto */}
+      <EcosystemPopup 
+        isOpen={isEcosystemOpen} 
+        onClose={() => setIsEcosystemOpen(false)} 
+      />
     </>
   );
 };

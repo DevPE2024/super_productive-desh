@@ -1,100 +1,354 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
- 
 generator client {
   provider = "prisma-client-js"
 }
- 
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 model User {
-  id            String          @id @default(cuid())
-  name          String?
-  username      String @unique
-  surname       String?
-  email         String?          @unique
-  emailVerified DateTime?
-  hashedPassword String?
-  image         String?
-  completedOnboarding Boolean @default(false)
-  accounts      Account[]
-  sessions      Session[]
-  createdWorkspaces Workspace[] @relation("CreatedBy")
-  subscriptions Subscription[]
-  workspaceSubscriptions WorkspaceSubscription[]
-  useCase UseCase?
-  createdTasks Task[] @relation("TaskCreatedByUser")
-  updatedTasks Task[] @relation("TaskUpdatedByUser")
-  savedTask savedTask[]
-  createdMindMaps MindMap[] @relation("MindMapCreatedByUser")
-  updatedMindMaps MindMap[] @relation("MindMapUpdatedByUser")
-  savedMindMaps savedMindMaps[]
-  pomodoroSettings PomodoroSettings[]
-  assignedToTask assignedToTask[]
-  assignedToMindMap assignedToMindMap[]
-  userNotifications Notification[] @relation("NotifyUser")
-  userCreatedNotifications Notification[] @relation("NotifyCreator")
-  messages Message[]
-  // Sistema de Pontos
-  plan Plan? @relation(fields: [planId], references: [id])
-  planId Int? @default(1) // Default para Free Plan
-  cycleStart DateTime @default(now()) // Início do ciclo mensal
-  cycleEnd DateTime @default(now()) // Fim do ciclo mensal
-  stripeCustomerId String? @unique // ID do cliente no Stripe
-  
-  balances UserAppBalance[]
-  usageLogs UsageLog[]
+  id                       String                  @id @default(cuid())
+  name                     String?
+  email                    String?                 @unique
+  emailVerified            DateTime?
+  hashedPassword           String?
+  image                    String?
+  surname                  String?
+  username                 String                  @unique
+  completedOnboarding      Boolean                 @default(false)
+  useCase                  UseCase?
+  cycleEnd                 DateTime                @default(now())
+  cycleStart               DateTime                @default(now())
+  planId                   Int?                    @default(1)
+  stripeCustomerId         String?                 @unique
+  accounts                 Account?
+  messages                 Message[]
+  createdMindMaps          MindMap[]               @relation("MindMapCreatedByUser")
+  updatedMindMaps          MindMap[]               @relation("MindMapUpdatedByUser")
+  userCreatedNotifications Notification[]          @relation("NotifyCreator")
+  userNotifications        Notification[]          @relation("NotifyUser")
+  pomodoroSettings         PomodoroSettings[]
+  sessions                 Session?
+  createdTasks             Task[]                  @relation("TaskCreatedByUser")
+  updatedTasks             Task[]                  @relation("TaskUpdatedByUser")
+  plan                     Plan?                   @relation(fields: [planId], references: [id])
+  createdWorkspaces        Workspace[]             @relation("CreatedBy")
+  workspaceSubscriptions   WorkspaceSubscription[]
+  assignedToMindMap        assignedToMindMap[]
+  assignedToTask           assignedToTask[]
+  savedMindMaps            savedMindMaps[]
+  savedTask                savedTask[]
+  subscriptions            Subscription[]
+  usageLogs                UsageLog[]
+  balances                 UserAppBalance[]
 }
 
 model savedMindMaps {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  mindMap MindMap @relation(fields: [mindMapId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  userId    String
   mindMapId String
-
- 
+  mindMap   MindMap @relation(fields: [mindMapId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
- 
+
 model Account {
-  id                String @id @default(cuid())
-  userId            String @unique
+  id                String   @id @default(cuid())
+  userId            String   @unique
   type              String
   provider          String
-  providerAccountId String @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  providerAccountId String   @map("provider_account_id")
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-
 }
- 
+
 model Session {
-  id String @id @default(cuid())
+  id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String   @unique
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
- 
+
 model VerificationToken {
   identifier String
-  token      String @unique
+  token      String   @unique
   expires    DateTime
-
 }
 
+model Notification {
+  id              String          @id @default(cuid())
+  userId          String
+  notifyCreatorId String
+  workspaceId     String?
+  clicked         Boolean         @default(false)
+  createdDate     DateTime        @default(now())
+  notifyType      NotifyType
+  newUserRole     UserPermission?
+  taskId          String?
+  mindMapId       String?
+  seen            Boolean         @default(false)
+  notifyCreator   User            @relation("NotifyCreator", fields: [notifyCreatorId], references: [id], onDelete: Cascade)
+  user            User            @relation("NotifyUser", fields: [userId], references: [id], onDelete: Cascade)
+  workspace       Workspace?      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id          String    @id @default(cuid())
+  workspaceId String    @unique
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  messages    Message[]
+}
+
+model Message {
+  id                  String               @id @default(cuid())
+  conversationId      String
+  senderId            String
+  content             String
+  createdAt           DateTime             @default(now())
+  edited              Boolean              @default(false)
+  updatedAt           DateTime?            @updatedAt
+  conversation        Conversation         @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender              User                 @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  additionalResources additionalResource[]
+}
+
+model additionalResource {
+  id        String                  @id @default(cuid())
+  messageId String?
+  type      AdditionalResourceTypes
+  name      String
+  url       String
+  message   Message?                @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
+
+model Workspace {
+  id           String                  @id @default(cuid())
+  name         String
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+  creatorId    String?
+  image        String?
+  adminCode    String                  @unique
+  canEditCode  String                  @unique
+  inviteCode   String                  @unique
+  readOnlyCode String                  @unique
+  color        CustomColors            @default(BLUE)
+  conversation Conversation?
+  mindMaps     MindMap[]
+  notification Notification[]
+  tags         Tag[]
+  tasks        Task[]
+  Creator      User?                   @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: Cascade)
+  subscribers  WorkspaceSubscription[]
+}
+
+model Task {
+  id             String           @id @default(cuid())
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  updatedUserId  String?
+  creatorId      String
+  workspaceId    String
+  title          String
+  emoji          String           @default("1f9e0")
+  content        Json?
+  dateId         String?
+  creator        User             @relation("TaskCreatedByUser", fields: [creatorId], references: [id], onDelete: Cascade)
+  taskDate       TaskDate?        @relation(fields: [dateId], references: [id], onDelete: Cascade)
+  updatedBy      User?            @relation("TaskUpdatedByUser", fields: [updatedUserId], references: [id], onDelete: Cascade)
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignedToTask assignedToTask[]
+  savedTask      savedTask[]
+  tags           Tag[]            @relation("TagToTask")
+}
+
+model savedTask {
+  id     String @id @default(cuid())
+  userId String
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PomodoroSettings {
+  id                 String              @id @default(cuid())
+  userId             String
+  workDuration       Int                 @default(25)
+  shortBreakDuration Int                 @default(5)
+  longBreakDuration  Int                 @default(15)
+  longBreakInterval  Int                 @default(2)
+  rounds             Int                 @default(3)
+  soundEffect        PomodoroSoundEffect @default(BELL)
+  soundEffectVolume  Float               @default(0.5)
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model assignedToTask {
+  id     String @id @default(cuid())
+  userId String
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model assignedToMindMap {
+  id        String  @id @default(cuid())
+  userId    String
+  mindMapId String
+  mindMap   MindMap @relation(fields: [mindMapId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id          String       @id @default(cuid())
+  name        String
+  color       CustomColors
+  workspaceId String
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  mindMaps    MindMap[]    @relation("MindMapToTag")
+  tasks       Task[]       @relation("TagToTask")
+}
+
+model TaskDate {
+  id   String  @id @default(cuid())
+  from String?
+  to   String?
+  Task Task[]
+}
+
+model Subscription {
+  id                   String   @id @default(cuid())
+  userId               String
+  stripeSubscriptionId String   @unique
+  status               String
+  planId               Int
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  plan                 Plan     @relation(fields: [planId], references: [id])
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model WorkspaceSubscription {
+  userId      String
+  workspaceId String
+  userRole    UserPermission @default(READ_ONLY)
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@id([userId, workspaceId])
+}
+
+model MindMap {
+  id                String              @id @default(cuid())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  creatorId         String
+  updatedUserId     String?
+  workspaceId       String
+  content           Json?
+  title             String
+  emoji             String              @default("1f9e0")
+  creator           User                @relation("MindMapCreatedByUser", fields: [creatorId], references: [id], onDelete: Cascade)
+  updatedBy         User?               @relation("MindMapUpdatedByUser", fields: [updatedUserId], references: [id], onDelete: Cascade)
+  workspace         Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignedToMindMap assignedToMindMap[]
+  savedMindMaps     savedMindMaps[]
+  tags              Tag[]               @relation("MindMapToTag")
+
+  @@index([workspaceId])
+  @@index([updatedUserId])
+  @@index([creatorId])
+}
+
+model App {
+  id          Int                 @id @default(autoincrement())
+  key         AppKey              @unique
+  name        String
+  allocations PlanAppAllocation[]
+  usageLogs   UsageLog[]
+  balances    UserAppBalance[]
+
+  @@map("apps")
+}
+
+model Plan {
+  id            Int                 @id @default(autoincrement())
+  name          String              @unique
+  priceUsd      Float
+  stripePriceId String?             @unique
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  users         User[]
+  allocations   PlanAppAllocation[]
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model PlanAppAllocation {
+  id            Int  @id @default(autoincrement())
+  planId        Int
+  appId         Int
+  monthlyPoints Int?
+  app           App  @relation(fields: [appId], references: [id], onDelete: Cascade)
+  plan          Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, appId])
+  @@map("plan_app_allocations")
+}
+
+model UserAppBalance {
+  id        Int    @id @default(autoincrement())
+  userId    String
+  appId     Int
+  remaining Int    @default(0)
+  app       App    @relation(fields: [appId], references: [id], onDelete: Cascade)
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, appId])
+  @@map("user_app_balances")
+}
+
+model UsageLog {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  appId      Int
+  actionType String
+  pointsUsed Int
+  createdAt  DateTime @default(now())
+  app        App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("usage_logs")
+}
+
+model StripeEvent {
+  id        Int      @id @default(autoincrement())
+  eventId   String   @unique
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@map("stripe_events")
+}
 
 enum UserPermission {
   ADMIN
@@ -119,148 +373,10 @@ enum NotifyType {
   NEW_ASSIGNMENT_MIND_MAP
 }
 
-model Notification {
-  id String @id @default(cuid())
-  user User @relation(name: "NotifyUser", fields: [userId], references: [id] , onDelete: Cascade)
-  userId String
-  notifyCreator User @relation(name: "NotifyCreator", fields: [notifyCreatorId], references: [id], onDelete: Cascade)
-  notifyCreatorId String
-  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String?
-  seen Boolean @default(false)
-  clicked Boolean @default(false)
-  createdDate DateTime @default(now())
-  notifyType NotifyType
-  newUserRole UserPermission?
-  taskId String?
-  mindMapId String?
-
-
-}
-
-model Conversation {
-  id String @id @default(cuid())
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String @unique
-  messages Message[]
-}
-
-model Message {
-  id String @id @default(cuid())
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  conversationId String
-  sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  senderId String
-  content String
-  createdAt DateTime @default(now())
-  additionalResources additionalResource[]
-  edited Boolean @default(false)
-  updatedAt DateTime? @updatedAt
-}
-
-model additionalResource{
-  id String @id @default(cuid())
-
-  message Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  messageId String?
-  type AdditionalResourceTypes
-  name String
-  url String
-}
-
 enum AdditionalResourceTypes {
   PDF
   IMAGE
 }
-
-model Workspace {
-  id String @id @default(cuid())
-  name String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  creatorId String?
-  Creator User? @relation("CreatedBy", fields: [creatorId], references: [id], onDelete: Cascade)
-  subscribers WorkspaceSubscription[]
-  image String?
-  color CustomColors @default(BLUE)
-  inviteCode String @unique 
-  adminCode String @unique 
-  canEditCode String @unique 
-  readOnlyCode String @unique 
-  tasks Task[]
-  tags Tag[]
-  mindMaps MindMap[]
-  notification Notification[]
-  conversation Conversation?
-
-}
-
-
-model Task {
-  id String @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  updatedBy User? @relation(name: "TaskUpdatedByUser",fields: [updatedUserId], references: [id], onDelete: Cascade)
-  updatedUserId String?
-  creator User @relation(name: "TaskCreatedByUser",fields: [creatorId], references: [id], onDelete: Cascade)
-  creatorId String
-  workspace Workspace @relation(fields: [workspaceId],references: [id], onDelete: Cascade)
-  workspaceId String
-  title String
-  emoji String @default("1f9e0")
-  content Json?
-  tags Tag[]
-  taskDate TaskDate? @relation(fields: [dateId],references: [id], onDelete: Cascade)
-  dateId String?
-  savedTask savedTask[]
-  assignedToTask assignedToTask[]
-
-
-}
-
-
-model savedTask {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  task Task @relation(fields: [taskId] ,references: [id], onDelete: Cascade)
-  taskId String
-
-}
-
-model PomodoroSettings {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  workDuration Int @default(25)
-  shortBreakDuration Int @default(5)
-  longBreakDuration Int @default(15)
-  longBreakInterval Int @default(2)
-  rounds Int @default(3)
-  soundEffect PomodoroSoundEffect @default(BELL)
-  soundEffectVolume Float @default(0.5)
-
-}
-
-model assignedToTask {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  task Task @relation(fields: [taskId],references: [id], onDelete: Cascade)
-  taskId String
-
-}
-
-model assignedToMindMap {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  mindMap MindMap @relation(fields: [mindMapId],references: [id], onDelete: Cascade)
-  mindMapId String
-
-
-}
-
 
 enum PomodoroSoundEffect {
   ANALOG
@@ -270,27 +386,6 @@ enum PomodoroSoundEffect {
   FANCY
   BELL
 }
-
-model Tag {
-  id String @id @default(cuid())
-  name String
-  tasks Task[]
-  color CustomColors
-  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String
-  mindMaps MindMap[]
-
-  
-}
-
-
-model TaskDate {
-  id String @id @default(cuid())
-  from String?
-  to String?
-  Task Task[]
-}
-
 
 enum CustomColors {
   PURPLE
@@ -307,57 +402,6 @@ enum CustomColors {
   FUCHSIA
 }
 
-model Subscription {
-  id                    String   @id @default(cuid())
-  userId                String
-  stripeSubscriptionId  String   @unique
-  status                String   // active, past_due, canceled, incomplete, trialing
-  planId                Int
-  currentPeriodStart    DateTime
-  currentPeriodEnd      DateTime
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan Plan @relation(fields: [planId], references: [id])
-  
-  @@map("subscriptions")
-}
-
-model WorkspaceSubscription {
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  workspace Workspace @relation(fields: [workspaceId],references: [id], onDelete: Cascade)
-  workspaceId String
-  userRole UserPermission @default(READ_ONLY)
-
-  @@id([userId, workspaceId])
- 
-}
-
-
-model MindMap {
-  id String @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  updatedBy User? @relation(name: "MindMapUpdatedByUser", fields: [updatedUserId], references: [id], onDelete: Cascade)
-  creator User @relation(name: "MindMapCreatedByUser", fields: [creatorId], references: [id], onDelete: Cascade)
-  creatorId String
-  updatedUserId String?
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  workspaceId String
-  content Json?
-  title String
-  emoji String @default("1f9e0")
-  tags Tag[]
-  savedMindMaps savedMindMaps[]
-  assignedToMindMap assignedToMindMap[]
-
-  @@index([workspaceId])
-  @@index([updatedUserId])
-  @@index([creatorId])
-}
-
-// Enum para as chaves dos aplicativos
 enum AppKey {
   PRODIFY
   ONSCOPE
@@ -366,84 +410,3 @@ enum AppKey {
   OPENUIX
   TESTPATH
 }
-
-// Tabela de Aplicativos
-model App {
-  id     Int    @id @default(autoincrement())
-  key    AppKey @unique
-  name   String
-  allocations PlanAppAllocation[]
-  balances    UserAppBalance[]
-  usageLogs   UsageLog[]
-  
-  @@map("apps")
-}
-
-// Sistema de Pontos - Tabela de Planos (Atualizada)
-model Plan {
-  id            Int      @id @default(autoincrement())
-  name          String   @unique // Free, Pro, Max
-  priceUsd      Float    // 0, 25, 60
-  stripePriceId String?  @unique // ID do preço no Stripe
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  allocations   PlanAppAllocation[]
-  users         User[]
-  subscriptions Subscription[]
-  
-  @@map("plans")
-}
-
-// Alocação de Créditos por Plano e App
-model PlanAppAllocation {
-  id            Int   @id @default(autoincrement())
-  planId        Int
-  appId         Int
-  monthlyPoints Int?  // null = ilimitado (PRODIFY, TESTPATH)
-  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
-  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
-  
-  @@unique([planId, appId])
-  @@map("plan_app_allocations")
-}
-
-// Saldo de Créditos do Usuário por App
-model UserAppBalance {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  appId     Int
-  remaining Int      @default(0)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, appId])
-  @@map("user_app_balances")
-}
-
-// Sistema de Pontos - Logs de Uso (Atualizado)
-model UsageLog {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  appId      Int
-  actionType String   // ai_edit, project_generation, image_basic, etc.
-  pointsUsed Int
-  createdAt  DateTime @default(now())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  app  App  @relation(fields: [appId], references: [id], onDelete: Cascade)
-  
-  @@index([userId])
-  @@index([createdAt])
-  @@map("usage_logs")
-}
-
-// Sistema de Pontos - Eventos do Stripe
-model StripeEvent {
-  id        Int      @id @default(autoincrement())
-  eventId   String   @unique
-  type      String
-  payload   Json
-  createdAt DateTime @default(now())
-  
-  @@map("stripe_events")
-}
-

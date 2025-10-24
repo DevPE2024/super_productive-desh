@@ -4,6 +4,7 @@ import { VideoContainer } from "../video/VideoContainer";
 import Image from "next/image";
 import { HomePageImage } from "@/types/extended";
 import { ImagesCarousel } from "../carousel/ImagesCarousel";
+import { EcosystemCarousel } from "../carousel/EcosystemCarousel";
 import { useIsVisible } from "@/hooks/useIsVisible";
 
 interface Props {
@@ -16,6 +17,60 @@ interface Props {
 
 export const Section = ({ reverse, title, desc, images, id }: Props) => {
   const { isVisible, ref } = useIsVisible();
+  
+  // Layout especial para o ecossistema (igual ao Header)
+  if (id === "Affinify-Ecosystem") {
+    return (
+      <section
+        id={id}
+        ref={ref}
+        className="flex flex-col items-center mt-20 w-full relative isolate group"
+      >
+        <h2 className="font-bold text-5xl sm:text-6xl lg:text-8xl max-w-2xl text-center">
+          {title}
+        </h2>
+        <p className="lg:text-2xl text-base mt-8 sm:mt-4 sm:text-lg md:text-xl text-muted-foreground max-w-4xl text-center">
+          {desc}
+        </p>
+        
+        <EcosystemCarousel className="mt-28 h-[40rem] z-20 relative bg-background" />
+
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+        >
+          <div
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+            className={`relative left-[calc(50%+11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#667eea] to-[#764ba2] sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] group-hover:opacity-80 dark:group-hover:opacity-60 transition-opacity duration-500 ${
+              isVisible
+                ? "opacity:80 dark:opacity-60"
+                : "opacity-40 dark:opacity-30"
+            }`}
+          />
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-36"
+        >
+          <div
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+            className={`relative left-[calc(50%+11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#667eea] to-[#764ba2] sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] group-hover:opacity-80 dark:group-hover:opacity-60 transition-opacity duration-500 ${
+              isVisible
+                ? "opacity:80 dark:opacity-60"
+                : "opacity-40 dark:opacity-30"
+            }`}
+          />
+        </div>
+      </section>
+    );
+  }
+  
   return (
     <section
       id={id}

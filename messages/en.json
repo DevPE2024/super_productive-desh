@@ -46,6 +46,10 @@
     "filters": {
       "title": "Quick Access",
       "desc": "Instantly locate what you need with a smart search feature, quick access tabs, and filtering tools. Tagging and marking essential items make it easy to keep your most important projects just a click away, streamlining your workflow."
+    },
+    "affinify_ecosystem": {
+      "title": "Explore the Affinify Ecosystem",
+      "desc": "Discover our complete suite of productivity and development tools. Each application is designed to seamlessly integrate with your workflow, providing specialized solutions for every aspect of your projects."
     }
   },
   "nav": {
@@ -241,6 +245,7 @@
       "ASSIGNED_TO_ME_HOVER": "Assigned to me",
       "CALENDAR_HOVER": "Calendar",
       "POINTS_HOVER": "Points",
+      "ECOSYSTEM_HOVER": "Affinify Ecosystem",
       "NEW_WORKSPACE_HOVER": "New Workspace",
       "NEW_WORKSPACE_DIALOG_TITLE": "Create new workspace",
       "NEW_WORKSPACE_DIALOG_DESC": "some text"

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { initializeUserCredits } from "@/lib/credit-manager";
 
 export async function POST(request: Request) {
   const body: unknown = await request.json();
@@ -55,6 +56,9 @@ export async function POST(request: Request) {
         planId: freePlan.id
       }
     });
+
+    // Inicializar créditos do usuário
+    await initializeUserCredits(user.id, freePlan.id);
 
     // Gerar JWT token
     const token = jwt.sign(

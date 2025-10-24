@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { CalendarDays, Clock, Home, Star, User, Coins } from "lucide-react";
+import { CalendarDays, Clock, Home, Star, User, Coins, Grid3X3 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
 import { array } from "zod";
@@ -49,6 +49,11 @@ export const topSidebarLinks = [
     href: "/dashboard/points",
     Icon: Coins,
     hoverTextKey: "POINTS_HOVER",
+  },
+  {
+    href: "#ecosystem",
+    Icon: Grid3X3,
+    hoverTextKey: "ECOSYSTEM_HOVER",
   },
 ];
 

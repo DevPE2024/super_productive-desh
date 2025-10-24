@@ -14,10 +14,18 @@ interface Props {
   Icon: LucideIcon;
   hoverTextKey: string;
   include?: string;
+  onClick?: () => void;
 }
 
-export const SidebarLink = ({ hoverTextKey, href, Icon, include }: Props) => {
+export const SidebarLink = ({ hoverTextKey, href, Icon, include, onClick }: Props) => {
   const t = useTranslations("SIDEBAR.MAIN");
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (href === "#ecosystem" && onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
 
   return (
     <HoverCard openDelay={250} closeDelay={250}>
@@ -27,6 +35,7 @@ export const SidebarLink = ({ hoverTextKey, href, Icon, include }: Props) => {
           variant={"ghost"}
           size={"icon"}
           href={href}
+          onClick={handleClick}
         >
           <Icon />
         </ActiveLink>

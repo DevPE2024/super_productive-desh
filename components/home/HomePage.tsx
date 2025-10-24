@@ -7,6 +7,7 @@ import {
   homePagePomodoroImgs,
   homePageRolesAndSettingsImgs,
   homePageTasksImgs,
+  homePageAffinifyEcosystemImgs,
 } from "@/lib/constants";
 import { Header } from "./header/Header";
 import { Nav } from "./nav/Nav";
@@ -24,6 +25,13 @@ export const HomePage = () => {
       <div className="w-full mx-auto max-w-screen-xl px-4 sm:px-6">
         <Header />
         <main>
+          <Section
+            id="Affinify-Ecosystem"
+            title={t("affinify_ecosystem.title")}
+            desc={t("affinify_ecosystem.desc")}
+            images={homePageAffinifyEcosystemImgs}
+          />
+
           <TextSection
             title={t("productivity_partner.title")}
             desc={t("productivity_partner.desc")}
@@ -36,6 +44,7 @@ export const HomePage = () => {
             images={homePageMindMapsImgs}
             reverse
           />
+
           <Section
             id="Tasks"
             title={t("tasks.title")}
