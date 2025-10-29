@@ -13,5 +13,6 @@ const prisma: PrismaClient = (() => {
 })();
 
 export const db = prisma;
+export { prisma }; // Exportar prisma para compatibilidade com APIs da Comunidade
 
 

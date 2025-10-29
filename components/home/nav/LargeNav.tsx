@@ -68,6 +68,14 @@ export const LargeNav = () => {
             {t("log_in")}
           </Link>
           <Link
+            className={`${buttonVariants({ variant: "outline" })}`}
+            href="http://localhost:3020"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Community
+          </Link>
+          <Link
             className={`${buttonVariants({ variant: "default" })}`}
             href={"/sign-up"}
           >

@@ -30,6 +30,26 @@ const nextConfig = {
           { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" },
         ],
       },
+      {
+        // Permitir CORS para API da Comunidade
+        source: "/api/community/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "http://localhost:3020" },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST,PUT,DELETE,OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization" },
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+        ],
+      },
+      {
+        // Permitir CORS para SSO/Autenticação (Comunidade)
+        source: "/api/auth/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "http://localhost:3020" },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST,OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Authorization, Cookie" },
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+        ],
+      },
     ];
   },
   eslint: {

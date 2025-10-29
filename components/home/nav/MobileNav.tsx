@@ -80,6 +80,17 @@ export const MobileNav = () => {
               {t("sign_up")}
             </Link>
             <Link
+              href="http://localhost:3020"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                setOpen(false);
+              }}
+              className={`${buttonVariants({ variant: "outline" })}`}
+            >
+              Community
+            </Link>
+            <Link
               href={"/"}
               onClick={() => {
                 setOpen(false);
