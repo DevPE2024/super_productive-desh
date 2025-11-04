@@ -50,7 +50,7 @@ export const SecondStep = () => {
       <div className="flex flex-col justify-center items-center gap-4 w-full mt-10 text-center">
         <h2 className="font-bold text-4xl md:text-5xl  max-w-xs">
           {t("SECOND_STEP.TITLE")} <span>Super</span>{" "}
-          <span className="text-primary font-semibold">Productive?</span>
+          <span className="text-primary font-semibold">Prodify?</span>
         </h2>
         <p className="max-w-lg text-muted-foreground">
           {t("SECOND_STEP.INFO")}

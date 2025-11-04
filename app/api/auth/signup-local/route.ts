@@ -51,7 +51,7 @@ export async function POST(request: Request) {
         username,
         hashedPassword,
         name: username,
-        completedOnboarding: true,
+        completedOnboarding: false,
         emailVerified: new Date(),
         planId: freePlan.id
       }

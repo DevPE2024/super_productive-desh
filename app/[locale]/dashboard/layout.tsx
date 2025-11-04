@@ -2,8 +2,22 @@ import { Sidebar } from "@/components/sidebar/Sidebar";
 import { ToggleSidebarProvider } from "@/context/ToggleSidebar";
 import { UserActivityStatusProvider } from "@/context/UserActivityStatus";
 import { UserEditableWorkspacesProvider } from "@/context/UserEditableWorkspaces";
+import { checkIfUserCompletedOnboarding } from "@/lib/checkIfUserCompletedOnboarding";
+import { redirect } from "next/navigation";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
+  // Verificar se o usuário completou o onboarding
+  const session = await checkIfUserCompletedOnboarding();
+  
+  if (!session) {
+    redirect("/en/sign-in");
+  }
+  
+  // Se não completou onboarding, redireciona
+  if (!session.completedOnboarding) {
+    redirect("/en/onboarding");
+  }
+
   return (
     <UserActivityStatusProvider>
       {" "}

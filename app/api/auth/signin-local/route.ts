@@ -41,7 +41,8 @@ export async function POST(request: Request) {
       { 
         userId: user.id, 
         email: user.email,
-        provider: 'local'
+        provider: 'local',
+        completedOnboarding: user.completedOnboarding || false
       },
       process.env.NEXTAUTH_SECRET || 'fallback-secret',
       { expiresIn: '7d' }

@@ -4,21 +4,22 @@ echo "🚀 Iniciando configuração do banco de dados..."
 
 # Aguardar o banco de dados estar pronto
 echo "⏳ Aguardando banco de dados estar disponível..."
-until npx prisma db push --accept-data-loss 2>/dev/null; do
+sleep 5
+until echo "SELECT 1" | npx prisma db execute --stdin 2>/dev/null; do
   echo "⏳ Banco ainda não está pronto, aguardando 2 segundos..."
   sleep 2
 done
 
 echo "✅ Banco de dados conectado com sucesso!"
 
-# Executar prisma db push para sincronizar schema
-echo "🔄 Sincronizando schema do banco de dados..."
-npx prisma db push --accept-data-loss
+# Executar migrations
+echo "🔄 Executando migrations do banco de dados..."
+npx prisma migrate deploy
 
 if [ $? -eq 0 ]; then
-    echo "✅ Schema sincronizado com sucesso!"
+    echo "✅ Migrations executadas com sucesso!"
 else
-    echo "❌ Erro ao sincronizar schema!"
+    echo "❌ Erro ao executar migrations!"
     exit 1
 fi
 

@@ -31,7 +31,8 @@ export const GET = async (request: Request) => {
     const userRole = user.workspaceSubscriptions[0].userRole;
 
     return NextResponse.json(userRole, { status: 200 });
-  } catch (_) {
+  } catch (error) {
+    console.error("Error in user_role:", error);
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };

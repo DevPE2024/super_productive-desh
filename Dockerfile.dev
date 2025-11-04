@@ -32,5 +32,9 @@ EXPOSE 8001
 ENV NODE_ENV=development
 ENV PORT=8001
 
-# Start the application directly
-CMD ["npm", "run", "dev"]
+# Copy and set permissions for init script
+COPY scripts/init-db.sh /app/scripts/init-db.sh
+RUN chmod +x /app/scripts/init-db.sh
+
+# Start the application with init script
+CMD ["/app/scripts/init-db.sh"]

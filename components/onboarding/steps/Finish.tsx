@@ -63,7 +63,7 @@ export const Finish = () => {
         <p>
           {t("FINISH.DESC_FIRST")}{" "}
           <span>
-            Super <span className="text-primary font-semibold">Productive</span>
+            Super <span className="text-primary font-semibold">Prodify</span>
           </span>
           {t("FINISH.DESC_SECOND")}{" "}
         </p>

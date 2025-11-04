@@ -252,6 +252,7 @@ model WorkspaceSubscription {
   workspace   Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@id([userId, workspaceId])
+  @@map("Subscription")
 }
 
 model MindMap {

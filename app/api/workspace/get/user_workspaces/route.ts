@@ -25,7 +25,8 @@ export const GET = async (request: Request) => {
     if (!workspace) return NextResponse.json([], { status: 200 });
 
     return NextResponse.json(workspace, { status: 200 });
-  } catch (_) {
+  } catch (error) {
+    console.error("Error in user_workspaces:", error);
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 };

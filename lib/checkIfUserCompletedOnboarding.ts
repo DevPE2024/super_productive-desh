@@ -11,14 +11,15 @@ export const checkIfUserCompletedOnboarding = async (redirectPath?: string) => {
 
     const { user } = authResult;
 
-    // Como estamos usando apenas Supabase Auth, assumimos que o usuário completou onboarding
-    // se ele está autenticado
+    const hasCompletedOnboarding = user.completedOnboarding === true;
+
     console.log("Verificação de onboarding:", {
       userId: user.id,
-      completedOnboarding: user.completedOnboarding || true
+      completedOnboarding: user.completedOnboarding,
+      hasCompletedOnboarding
     });
 
-    return { user, completedOnboarding: user.completedOnboarding || true };
+    return { user, completedOnboarding: hasCompletedOnboarding };
   } catch (error) {
     console.error("Erro ao verificar onboarding:", error);
     return null;

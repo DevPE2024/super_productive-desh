@@ -1,8 +1,9 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
 const locales = ["pt-BR", "en"];
-const publicPages = ["/", "/sign-in", "/sign-up", "/pricing"];
+const publicPages = ["/", "/sign-in", "/sign-up", "/pricing", "/onboarding"];
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -32,6 +33,23 @@ export default async function middleware(req: NextRequest) {
       const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
       const redirectUrl = new URL(`/${locale}/sign-in`, req.url);
       return NextResponse.redirect(redirectUrl);
+    }
+    
+    // Verificar onboarding
+    try {
+      const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'fallback-secret');
+      const { payload } = await jwtVerify(authToken, secret);
+      
+      // Se o usuário não completou onboarding e não está na página de onboarding
+      const hasCompletedOnboarding = payload.completedOnboarding === true;
+      if (!hasCompletedOnboarding && !req.nextUrl.pathname.includes('/onboarding')) {
+        const locale = req.nextUrl.pathname.match(/^\/([a-z]{2})\//)?.[1] || 'en';
+        const redirectUrl = new URL(`/${locale}/onboarding`, req.url);
+        return NextResponse.redirect(redirectUrl);
+      }
+    } catch (error) {
+      console.error('Erro ao verificar JWT:', error);
+      // Se houver erro ao verificar JWT, não bloqueia o acesso
     }
     
     return intlMiddleware(req);

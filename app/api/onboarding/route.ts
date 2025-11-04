@@ -68,14 +68,11 @@ export async function POST(request: Request) {
       },
     });
 
-    await db.subscription.create({
+    await db.workspaceSubscription.create({
       data: {
         userId: user.id,
-        stripeSubscriptionId: `temp_${user.id}`, // ID temporário
-        status: "active",
-        planId: 1, // Free plan
-        currentPeriodStart: new Date(),
-        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
+        workspaceId: workspace.id,
+        userRole: "OWNER",
       },
     });
 
@@ -93,6 +90,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json("OK", { status: 200 });
   } catch (err) {
+    console.error("Erro no onboarding:", err);
     return NextResponse.json("ERRORS.DB_ERROR", { status: 405 });
   }
 }
